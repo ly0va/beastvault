@@ -31,7 +31,7 @@ export class AdversaryModal extends SuggestModal<Adversary> {
 export class AdversaryCard extends MarkdownRenderChild {
     constructor(
         private container: HTMLElement,
-        private adv: Adversary,
+        public adv: Adversary,
         private plugin: DaggerheartPlugin
     ) {
         super(container);

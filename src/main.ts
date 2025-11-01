@@ -6,14 +6,55 @@ import { ADV_LIBRARY, ENV_LIBRARY, DEFAULT_SETTINGS, ADV_TEMPLATE, ENV_TEMPLATE,
 import { AdversaryCard, AdversaryModal } from './ui';
 
 export default class DaggerheartPlugin extends Plugin {
-    activeBlocks: Set<AdversaryCard> = new Set();
+    activeBlocks: Map<AdversaryCard, string> = new Map();
     state: PluginState;
     saveTimer?: number;
     saving?: Promise<void>;
+    battlePoints: HTMLElement;
+
+    updateStatusBar() {
+        const file = this.app.workspace.getActiveFile();
+        if (file) {
+            const bp = this.calculateBattlePoints(file?.path);
+            if (bp > 0) {
+                this.battlePoints.setText(`Battle Points: ${bp}`);
+                return;
+            }
+        }
+        this.battlePoints.setText('');
+    }
+
+    calculateBattlePoints(filePath: string): number {
+        let totalBP = 0;
+        const bpPerType: Record<string, number> = {
+            'solo': 5,
+            'bruiser': 4,
+            'leader': 3,
+            'horde': 2,
+            'skulk': 2,
+            'ranged': 2,
+            'standard': 2,
+            'support': 1,
+            'social': 1,
+            'minion': 0.25, // TODO: do this depending on number of PCs from the settings
+        }
+        for (const [block, path] of this.activeBlocks) {
+            if (path !== filePath) continue;
+            const type = block.adv.type?.trim().toLowerCase();
+            const count = block.adv.count ?? 1;
+            if (type?.startsWith('horde')) totalBP += bpPerType['horde'] * count;
+            if (type && bpPerType[type]) totalBP += bpPerType[type] * count;
+        }
+        return totalBP;
+    }
 
     async onload() {
         this.state = Object.assign({}, { settings: {}, cards: {} }, await this.loadData());
         this.state.settings = Object.assign({}, DEFAULT_SETTINGS, this.state.settings);
+        this.battlePoints = this.addStatusBarItem();
+        this.registerEvent(this.app.workspace.on('active-leaf-change', () => {
+            this.updateStatusBar();
+        }));
 
         this.registerMarkdownCodeBlockProcessor("daggerheart", (src, el, ctx) => {
             const adv = (yaml.parse(src, reviver, { strict: false }) ?? {}) as Adversary;
@@ -21,9 +62,13 @@ export default class DaggerheartPlugin extends Plugin {
             ctx.addChild(child);
             child.render();
             // Track it so we can refresh on settings change:
-            this.activeBlocks.add(child);
+            this.activeBlocks.set(child, this.app.workspace.getActiveFile()?.path ?? ctx.sourcePath);
+            this.updateStatusBar();
             // Ensure we stop tracking when the block is removed:
-            child.register(() => this.activeBlocks.delete(child));
+            child.register(() => {
+                this.activeBlocks.delete(child);
+                this.updateStatusBar();
+            });
         });
 
         this.addSettingTab(new SettingTab(this.app, this));
@@ -86,7 +131,7 @@ export default class DaggerheartPlugin extends Plugin {
     }
 
     renderAll() {
-        for (const block of this.activeBlocks) {
+        for (const [block] of this.activeBlocks) {
             block.render();
         }
     }
