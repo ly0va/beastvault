@@ -1,0 +1,58 @@
+
+.daggerheart {
+    font-family: monospace;
+    position: relative
+}
+
+input[type=checkbox].daggerheart-slot {
+    vertical-align: middle;
+    top: -0.1em;
+}
+
+.smaller {
+    font-size: smaller;
+}
+
+.larger {
+    font-size: larger;
+    text-transform: uppercase;
+}
+
+.spreadout {
+    justify-content: space-between;
+}
+
+.muted {
+    color: var(--text-muted)
+}
+
+.daggerheart-thresholds {
+    text-align: center;
+    margin-bottom: 0.2em !important;
+}
+
+.rollable {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.rollable:hover {
+    /* text-decoration: underline; */
+    color: rgb(var(--callout-color))
+}
+
+.daggerheart hr {
+    margin: 0
+}
+
+.daggerheart ul, .daggerheart ol {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.corner {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 0.5em
+}

@@ -1,0 +1,10 @@
+{
+	"id": "pretty-daggerheart",
+	"name": "Pretty Daggerheart",
+	"version": "1.0.0",
+	"minAppVersion": "1.9.14",
+	"description": "Create pretty adversary and environment cards for Daggerheart TTRPG.",
+	"author": "Lyova Potomkin",
+	"authorUrl": "https://github.com/ly0va",
+	"isDesktopOnly": false
+}
