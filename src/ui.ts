@@ -4,7 +4,6 @@ import { marked } from 'marked';
 import DaggerheartPlugin from './main';
 import { hexToRgb, DICE_PATTERN } from './utils';
 import * as yaml from 'yaml';
-import { features } from 'process';
 
 type Feature = {
     name?: string;
@@ -124,10 +123,7 @@ export class AdversaryCard extends MarkdownRenderChild {
         paragraph.innerHTML += feature.type ? `${feature.type}` : '';
         paragraph.innerHTML += feature.type || feature.name ? `<br>` : '';
         if (this.adv.count == 1) {
-            const usesMarked = this.plugin.state.cards?.[this.adv.id!]?.stats?.[0]?.uses?.[index] ?? 0;
-            this.createStatSlots(paragraph, 'Uses', feature.uses || 0, usesMarked, (marked) =>
-                this.plugin.updateCard([this.adv.id!, 'stats', 0, 'uses', index], marked)
-            );
+            this.createStatSlots(paragraph, 'Uses', feature.uses || 0, [this.adv.id!, 'stats', 0, 'uses', index]);
         }
         if (feature.desc) {
             let desc = marked.parse(feature.desc, { async: false })
@@ -143,8 +139,9 @@ export class AdversaryCard extends MarkdownRenderChild {
         }
     }
 
-    createStatSlots(statBar: HTMLElement, name: string, stat: number, marked: number, onMarked: (marked: number) => void) {
+    createStatSlots(statBar: HTMLElement, name: string, stat: number, keys: (string | number)[]) {
         const slots: HTMLInputElement[] = []
+        const marked = this.plugin.getCardState(keys) as number;
         if (stat > 0) {
             statBar.createEl('span', { text: `${name}: ${stat} `, cls: "muted" });
             for (let i = 0; i < stat; i++) {
@@ -158,7 +155,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             statBar.addEventListener('input', (event) => {
                 if (!slots.contains(event.target as HTMLInputElement)) return;
                 let marked = slots.reduce((sum, slot) => sum + (slot.checked ? 1 : 0), 0);
-                onMarked(marked);
+                this.plugin.updateCard(keys, marked)
             });
         }
 
@@ -187,21 +184,15 @@ export class AdversaryCard extends MarkdownRenderChild {
     createStatBar(content: HTMLElement, index: number) {
         const statBar = content.createEl('p');
         const [minor, major, severe, massive] = this.createThresholdButtons(statBar);
-        const currentStats = this.plugin.state.cards?.[this.adv.id!]?.stats?.[index];
-        const hpSlots = this.createStatSlots(statBar, 'HP', this.adv.hp || 0, currentStats?.hp || 0, (marked) =>
-            this.plugin.updateCard([this.adv.id!, 'stats', index, 'hp'], marked)
-        );
-        this.createStatSlots(statBar, 'Stress', this.adv.stress || 0, currentStats?.stress || 0, (marked) =>
-            this.plugin.updateCard([this.adv.id!, 'stats', index, 'stress'], marked)
-        );
+        const hpSlots = this.createStatSlots(statBar, 'HP', this.adv.hp || 0, [this.adv.id!, 'stats', index, 'hp']);
+        this.createStatSlots(statBar, 'Stress', this.adv.stress || 0, [this.adv.id!, 'stats', index, 'stress']);
 
-        if ((this.adv.count || 0) > 1) {
+        if (this.adv.count! > 1) {
             for (const [featureIndex, feature] of this.adv.features!.entries()) {
-                if ((feature.uses || 0) != 0) {
-                    const usesMarked = this.plugin.state.cards?.[this.adv.id!]?.stats?.[index]?.uses?.[featureIndex] ?? 0;
-                    this.createStatSlots(statBar, feature.name || 'Unnamed feature uses', feature.uses || 0, usesMarked, (marked) =>
-                        this.plugin.updateCard([this.adv.id!, 'stats', index, 'uses', featureIndex], marked)
-                    );
+                const uses = feature.uses || 0;
+                const name = feature.name || 'Unnamed feature uses';
+                if (uses != 0) {
+                    this.createStatSlots(statBar, name, uses, [this.adv.id!, 'stats', index, 'uses', featureIndex]);
                 }
             }
         }
@@ -257,9 +248,9 @@ export class AdversaryCard extends MarkdownRenderChild {
             content.createEl('hr')
         }
 
-        for (let a = 0; a < this.adv.count!; a++) {
-            if (a != 0) content.createEl('hr');
-            this.createStatBar(content, a);
+        for (let index = 0; index < this.adv.count!; index++) {
+            if (index != 0) content.createEl('hr');
+            this.createStatBar(content, index);
         }
 
         const data = this.plugin.state.cards?.[this.adv.id!]?.color;
