@@ -76,7 +76,7 @@ export function reviver(key: any, value: any): any {
         if (typeof value === "number") return [value];
     }
     if (key == 'xp') {
-        if (typeof value === "string") return value.split(',').map((s) => s.trim());
+        if (typeof value === "string") return value.split(',').map((s) => s.trim()).filter((s) => s.length > 0);
     }
     return value;
 }

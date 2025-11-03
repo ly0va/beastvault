@@ -17,7 +17,7 @@ export default class DaggerheartPlugin extends Plugin {
         if (file) {
             const bp = this.calculateBattlePoints(file?.path);
             if (bp > 0) {
-                this.battlePoints.setText(`Battle Points: ${bp}`);
+                this.battlePoints.setText(`${bp} battle points`);
                 return;
             }
         }
@@ -52,9 +52,7 @@ export default class DaggerheartPlugin extends Plugin {
         this.state = Object.assign({}, { settings: {}, cards: {} }, await this.loadData());
         this.state.settings = Object.assign({}, DEFAULT_SETTINGS, this.state.settings);
         this.battlePoints = this.addStatusBarItem();
-        this.registerEvent(this.app.workspace.on('active-leaf-change', () => {
-            this.updateStatusBar();
-        }));
+        this.registerEvent(this.app.workspace.on('active-leaf-change', () => this.updateStatusBar()));
 
         this.registerMarkdownCodeBlockProcessor("daggerheart", (src, el, ctx) => {
             const adv = (yaml.parse(src, reviver, { strict: false }) ?? {}) as Adversary;
@@ -111,18 +109,6 @@ export default class DaggerheartPlugin extends Plugin {
             },
         });
     }
-    //         // TODO: warn if stray keys are found
-    //         // TODO: bases view
-    //         // TODO: command to insert template (empty or based on existing)
-    //         // TODO: sync frontmatter
-    //         // TODO: when reaches 0 hp, somehow reflect in render
-    //         // TODO: add ability to add and display conditions
-    //         // TODO: capitalize words "Roll, Fear, Stress, Hope, etc", CAPS the name
-    //         // TODO: `summons` field to insert summoned adversaries
-    //         // TODO: register editor suggestions to autocomplete adversary fields
-    //         // TODO: make it foldable?
-    //         // TODO: use .capitalized class for stuff
-    //         // TODO: display battle points in the tray
 
     onunload() {
         if (this.saveTimer != null) {

@@ -68,7 +68,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             header.innerHTML += this.adv.damage?.replace(DICE_PATTERN, '<span class=rollable>$&</span>') || '';
             header.createEl('br');
         }
-        header.innerHTML += this.adv.xp ? `<b>Experience:</b> ${this.adv.xp.join(', ')}<br>` : '';
+        header.innerHTML += this.adv.xp && this.adv.xp.length > 0 ? `<b>Experience:</b> ${this.adv.xp.join(', ')}<br>` : '';
         header.innerHTML += this.adv.motives ? `<b>Motives &amp; Tactics:</b> ${this.adv.motives}<br>` : '';
         header.innerHTML += this.adv.tone ? `<b>Tone &amp Feel:</b> ${this.adv.tone}<br>` : '';
         header.innerHTML += this.adv.impulses ? `<b>Impulses:</b> ${this.adv.impulses}<br>` : '';
