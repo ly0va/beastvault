@@ -161,6 +161,7 @@ export default class DaggerheartPlugin extends Plugin {
             if (!data[key]) data[key] = {};
             data = data[key]
         }
+        keys.push(lastKey)
         data[lastKey] = value;
         this.updateState();
     }
@@ -172,6 +173,7 @@ export default class DaggerheartPlugin extends Plugin {
             if (!data[key]) data[key] = {};
             data = data[key]
         }
+        keys.push(lastKey);
         return data[lastKey];
     }
 }

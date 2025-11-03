@@ -4306,6 +4306,7 @@
       {
         "name": "Summon Tormentors",
         "type": "Action",
+        "uses": 1,
         "desc": "Once per day, spend 2 Fear to summon 2d4 Tier 2 or below Minions relevant to one of the PC's personal nightmares. They appear at Close range relative to that PC."
       },
       {
