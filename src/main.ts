@@ -166,7 +166,7 @@ export default class DaggerheartPlugin extends Plugin {
         this.updateState();
     }
 
-    getCardState(keys: (string | number)[]): string | number {
+    getCardState(keys: (string | number)[]): number | undefined {
         let data: Record<any, any> = this.state.cards;
         const lastKey = keys.pop()!;
         for (const key of keys) {

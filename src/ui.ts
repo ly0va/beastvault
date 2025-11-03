@@ -10,7 +10,7 @@ type Feature = {
     type?: string;
     desc?: string;
     uses?: number;
-    tokens?: number;
+    // tokens?: number;
     flavor?: string;
     // TODO: cost?
 }
@@ -30,17 +30,17 @@ export type Adversary = {
     impulses?: string;
     adversaries?: string;
 
-    hp?: number;
-    stress?: number;
-    thresholds?: number[];
+    hp: number;
+    stress: number;
+    thresholds: number[];
     attack?: string;
-    xp?: string[];
+    xp: string[];
     motives?: string;
     desc?: string;
     source?: string;
-    features?: Feature[]
-    count?: number;
-    id?: string;
+    features: Feature[]
+    count: number;
+    id: string;
     // TODO:
     // syncProperties?: boolean
 };
@@ -68,15 +68,24 @@ export class AdversaryModal extends SuggestModal<Adversary> {
 }
 
 export class AdversaryCard extends MarkdownRenderChild {
+    public adv: Adversary;
+
     constructor(
         private container: HTMLElement,
-        public adv: Adversary,
+        adv: Partial<Adversary>,
         private plugin: DaggerheartPlugin
     ) {
         super(container);
-        this.adv.id ||= `${this.plugin.app.workspace.getActiveFile()?.path}::${this.adv.name || ''}`;
-        this.adv.count ??= 1;
-        this.adv.features ??= [];
+        this.adv = {
+            id: `${this.plugin.app.workspace.getActiveFile()?.path}::${adv.name || ''}`,
+            hp: 0,
+            stress: 0,
+            count: 1,
+            xp: [],
+            thresholds: [],
+            features: [],
+            ...adv,
+        }
     }
 
     createTitle(card: HTMLElement) {
@@ -109,7 +118,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             header.innerHTML += this.adv.damage?.replace(DICE_PATTERN, '<span class=rollable>$&</span>') || '';
             header.createEl('br');
         }
-        header.innerHTML += this.adv.xp && this.adv.xp.length > 0 ? `<b>Experience:</b> ${this.adv.xp.join(', ')}<br>` : '';
+        header.innerHTML += this.adv.xp.length > 0 ? `<b>Experience:</b> ${this.adv.xp.join(', ')}<br>` : '';
         header.innerHTML += this.adv.motives ? `<b>Motives &amp; Tactics:</b> ${this.adv.motives}<br>` : '';
         header.innerHTML += this.adv.tone ? `<b>Tone &amp Feel:</b> ${this.adv.tone}<br>` : '';
         header.innerHTML += this.adv.impulses ? `<b>Impulses:</b> ${this.adv.impulses}<br>` : '';
@@ -123,7 +132,7 @@ export class AdversaryCard extends MarkdownRenderChild {
         paragraph.innerHTML += feature.type ? `${feature.type}` : '';
         paragraph.innerHTML += feature.type || feature.name ? `<br>` : '';
         if (this.adv.count == 1) {
-            this.createStatSlots(paragraph, 'Uses', feature.uses || 0, [this.adv.id!, 'stats', 0, 'uses', index]);
+            this.createStatSlots(paragraph, 'Uses', feature.uses || 0, [this.adv.id, 'stats', 0, 'uses', index]);
         }
         if (feature.desc) {
             let desc = marked.parse(feature.desc, { async: false })
@@ -141,7 +150,7 @@ export class AdversaryCard extends MarkdownRenderChild {
 
     createStatSlots(statBar: HTMLElement, name: string, stat: number, keys: (string | number)[]) {
         const slots: HTMLInputElement[] = []
-        const marked = this.plugin.getCardState(keys) as number;
+        const marked = this.plugin.getCardState(keys) ?? 0;
         if (stat > 0) {
             statBar.createEl('span', { text: `${name}: ${stat} `, cls: "muted" });
             for (let i = 0; i < stat; i++) {
@@ -164,7 +173,7 @@ export class AdversaryCard extends MarkdownRenderChild {
 
     createThresholdButtons(content: HTMLElement) {
         let minor, major, severe, massive;
-        if (this.adv.thresholds != null && this.adv.thresholds.length > 0) {
+        if (this.adv.thresholds.length > 0) {
             const thresholds = content.createEl('p', { cls: 'daggerheart-thresholds' });
             minor = thresholds.createEl('button', { text: 'MINOR' });
             thresholds.createEl('span', { text: ` ${this.adv.thresholds[0]} ` });
@@ -184,17 +193,34 @@ export class AdversaryCard extends MarkdownRenderChild {
     createStatBar(content: HTMLElement, index: number) {
         const statBar = content.createEl('p');
         const [minor, major, severe, massive] = this.createThresholdButtons(statBar);
-        const hpSlots = this.createStatSlots(statBar, 'HP', this.adv.hp || 0, [this.adv.id!, 'stats', index, 'hp']);
-        this.createStatSlots(statBar, 'Stress', this.adv.stress || 0, [this.adv.id!, 'stats', index, 'stress']);
+        const hpSlots = this.createStatSlots(statBar, 'HP', this.adv.hp, [this.adv.id, 'stats', index, 'hp']);
+        this.createStatSlots(statBar, 'Stress', this.adv.stress, [this.adv.id, 'stats', index, 'stress']);
 
-        if (this.adv.count! > 1) {
-            for (const [featureIndex, feature] of this.adv.features!.entries()) {
+        if (this.adv.count > 1) {
+            for (const [featureIndex, feature] of this.adv.features.entries()) {
                 const uses = feature.uses || 0;
                 const name = feature.name || 'Unnamed feature uses';
                 if (uses != 0) {
-                    this.createStatSlots(statBar, name, uses, [this.adv.id!, 'stats', index, 'uses', featureIndex]);
+                    this.createStatSlots(statBar, name, uses, [this.adv.id, 'stats', index, 'uses', featureIndex]);
                 }
             }
+        }
+
+        let hordeSize: any;
+        const match = this.adv.type?.match(/^horde\s+\((\d+)\/hp\)$/i);
+        if (match && this.adv.hp > 0) {
+            hordeSize = statBar.createEl('span', { cls: "muted" });
+            hordeSize.update = () => {
+                const size = parseInt(match[1]);
+                const hp = this.plugin.getCardState([this.adv.id, 'stats', index, 'hp']) ?? 0;
+                const currentHP = this.adv.hp - hp;
+                hordeSize!.innerText = `Horde size: ${size * currentHP}`;
+            };
+            hordeSize.update();
+            statBar.addEventListener('input', (event) => {
+                if (!hpSlots.contains(event.target as HTMLInputElement)) return;
+                hordeSize?.update();
+            })
         }
 
         const slotMarker = (x: number) => (event: any) => {
@@ -209,7 +235,8 @@ export class AdversaryCard extends MarkdownRenderChild {
                 }
                 if (slot.checked) marked++;
             }
-            this.plugin.updateCard([this.adv.id!, 'stats', index, 'hp'], marked)
+            this.plugin.updateCard([this.adv.id, 'stats', index, 'hp'], marked)
+            hordeSize?.update();
         };
 
         minor?.addEventListener('click', slotMarker(1));
@@ -253,9 +280,8 @@ export class AdversaryCard extends MarkdownRenderChild {
             this.createStatBar(content, index);
         }
 
-        const data = this.plugin.state.cards?.[this.adv.id!]?.color;
+        const data = this.plugin.state.cards?.[this.adv.id]?.color;
         const defaultColor = data || this.plugin.state.settings.defaultColor;
-        let colorpicker: HTMLInputElement;
 
         const applyColor = (color: string) => {
             card.style.setProperty('--callout-color', hexToRgb(color));
@@ -266,10 +292,10 @@ export class AdversaryCard extends MarkdownRenderChild {
         applyColor(defaultColor);
 
         if (this.plugin.state.settings.showColorPicker) {
-            colorpicker = card.createEl('input', { type: 'color', value: defaultColor, cls: 'corner' });
+            const colorpicker = card.createEl('input', { type: 'color', value: defaultColor, cls: 'corner' });
             colorpicker.addEventListener('input', () => {
                 applyColor(colorpicker.value);
-                this.plugin.updateCard([this.adv.id!, 'color'], colorpicker.value);
+                this.plugin.updateCard([this.adv.id, 'color'], colorpicker.value);
             })
         }
     }
