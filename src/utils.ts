@@ -1,16 +1,9 @@
-import type { Adversary, PluginSettings } from './types';
+import type { Adversary } from './ui';
 
 export const ADV_LIBRARY: Adversary[] = require('../data/adversaries.json');
 export const ENV_LIBRARY: Adversary[] = require('../data/environments.json');
 
-export const DEFAULT_SETTINGS: PluginSettings = {
-    showColorPicker: true,
-    showMassiveThreshold: false,
-    defaultColor: '#8A5CF5',
-}
-
-export const ADV_TEMPLATE = `
-\`\`\`daggerheart
+export const ADV_TEMPLATE = `\`\`\`daggerheart
 name:
 tier:
 type:
@@ -37,8 +30,7 @@ count:
 \`\`\`
 `
 
-export const ENV_TEMPLATE = `
-\`\`\`daggerheart
+export const ENV_TEMPLATE = `\`\`\`daggerheart
 name:
 tier:
 type:

@@ -828,6 +828,7 @@
       {
         "name": "Consume Kindling",
         "type": "Reaction",
+        "uses": 3,
         "desc": "Three times per scene, when the Elemental moves onto objects that are highly flammable, consume them to clear a HP or a Stress."
       },
       {
@@ -1063,6 +1064,7 @@
       {
         "name": "Guards, Seize Them!",
         "type": "Action",
+        "uses": 1,
         "desc": "Once per scene, mark a Stress to summon 1d4 Bladed Guards, who appear at Far range to enforce the Noble's will."
       },
       {
@@ -1098,6 +1100,7 @@
       {
         "name": "Reinforcements",
         "type": "Action",
+        "uses": 1,
         "desc": "Once per scene, mark a Stress to summon a Pirate Raiders Horde, which appears at Far range."
       },
       {
@@ -1525,6 +1528,7 @@
       {
         "name": "Adrenaline Burst",
         "type": "Action",
+        "uses": 1,
         "desc": "Once per scene, spend a Fear to clear 2 HP and 2 Stress."
       },
       {
@@ -2042,6 +2046,7 @@
       {
         "name": "Fear Is Fuel",
         "type": "Reaction",
+        "uses": 2,
         "desc": "Twice per scene, when a PC rolls a failure with Fear, clear a Stress."
       }
     ]
@@ -2266,6 +2271,7 @@
       {
         "name": "Deadly Companion",
         "type": "Action",
+        "uses": 2,
         "desc": "Twice per scene, summon a Bear, Dire Wolf, or similar Tier 1 animal adversary under the Beastmaster's control. The adversary appears at Close range and is immediately spotlighted."
       }
     ]
@@ -2555,6 +2561,7 @@
       {
         "name": "The Best Muscle Money Can Buy",
         "type": "Action",
+        "uses": 1,
         "desc": "Once per scene, mark a Stress to summon 1d4+1 Tier 1 adversaries, who appear at Far range, to enforce the Baron's will."
       }
     ]
@@ -2705,6 +2712,7 @@
       {
         "name": "Fallen Hounds",
         "type": "Reaction",
+        "uses": 1,
         "desc": "Once per scene, when the Secret-Keeper marks 2 or more HP, you can mark a Stress to summon a Demonic Hound Pack, which appears at Close range and is immediately spotlighted."
       }
     ]
@@ -3534,6 +3542,7 @@
       {
         "name": "Crownsguard",
         "type": "Action",
+        "uses": 1,
         "desc": "Once per scene, mark a Stress to summon six Tier 3 Minions, who appear at Close range to enforce the Monarch's will."
       },
       {
@@ -4211,6 +4220,7 @@
       {
         "name": "We Are One",
         "type": "Action",
+        "uses": 1,
         "desc": "Once per scene, spend a Fear to spotlight all other adversaries within Far range. Attacks they make while spotlighted in this way deal half damage."
       }
     ]

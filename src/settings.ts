@@ -1,6 +1,20 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
 import DaggerheartPlugin from './main';
 
+export type PluginSettings = {
+    defaultColor: string;
+    showColorPicker: boolean;
+    showMassiveThreshold: boolean;
+    numberOfPCs: number;
+}
+
+export const DEFAULT_SETTINGS: PluginSettings = {
+    showColorPicker: true,
+    showMassiveThreshold: false,
+    defaultColor: '#8A5CF5',
+    numberOfPCs: 4
+}
+
 export class SettingTab extends PluginSettingTab {
     constructor(app: App, private plugin: DaggerheartPlugin) {
         super(app, plugin);
@@ -38,6 +52,19 @@ export class SettingTab extends PluginSettingTab {
                     this.plugin.state.settings.showMassiveThreshold = value;
                     this.plugin.updateState();
                     this.plugin.renderAll();
+                }));
+
+        new Setting(containerEl)
+            .setName('Number of PCs')
+            .setDesc('Used for Battle Boint calculation in the status bar')
+            .addSlider(slider => slider
+                .setLimits(0, 10, 1)
+                .setValue(this.plugin.state.settings.numberOfPCs)
+                .setDynamicTooltip()
+                .onChange((value) => {
+                    this.plugin.state.settings.numberOfPCs = value;
+                    this.plugin.updateState();
+                    this.plugin.updateStatusBar();
                 }));
     }
 }

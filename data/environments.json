@@ -665,6 +665,7 @@
       {
         "name": "Aura of Death",
         "type": "Action",
+        "uses": 1,
         "desc": "Once per scene, roll a d4. Each undead within Far range of the Necromancer can clear HP and Stress equal to the result rolled. The undead can choose how that total number is divided between HP and Stress.",
         "flavor": "How does the power manifest? Do the undead look more lifelike or, paradoxically, are they more decayed but vigorous?"
       },

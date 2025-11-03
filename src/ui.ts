@@ -1,10 +1,50 @@
 import { App, Editor, SuggestModal, Notice, MarkdownRenderChild } from 'obsidian';
 import { roll } from '@airjp73/dice-notation';
 import { marked } from 'marked';
-import type { Adversary, Feature } from './types';
 import DaggerheartPlugin from './main';
 import { hexToRgb, DICE_PATTERN } from './utils';
 import * as yaml from 'yaml';
+import { features } from 'process';
+
+type Feature = {
+    name?: string;
+    type?: string;
+    desc?: string;
+    uses?: number;
+    tokens?: number;
+    flavor?: string;
+    // TODO: cost?
+}
+
+export type Adversary = {
+    name?: string;
+    tier?: number;
+    type?: string;
+    difficulty?: string;
+
+    weapon?: string;
+    range?: string;
+    damage?: string;
+
+    // these are for environments
+    tone?: string;
+    impulses?: string;
+    adversaries?: string;
+
+    hp?: number;
+    stress?: number;
+    thresholds?: number[];
+    attack?: string;
+    xp?: string[];
+    motives?: string;
+    desc?: string;
+    source?: string;
+    features?: Feature[]
+    count?: number;
+    id?: string;
+    // TODO:
+    // syncProperties?: boolean
+};
 
 export class AdversaryModal extends SuggestModal<Adversary> {
     constructor(app: App, private editor: Editor, private library: Adversary[]) {
@@ -36,6 +76,8 @@ export class AdversaryCard extends MarkdownRenderChild {
     ) {
         super(container);
         this.adv.id ||= `${this.plugin.app.workspace.getActiveFile()?.path}::${this.adv.name || ''}`;
+        this.adv.count ??= 1;
+        this.adv.features ??= [];
     }
 
     createTitle(card: HTMLElement) {
@@ -75,16 +117,18 @@ export class AdversaryCard extends MarkdownRenderChild {
         header.innerHTML += this.adv.adversaries ? `<b>Potential Adversaries:</b> ${this.adv.adversaries}<br>` : '';
     }
 
-    createFeature(content: HTMLElement, feature: Feature) {
+    createFeature(content: HTMLElement, index: number, feature: Feature) {
         const paragraph = content.createEl('p', { cls: 'smaller' })
         paragraph.innerHTML += feature.name ? `<b>${feature.name}</b>` : '';
         paragraph.innerHTML += feature.type && feature.name ? ` - ` : '';
         paragraph.innerHTML += feature.type ? `${feature.type}` : '';
         paragraph.innerHTML += feature.type || feature.name ? `<br>` : '';
-        const tokensMarked = this.plugin.state.cards?.[this.adv.id!]?.tokens?.[feature.name || ''] || 0;
-        this.createStatSlots(paragraph, 'Tokens', feature.tokens || 0, tokensMarked, (marked) =>
-            this.plugin.updateCardFeatureTokens(this.adv.id!, feature.name || '', marked)
-        );
+        if (this.adv.count == 1) {
+            const usesMarked = this.plugin.state.cards?.[this.adv.id!]?.stats?.[0]?.uses?.[index] ?? 0;
+            this.createStatSlots(paragraph, 'Uses', feature.uses || 0, usesMarked, (marked) =>
+                this.plugin.updateCard([this.adv.id!, 'stats', 0, 'uses', index], marked)
+            );
+        }
         if (feature.desc) {
             let desc = marked.parse(feature.desc, { async: false })
                 .replace(/<p>|<\/p>/g, "")
@@ -144,12 +188,23 @@ export class AdversaryCard extends MarkdownRenderChild {
         const statBar = content.createEl('p');
         const [minor, major, severe, massive] = this.createThresholdButtons(statBar);
         const currentStats = this.plugin.state.cards?.[this.adv.id!]?.stats?.[index];
-        const hpSlots: HTMLInputElement[] = this.createStatSlots(statBar, 'HP', this.adv.hp || 0, currentStats?.hp || 0, (marked) =>
-            this.plugin.updateCardStats(this.adv.id!, index, { hp: marked })
+        const hpSlots = this.createStatSlots(statBar, 'HP', this.adv.hp || 0, currentStats?.hp || 0, (marked) =>
+            this.plugin.updateCard([this.adv.id!, 'stats', index, 'hp'], marked)
         );
-        const stressSlots: HTMLInputElement[] = this.createStatSlots(statBar, 'Stress', this.adv.stress || 0, currentStats?.stress || 0, (marked) =>
-            this.plugin.updateCardStats(this.adv.id!, index, { stress: marked })
+        this.createStatSlots(statBar, 'Stress', this.adv.stress || 0, currentStats?.stress || 0, (marked) =>
+            this.plugin.updateCard([this.adv.id!, 'stats', index, 'stress'], marked)
         );
+
+        if ((this.adv.count || 0) > 1) {
+            for (const [featureIndex, feature] of this.adv.features!.entries()) {
+                if ((feature.uses || 0) != 0) {
+                    const usesMarked = this.plugin.state.cards?.[this.adv.id!]?.stats?.[index]?.uses?.[featureIndex] ?? 0;
+                    this.createStatSlots(statBar, feature.name || 'Unnamed feature uses', feature.uses || 0, usesMarked, (marked) =>
+                        this.plugin.updateCard([this.adv.id!, 'stats', index, 'uses', featureIndex], marked)
+                    );
+                }
+            }
+        }
 
         const slotMarker = (x: number) => (event: any) => {
             const slots = event.altKey ? hpSlots.toReversed() : hpSlots;
@@ -163,15 +218,8 @@ export class AdversaryCard extends MarkdownRenderChild {
                 }
                 if (slot.checked) marked++;
             }
-            this.plugin.updateCardStats(this.adv.id!, index, { hp: marked });
+            this.plugin.updateCard([this.adv.id!, 'stats', index, 'hp'], marked)
         };
-
-        statBar.addEventListener('input', (event) => {
-            if (![...hpSlots, ...stressSlots].contains(event.target as HTMLInputElement)) return;
-            let markedHp = hpSlots.reduce((sum, slot) => sum + (slot.checked ? 1 : 0), 0);
-            let markedStress = stressSlots.reduce((sum, slot) => sum + (slot.checked ? 1 : 0), 0);
-            this.plugin.updateCardStats(this.adv.id!, index, { hp: markedHp, stress: markedStress });
-        });
 
         minor?.addEventListener('click', slotMarker(1));
         major?.addEventListener('click', slotMarker(2));
@@ -195,22 +243,21 @@ export class AdversaryCard extends MarkdownRenderChild {
 
         const content = card.createDiv({ cls: 'callout-content' });
         this.createHeader(content);
-        this.adv.features ??= [];
 
         const anyStats = this.adv.hp || this.adv.stress || this.adv.thresholds;
-        if (this.adv.features.length > 0 || anyStats) {
+        if (this.adv.features!.length > 0 || anyStats) {
             content.createEl('hr');
         }
 
-        for (const feature of this.adv.features) {
-            this.createFeature(content, feature);
+        for (const [index, feature] of this.adv.features!.entries()) {
+            this.createFeature(content, index, feature);
         }
 
-        if (this.adv.features.length > 0 && anyStats) {
+        if (this.adv.features!.length > 0 && anyStats) {
             content.createEl('hr')
         }
 
-        for (let a = 0; a < (this.adv.count ?? 1); a++) {
+        for (let a = 0; a < this.adv.count!; a++) {
             if (a != 0) content.createEl('hr');
             this.createStatBar(content, a);
         }
@@ -231,7 +278,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             colorpicker = card.createEl('input', { type: 'color', value: defaultColor, cls: 'corner' });
             colorpicker.addEventListener('input', () => {
                 applyColor(colorpicker.value);
-                this.plugin.updateCardColor(this.adv.id!, colorpicker.value);
+                this.plugin.updateCard([this.adv.id!, 'color'], colorpicker.value);
             })
         }
     }

@@ -1,9 +1,22 @@
 import { Editor, Plugin } from 'obsidian';
 import * as yaml from 'yaml';
-import type { Adversary, PluginState } from './types';
-import { SettingTab } from './settings';
-import { ADV_LIBRARY, ENV_LIBRARY, DEFAULT_SETTINGS, ADV_TEMPLATE, ENV_TEMPLATE, reviver } from './utils';
-import { AdversaryCard, AdversaryModal } from './ui';
+import { SettingTab, type PluginSettings, DEFAULT_SETTINGS } from './settings';
+import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, reviver } from './utils';
+import { AdversaryCard, AdversaryModal, type Adversary } from './ui';
+
+export type PluginState = {
+    settings: PluginSettings;
+    cards: {
+        [id: string]: {
+            color?: string;
+            stats?: {
+                hp?: number;
+                stress?: number;
+                uses?: { [featureName: string]: number }
+            }[];
+        }
+    }
+}
 
 export default class DaggerheartPlugin extends Plugin {
     activeBlocks: Map<AdversaryCard, string> = new Map();
@@ -15,9 +28,11 @@ export default class DaggerheartPlugin extends Plugin {
     updateStatusBar() {
         const file = this.app.workspace.getActiveFile();
         if (file) {
-            const bp = this.calculateBattlePoints(file?.path);
+            const bp = Math.ceil(this.calculateBattlePoints(file?.path));
             if (bp > 0) {
                 this.battlePoints.setText(`${bp} battle points`);
+                // TODO: add tooltip with base battle points for set number of PCs
+                // .title is not pretty :(
                 return;
             }
         }
@@ -36,7 +51,7 @@ export default class DaggerheartPlugin extends Plugin {
             'standard': 2,
             'support': 1,
             'social': 1,
-            'minion': 0.25, // TODO: do this depending on number of PCs from the settings
+            'minion': 1 / this.state.settings.numberOfPCs,
         }
         for (const [block, path] of this.activeBlocks) {
             if (path !== filePath) continue;
@@ -139,28 +154,14 @@ export default class DaggerheartPlugin extends Plugin {
         await this.saving;
     }
 
-    updateCardStats(id: string, index: number, stats: { hp?: number; stress?: number }) {
-        const data = this.state;
-        if (!data.cards[id]) data.cards[id] = {};
-        if (!data.cards[id].stats) data.cards[id].stats = [];
-        if (!data.cards[id].stats![index]) data.cards[id].stats![index] = {};
-        if (stats.hp != null) data.cards[id].stats![index].hp = stats.hp;
-        if (stats.stress != null) data.cards[id].stats![index].stress = stats.stress;
-        this.updateState();
-    }
-
-    updateCardColor(id: string, color: string) {
-        const data = this.state;
-        if (!data.cards[id]) data.cards[id] = {};
-        data.cards[id].color = color;
-        this.updateState();
-    }
-
-    updateCardFeatureTokens(id: string, featureName: string, tokens: number) {
-        const data = this.state;
-        if (!data.cards[id]) data.cards[id] = {};
-        if (!data.cards[id].tokens) data.cards[id].tokens = {};
-        data.cards[id].tokens![featureName] = tokens;
+    updateCard(keys: (string | number)[], value: string | number) {
+        let data: Record<any, any> = this.state.cards;
+        const lastKey = keys.pop()!;
+        for (const key of keys) {
+            if (!data[key]) data[key] = {};
+            data = data[key]
+        }
+        data[lastKey] = value;
         this.updateState();
     }
 }
