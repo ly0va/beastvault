@@ -17,7 +17,7 @@
       {
         "name": "Barbed Vines",
         "type": "Action",
-        "desc": "Pick a point within the grove. All targets within Very Close range of that point must succeed on an Agility Reaction Roll or take 1d8+3 physical damage and become Restrained by barbed vines. Restrained lasts until they’re freed with a successful Finesse or Strength roll or by dealing at least 6 damage to the vines.",
+        "desc": "Pick a point within the grove. All targets within Very Close range of that point must succeed on an Agility Reaction Roll or take 1d8+3 physical damage and become Restrained by barbed vines. Restrained lasts until they're freed with a successful Finesse or Strength roll or by dealing at least 6 damage to the vines.",
         "flavor": "How many vines are there? Where do they grab you? Do they pull you down or lift you off the ground?"
       },
       {
@@ -47,7 +47,7 @@
         "name": "Relative Strength",
         "type": "Passive",
         "desc": "The Difficulty of this environment equals that of the adversary with the highest Difficulty.",
-        "flavor": "Who cues the ambush? What makes it clear they’re in charge?"
+        "flavor": "Who cues the ambush? What makes it clear they're in charge?"
       },
       {
         "name": "Surprise!",
@@ -104,14 +104,14 @@
       {
         "name": "Sticky Fingers",
         "type": "Action",
-        "desc": "A thief tries to steal something from a PC. The PC must succeed on an Instinct Roll to notice the thief or lose an item of the GM’s choice as the thief escapes to a Close distance. To retrieve the stolen item, the PCs must complete a Progress Countdown (6) to chase down the thief before the thief completes a Consequence Countdown (4) and escapes to their hideout.",
-        "flavor": "What drove this person to pickpocketing? Where is the thief’s hideout and how has it avoided notice?"
+        "desc": "A thief tries to steal something from a PC. The PC must succeed on an Instinct Roll to notice the thief or lose an item of the GM's choice as the thief escapes to a Close distance. To retrieve the stolen item, the PCs must complete a Progress Countdown (6) to chase down the thief before the thief completes a Consequence Countdown (4) and escapes to their hideout.",
+        "flavor": "What drove this person to pickpocketing? Where is the thief's hideout and how has it avoided notice?"
       },
       {
         "name": "Crowd Control",
         "type": "Reaction",
         "desc": "When one of the PCs splits from the group, the crowds shift and cut them off from the party.",
-        "flavor": "Where does the crowd’s movement carry them? How do they feel about being alone but surrounded?"
+        "flavor": "Where does the crowd's movement carry them? How do they feel about being alone but surrounded?"
       }
     ]
   },
@@ -139,7 +139,7 @@
       {
         "name": "Fall",
         "type": "Action",
-        "desc": "Spend a Fear to have a PC’s handhold fail, plummeting them toward the ground. If they aren’t saved on the next action, they must make a roll; tick up the countdown by 1, and they take 1d12 physical damage if the countdown is between 8 and 12, 2d12 between 4 and 7, and 3d12 at 3 or lower.",
+        "desc": "Spend a Fear to have a PC's handhold fail, plummeting them toward the ground. If they aren't saved on the next action, they must make a roll; tick up the countdown by 1, and they take 1d12 physical damage if the countdown is between 8 and 12, 2d12 between 4 and 7, and 3d12 at 3 or lower.",
         "flavor": "How can you tell how many others have fallen here before? What lives in these walls that might try to scare adventurers into falling for an easy meal?"
       }
     ]
@@ -154,27 +154,27 @@
     "source": "corebook",
     "features": [
       {
-        "name": "What’s the Talk of the Town?",
+        "name": "What's the Talk of the Town?",
         "type": "Passive",
-        "desc": "A PC can ask the bartender, staff, or patrons about local events, rumors, and potential work with a Presence Roll. On a success, they can pick two of the below details to learn—or three if they critically succeed. On a failure, they can pick one and mark a Stress as the local carries on about something irrelevant.\n  - A fascinating rumor with a connection to a PC’s background\n  - A promising job for the party involving a nearby threat or situation\n  - Local folklore that relates to something they’ve seen\n  - Town gossip that hints at a community problem",
+        "desc": "A PC can ask the bartender, staff, or patrons about local events, rumors, and potential work with a Presence Roll. On a success, they can pick two of the below details to learn—or three if they critically succeed. On a failure, they can pick one and mark a Stress as the local carries on about something irrelevant.\n  - A fascinating rumor with a connection to a PC's background\n  - A promising job for the party involving a nearby threat or situation\n  - Local folklore that relates to something they've seen\n  - Town gossip that hints at a community problem",
         "flavor": "Who has what kind of information? What gossip do the locals start spreading about the PCs?"
       },
       {
         "name": "Sing for Your Supper",
         "type": "Passive",
         "desc": "A PC can perform one time for the guests by making a Presence Roll. On a success, they earn 1d4 handfuls of gold (2d4 if they critically succeed). On a failure, they mark a Stress.",
-        "flavor": "What piece do you perform? What does that piece mean to you? When’s the last time you performed it for a crowd?"
+        "flavor": "What piece do you perform? What does that piece mean to you? When's the last time you performed it for a crowd?"
       },
       {
         "name": "Mysterious Stranger",
         "type": "Action",
         "desc": "Reveal a stranger concealing their identity, lurking in a shaded booth.",
-        "flavor": "What do they want? What’s their impression of the PCs? What mannerisms or accessories do they have?"
+        "flavor": "What do they want? What's their impression of the PCs? What mannerisms or accessories do they have?"
       },
       {
         "name": "Someone Comes to Town",
         "type": "Action",
-        "desc": "Introduce a significant NPC who wants to hire the party for something or who relates to a PC’s background.",
+        "desc": "Introduce a significant NPC who wants to hire the party for something or who relates to a PC's background.",
         "flavor": "Did they know the PCs were here? What do they want in this town?"
       },
       {
@@ -197,7 +197,7 @@
       {
         "name": "Rumors Abound",
         "type": "Passive",
-        "desc": "Gossip is the fastest-traveling currency in the realm. A PC can inquire about major events by making a Presence Roll. What they learn depends on the outcome of their roll, based on the following criteria:\n  - Critical Success: Learn about two major events. The PC can ask one follow-up question about one of the rumors and get a truthful (if not always complete) answer.\n  - Success with Hope: Learn about two events, at least one of which is relevant to the character’s background.\n  - Success with Fear: Learn an alarming rumor related to the character’s background.\n  - Any Failure: The locals respond poorly to their inquiries. The PC must mark a Stress to learn one relevant rumor.",
+        "desc": "Gossip is the fastest-traveling currency in the realm. A PC can inquire about major events by making a Presence Roll. What they learn depends on the outcome of their roll, based on the following criteria:\n  - Critical Success: Learn about two major events. The PC can ask one follow-up question about one of the rumors and get a truthful (if not always complete) answer.\n  - Success with Hope: Learn about two events, at least one of which is relevant to the character's background.\n  - Success with Fear: Learn an alarming rumor related to the character's background.\n  - Any Failure: The locals respond poorly to their inquiries. The PC must mark a Stress to learn one relevant rumor.",
         "flavor": "What news do the PCs hear that they could pass along to curious travelers? What do the locals think about these events?"
       },
       {
@@ -213,7 +213,7 @@
         "flavor": "Which PC has a connection to one of the rival party members? Do they approach the PC first or do they wait for the PC to move?"
       },
       {
-        "name": "It’d Be a Shame If Something Happened to Your Store",
+        "name": "It'd Be a Shame If Something Happened to Your Store",
         "type": "Action",
         "desc": "The PCs witness as agents of a local crime boss shake down a general goods store.",
         "flavor": "What trouble does it cause if the PCs intervene?"
@@ -267,25 +267,25 @@
       {
         "name": "Desecrated Ground",
         "type": "Passive",
-        "desc": "Cultists dedicated this place to the Fallen Gods, and their foul influence seeps into it. Reduce the PCs’ Hope Die to a d10 while in this environment. The desecration can be removed with a Progress Countdown (6).",
+        "desc": "Cultists dedicated this place to the Fallen Gods, and their foul influence seeps into it. Reduce the PCs' Hope Die to a d10 while in this environment. The desecration can be removed with a Progress Countdown (6).",
         "flavor": "How do the PCs first notice that something is wrong about this place? What fears resurface while hope is kept at bay?"
       },
       {
         "name": "Blasphemous Might",
         "type": "Action",
-        "desc": "A portion of the ritual’s power is diverted into a cult member to fight off interlopers. Choose one adversary to become Imbued with terrible magic until the scene ends or they’re defeated. An Imbued adversary immediately takes the spotlight and gains one of the following benefits, or all three if you spend a Fear:\n  - They gain advantage on all attacks.\n  - They deal an extra 1d10 damage on a successful attack.\n  - They gain the following feature:\n    Relentless (2) - Passive: This adversary can be spotlighted multiple times per GM turn. Spend Fear as usual to spotlight them.",
+        "desc": "A portion of the ritual's power is diverted into a cult member to fight off interlopers. Choose one adversary to become Imbued with terrible magic until the scene ends or they're defeated. An Imbued adversary immediately takes the spotlight and gains one of the following benefits, or all three if you spend a Fear:\n  - They gain advantage on all attacks.\n  - They deal an extra 1d10 damage on a successful attack.\n  - They gain the following feature:\n    Relentless (2) - Passive: This adversary can be spotlighted multiple times per GM turn. Spend Fear as usual to spotlight them.",
         "flavor": "How does the enemy change in appearance? What fears do their blows bring to the surface?"
       },
       {
         "name": "The Summoning",
         "type": "Reaction",
-        "desc": "Countdown (6). When the PCs enter the scene or the cult begins the ritual to summon a demon, activate the countdown. Designate one adversary to lead the ritual. The countdown ticks down when a PC rolls with Fear. When it triggers, summon a Minor Demon within Very Close range of the ritual’s leader. If the leader is defeated, the countdown ends with no effect as the ritual fails.",
+        "desc": "Countdown (6). When the PCs enter the scene or the cult begins the ritual to summon a demon, activate the countdown. Designate one adversary to lead the ritual. The countdown ticks down when a PC rolls with Fear. When it triggers, summon a Minor Demon within Very Close range of the ritual's leader. If the leader is defeated, the countdown ends with no effect as the ritual fails.",
         "flavor": "What will the cult do with this leashed demon if they succeed? What will they try to summon next?"
       },
       {
         "name": "Complete the Ritual",
         "type": "Reaction",
-        "desc": "If the ritual’s leader is targeted by an attack or spell, an ally within Very Close range of them can mark a Stress to be targeted by that attack or spell instead.",
+        "desc": "If the ritual's leader is targeted by an attack or spell, an ally within Very Close range of them can mark a Stress to be targeted by that attack or spell instead.",
         "flavor": "What does it feel like to see such devotion turned to the pursuit of fear and domination?"
       }
     ]
@@ -308,7 +308,7 @@
       {
         "name": "Divine Guidance",
         "type": "Passive",
-        "desc": "A PC who prays to a deity while in the Hallowed Temple can make an Instinct Roll to receive answers. If the god they beseech isn’t welcome in this temple, this roll is made with disadvantage.\n  - Critical Success: The PC gains clear information. Additionally, they gain 1d4 Hope, which can be distributed between the party if they share the vision and guidance they received.\n  - Success with Hope: The PC receives clear information.\n  - Success with Fear: The PC receives brief flashes of insight and an emotional impression conveying an answer.\n  - Any Failure: The PC receives only vague flashes. They can mark a Stress to receive one clear image without context.",
+        "desc": "A PC who prays to a deity while in the Hallowed Temple can make an Instinct Roll to receive answers. If the god they beseech isn't welcome in this temple, this roll is made with disadvantage.\n  - Critical Success: The PC gains clear information. Additionally, they gain 1d4 Hope, which can be distributed between the party if they share the vision and guidance they received.\n  - Success with Hope: The PC receives clear information.\n  - Success with Fear: The PC receives brief flashes of insight and an emotional impression conveying an answer.\n  - Any Failure: The PC receives only vague flashes. They can mark a Stress to receive one clear image without context.",
         "flavor": "What does it feel like as you are touched by this vision? What feeling lingers after the images have passed?"
       },
       {
@@ -384,14 +384,14 @@
       {
         "name": "Raptor Nest",
         "type": "Reaction",
-        "desc": "When the PCs enter the raptors’ hunting grounds, two Giant Eagles appear at Very Far range of a chosen PC, identifying the PCs as likely prey.",
+        "desc": "When the PCs enter the raptors' hunting grounds, two Giant Eagles appear at Very Far range of a chosen PC, identifying the PCs as likely prey.",
         "flavor": "How long has it been since the eagles last found prey? Do they have eggs in their nest, or unfledged young?"
       },
       {
         "name": "Icy Winds",
         "type": "Reaction",
         "desc": "Countdown (Loop 4). When the PCs enter the mountain pass, activate the countdown. When it triggers, all characters traveling through the pass must succeed on a Strength Reaction Roll or mark a Stress. A PC wearing clothes appropriate for extreme cold gains advantage on these rolls.",
-        "flavor": "What parts of the PCs’ bodies go numb first? How do they try to keep warm as they press forward?"
+        "flavor": "What parts of the PCs' bodies go numb first? How do they try to keep warm as they press forward?"
       }
     ]
   },
@@ -454,7 +454,7 @@
       {
         "name": "Siege Weapons (Environment Change)",
         "type": "Action",
-        "desc": "Consequence Countdown (5). The attacking force deploys siege weapons to try to raze the defenders’ fortifications. Activate the countdown when the siege begins (for a protracted siege, make this a long-term countdown instead). When it triggers, the defenders’ fortifications have been breached and the attackers flood in. You gain 2 Fear, then shift to the Pitched Battle environment and spotlight it.",
+        "desc": "Consequence Countdown (5). The attacking force deploys siege weapons to try to raze the defenders' fortifications. Activate the countdown when the siege begins (for a protracted siege, make this a long-term countdown instead). When it triggers, the defenders' fortifications have been breached and the attackers flood in. You gain 2 Fear, then shift to the Pitched Battle environment and spotlight it.",
         "flavor": "What siege weapons are being deployed? Are they magical, mundane, or a mixture of both? What defenses must the characters overcome to storm the castle?"
       },
       {
@@ -467,7 +467,7 @@
         "name": "Collateral Damage",
         "type": "Reaction",
         "desc": "When an adversary is defeated, you can spend a Fear to have a stray attack from a siege weapon hit a point on the battlefield. All targets within Very Close range of that point must make an Agility Reaction Roll.\n  - Targets who fail take 3d8+3 physical or magic damage and must mark a Stress.\n  - Targets who succeed must mark a Stress.",
-        "flavor": "What debris is scattered by the attack? What is broken by the strike that can’t be easily mended?"
+        "flavor": "What debris is scattered by the attack? What is broken by the strike that can't be easily mended?"
       }
     ]
   },
@@ -518,7 +518,7 @@
       {
         "name": "Impossible Architecture",
         "type": "Passive",
-        "desc": "Up is down, down is right, right is a stairway. Gravity and directionality themselves are in flux, and any attempt to move through this realm is an odyssey unto itself, requiring a Progress Countdown (8). On a failure, a PC must mark a Stress in addition to the roll’s other consequences.",
+        "desc": "Up is down, down is right, right is a stairway. Gravity and directionality themselves are in flux, and any attempt to move through this realm is an odyssey unto itself, requiring a Progress Countdown (8). On a failure, a PC must mark a Stress in addition to the roll's other consequences.",
         "flavor": "What does it feel like to move in a space so alien to the Mortal Realm? What landmark or point do you fixate on to maintain your balance? What bizarre landmarks do you traverse on your journey?"
       },
       {
@@ -536,14 +536,14 @@
       {
         "name": "Outer Realms Predators",
         "type": "Action",
-        "desc": "Spend a Fear to summon an Outer Realms Abomination, an Outer Realms Corruptor, and 2d6 Outer Realms Thralls, who appear at Close range of a chosen PC in defiance of logic and causality. Immediately spotlight one of these adversaries, and you can spend an additional Fear to automatically succeed on that adversary’s standard attack.",
+        "desc": "Spend a Fear to summon an Outer Realms Abomination, an Outer Realms Corruptor, and 2d6 Outer Realms Thralls, who appear at Close range of a chosen PC in defiance of logic and causality. Immediately spotlight one of these adversaries, and you can spend an additional Fear to automatically succeed on that adversary's standard attack.",
         "flavor": "What half-consumed remnants of the shattered soul do these monstrosities cast aside in pursuit of living flesh? What jagged reflections of former personhood do you catch between moments of unquenching malice?"
       },
       {
         "name": "Disorienting Reality",
         "type": "Reaction",
         "desc": "On a result with Fear, you can ask the PC to describe which of their fears the Chaos Realm evokes as a vision of reality unmakes and reconstitutes itself to the PC. The PC loses a Hope. If it is their last Hope, you gain a Fear.",
-        "flavor": "What moment do they see? If it’s a memory, how is it usurped by this place? How hard will it be to hold on to the real memory?"
+        "flavor": "What moment do they see? If it's a memory, how is it usurped by this place? How hard will it be to hold on to the real memory?"
       }
     ]
   },
@@ -572,18 +572,18 @@
         "name": "Defiers Abound",
         "type": "Action",
         "desc": "Spend 2 Fear to summon 1d4+2 Fallen Shock Troops that appear within Close range of the Usurper to assist their divine siege. Immediately spotlight the Shock Troops to use a “Group Attack” action.",
-        "flavor": "Which High Fallen do these troops serve? Which god’s flesh do they wish to feast upon?"
+        "flavor": "Which High Fallen do these troops serve? Which god's flesh do they wish to feast upon?"
       },
       {
         "name": "Godslayer",
         "type": "Action",
         "desc": "If the Divine Siege Countdown (see “Beginning of the End”) has triggered, you can spend 3 Fear to describe the Usurper slaying one of the gods of the Hallows Above, feasting upon their power and growing stronger. The Usurper clears 2 HP. Increase their Difficulty, damage, attack modifier, or give them a new feature from the slain god.",
-        "flavor": "Which god meets their end? What are their last words? How does the Usurper’s new stolen power manifest?"
+        "flavor": "Which god meets their end? What are their last words? How does the Usurper's new stolen power manifest?"
       },
       {
         "name": "Beginning of the End",
         "type": "Reaction",
-        "desc": "When the “Final Preparations” long-term countdown triggers, the Usurper begins hammering on the gates of the Hallows themselves. Activate a Divine Siege Countdown (10). Spotlight the Usurper to describe the Usurper’s assault and tick down this countdown by 1. If the Usurper takes Major or greater damage, tick up the countdown by 1. When it triggers, the Usurper shatters the barrier between the Mortal Realm and the Hallows Above to slay the gods and take their place. You gain a Fear for each unmarked HP the Usurper has. You can immediately use the “Godslayer” feature without spending Fear to make an additional GM move.",
+        "desc": "When the “Final Preparations” long-term countdown triggers, the Usurper begins hammering on the gates of the Hallows themselves. Activate a Divine Siege Countdown (10). Spotlight the Usurper to describe the Usurper's assault and tick down this countdown by 1. If the Usurper takes Major or greater damage, tick up the countdown by 1. When it triggers, the Usurper shatters the barrier between the Mortal Realm and the Hallows Above to slay the gods and take their place. You gain a Fear for each unmarked HP the Usurper has. You can immediately use the “Godslayer” feature without spending Fear to make an additional GM move.",
         "flavor": "How does the Mortal Realm writhe as the natural order is violated? What mortals witness this blasphemy from afar?"
       },
       {
@@ -606,7 +606,7 @@
       {
         "name": "All Roads Lead Here",
         "type": "Passive",
-        "desc": "While in the Imperial Court, a PC has disadvantage on Presence Rolls made to take actions that don’t fit the imperial way of life or support the empire’s dominance.",
+        "desc": "While in the Imperial Court, a PC has disadvantage on Presence Rolls made to take actions that don't fit the imperial way of life or support the empire's dominance.",
         "flavor": "How does the way language is used make even discussing alternative ways of living difficult? What obvious benefits for loyalty create friction when you try to discuss alternatives?"
       },
       {
@@ -618,20 +618,20 @@
       {
         "name": "The Gravity of Empire",
         "type": "Action",
-        "desc": "Spend a Fear to present a PC with a golden opportunity or offer to satisfy a major goal in exchange for obeying or supporting the empire. The target must make a Presence Reaction Roll. On a failure, they must mark all their Stress or accept the offer. If they have already marked all their Stress, they must reduce their Stress track by 1d4. On a success, they must mark 1d4 Stress as they’re taxed by temptation.",
-        "flavor": "What do the PCs want so desperately they might consider throwing in with this ruthless power? How did imperial agents learn the PC’s greatest desires?"
+        "desc": "Spend a Fear to present a PC with a golden opportunity or offer to satisfy a major goal in exchange for obeying or supporting the empire. The target must make a Presence Reaction Roll. On a failure, they must mark all their Stress or accept the offer. If they have already marked all their Stress, they must reduce their Stress track by 1d4. On a success, they must mark 1d4 Stress as they're taxed by temptation.",
+        "flavor": "What do the PCs want so desperately they might consider throwing in with this ruthless power? How did imperial agents learn the PC's greatest desires?"
       },
       {
         "name": "Imperial Decree",
         "type": "Action",
-        "desc": "Spend a Fear to tick down a long-term countdown related to the empire’s agenda by 1d4. If this triggers the countdown, a proclamation related to the agenda is announced at court as the plan is executed.",
+        "desc": "Spend a Fear to tick down a long-term countdown related to the empire's agenda by 1d4. If this triggers the countdown, a proclamation related to the agenda is announced at court as the plan is executed.",
         "flavor": "What display of power or transfer of wealth was needed to expedite this plan? Whose lives were disrupted or upended to make this happen?"
       },
       {
         "name": "Eyes Everywhere",
         "type": "Reaction",
         "desc": "On a result with Fear, you can spend a Fear to have someone loyal to the empire overhear seditious talk within the court. A PC must succeed on an Instinct Reaction Roll to notice that the group has been overheard so they can try to intercept the witness before the PCs are exposed.",
-        "flavor": "How has the empire compromised this witness? Why is their first impulse to protect the empire, even if doesn’t treat them well?"
+        "flavor": "How has the empire compromised this witness? Why is their first impulse to protect the empire, even if doesn't treat them well?"
       }
     ]
   },
@@ -641,7 +641,7 @@
     "type": "Exploration",
     "difficulty": 19,
     "impulses": "Confound intruders, delve into secrets best left buried, manifest unlife, unleash a tide of undead",
-    "adversaries": "Arch-Necromancer’s Host (Perfected Zombie, Zombie Legion)",
+    "adversaries": "Arch-Necromancer's Host (Perfected Zombie, Zombie Legion)",
     "source": "corebook",
     "features": [
       {
@@ -653,7 +653,7 @@
       {
         "name": "Centuries of Knowledge",
         "type": "Passive",
-        "desc": "A PC can investigate the library and laboratory and make a Knowledge Roll to learn information related to arcana, local history, and the Necromancer’s plans.",
+        "desc": "A PC can investigate the library and laboratory and make a Knowledge Roll to learn information related to arcana, local history, and the Necromancer's plans.",
         "flavor": "What are the names of the tomes? What project is the necromancer working on and what does it communicate about their plans?"
       },
       {
@@ -672,7 +672,7 @@
         "name": "They Just Keep Coming!",
         "type": "Action",
         "desc": "Spend a Fear to summon 1d6 Rotted Zombies, two Perfected Zombies, or a Zombie Legion, who appear at Close range of a chosen PC.",
-        "flavor": "Who were these people before they became the necromancer’s pawns? What vestiges of those lives remain for the heroes to see?"
+        "flavor": "Who were these people before they became the necromancer's pawns? What vestiges of those lives remain for the heroes to see?"
       }
     ]
   }
