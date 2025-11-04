@@ -247,7 +247,7 @@ export class AdversaryCard extends MarkdownRenderChild {
         const content = card.createDiv({ cls: 'callout-content' });
         this.createHeader(content);
 
-        const anyStats = this.adv.hp || this.adv.stress || this.adv.thresholds;
+        const anyStats = this.adv.hp || this.adv.stress || this.adv.thresholds.length;
         if (this.adv.features!.length > 0 || anyStats) {
             content.createEl('hr');
         }

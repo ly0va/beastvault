@@ -11,7 +11,7 @@
       {
         "name": "Overgrown Battlefield",
         "type": "Passive",
-        "desc": "There has been a battle here. A PC can make an Instinct Roll to identify evidence of that fight. On a success with Hope, learn all three pieces of information below. On a success with Fear, learn two. On a failure, a PC can mark 3 Stress to learn one and gain advantage on the next action roll to investigate this environment. A PC with an appropriate background or Experience can learn an additional detail and ask a follow-up question about the scene and get a truthful (if not always complete) answer.\n  - Traces of a battle (broken weapons and branches, gouges in the ground) litter the ground.\n  - A moss-covered tree trunk is actually the corpse of a treant.\n  - Still-standing trees are twisted in strange ways, as if by powerful magic.",
+        "desc": "There has been a battle here. A PC can make an Instinct Roll to identify evidence of that fight. On a success with Hope, learn all three pieces of information below. On a success with Fear, learn two. On a failure, a PC can mark 3 Stress to learn one and gain advantage on the next action roll to investigate this environment. A PC with an appropriate background or Experience can learn an additional detail and ask a follow-up question about the scene and get a truthful (if not always complete) answer.\n- Traces of a battle (broken weapons and branches, gouges in the ground) litter the ground.\n- A moss-covered tree trunk is actually the corpse of a treant.\n- Still-standing trees are twisted in strange ways, as if by powerful magic.",
         "flavor": "Why did these groups come to blows? Why is the grove unused now?"
       },
       {
@@ -127,7 +127,7 @@
       {
         "name": "The Climb",
         "type": "Passive",
-        "desc": "Climbing up the cliffside uses a Progress Countdown (12). It ticks down according to the following criteria when the PCs make an action roll to climb:\n  - Critical Success: Tick down 3\n  - Success with Hope: Tick down 2\n  - Success with Fear: Tick down 1\n  - Failure with Hope: No advancement\n  - Failure with Fear: Tick up 1\n  When the countdown triggers, the party has made it to the top of the cliff.",
+        "desc": "Climbing up the cliffside uses a Progress Countdown (12). It ticks down according to the following criteria when the PCs make an action roll to climb:\n- Critical Success: Tick down 3\n- Success with Hope: Tick down 2\n- Success with Fear: Tick down 1\n- Failure with Hope: No advancement\n- Failure with Fear: Tick up 1\n  When the countdown triggers, the party has made it to the top of the cliff.",
         "flavor": "What strange formations are the stones arranged in? What ominous warnings did previous adventurers leave?"
       },
       {
@@ -156,7 +156,7 @@
       {
         "name": "What's the Talk of the Town?",
         "type": "Passive",
-        "desc": "A PC can ask the bartender, staff, or patrons about local events, rumors, and potential work with a Presence Roll. On a success, they can pick two of the below details to learn—or three if they critically succeed. On a failure, they can pick one and mark a Stress as the local carries on about something irrelevant.\n  - A fascinating rumor with a connection to a PC's background\n  - A promising job for the party involving a nearby threat or situation\n  - Local folklore that relates to something they've seen\n  - Town gossip that hints at a community problem",
+        "desc": "A PC can ask the bartender, staff, or patrons about local events, rumors, and potential work with a Presence Roll. On a success, they can pick two of the below details to learn—or three if they critically succeed. On a failure, they can pick one and mark a Stress as the local carries on about something irrelevant.\n- A fascinating rumor with a connection to a PC's background\n- A promising job for the party involving a nearby threat or situation\n- Local folklore that relates to something they've seen\n- Town gossip that hints at a community problem",
         "flavor": "Who has what kind of information? What gossip do the locals start spreading about the PCs?"
       },
       {
@@ -197,7 +197,7 @@
       {
         "name": "Rumors Abound",
         "type": "Passive",
-        "desc": "Gossip is the fastest-traveling currency in the realm. A PC can inquire about major events by making a Presence Roll. What they learn depends on the outcome of their roll, based on the following criteria:\n  - Critical Success: Learn about two major events. The PC can ask one follow-up question about one of the rumors and get a truthful (if not always complete) answer.\n  - Success with Hope: Learn about two events, at least one of which is relevant to the character's background.\n  - Success with Fear: Learn an alarming rumor related to the character's background.\n  - Any Failure: The locals respond poorly to their inquiries. The PC must mark a Stress to learn one relevant rumor.",
+        "desc": "Gossip is the fastest-traveling currency in the realm. A PC can inquire about major events by making a Presence Roll. What they learn depends on the outcome of their roll, based on the following criteria:\n- Critical Success: Learn about two major events. The PC can ask one follow-up question about one of the rumors and get a truthful (if not always complete) answer.\n- Success with Hope: Learn about two events, at least one of which is relevant to the character's background.\n- Success with Fear: Learn an alarming rumor related to the character's background.\n- Any Failure: The locals respond poorly to their inquiries. The PC must mark a Stress to learn one relevant rumor.",
         "flavor": "What news do the PCs hear that they could pass along to curious travelers? What do the locals think about these events?"
       },
       {
@@ -273,7 +273,7 @@
       {
         "name": "Blasphemous Might",
         "type": "Action",
-        "desc": "A portion of the ritual's power is diverted into a cult member to fight off interlopers. Choose one adversary to become Imbued with terrible magic until the scene ends or they're defeated. An Imbued adversary immediately takes the spotlight and gains one of the following benefits, or all three if you spend a Fear:\n  - They gain advantage on all attacks.\n  - They deal an extra 1d10 damage on a successful attack.\n  - They gain the following feature:\n    Relentless (2) - Passive: This adversary can be spotlighted multiple times per GM turn. Spend Fear as usual to spotlight them.",
+        "desc": "A portion of the ritual's power is diverted into a cult member to fight off interlopers. Choose one adversary to become Imbued with terrible magic until the scene ends or they're defeated. An Imbued adversary immediately takes the spotlight and gains one of the following benefits, or all three if you spend a Fear:\n- They gain advantage on all attacks.\n- They deal an extra 1d10 damage on a successful attack.\n- They gain the following feature:\\\n**Relentless (2)** - Passive: This adversary can be spotlighted multiple times per GM turn. Spend Fear as usual to spotlight them.",
         "flavor": "How does the enemy change in appearance? What fears do their blows bring to the surface?"
       },
       {
@@ -308,7 +308,7 @@
       {
         "name": "Divine Guidance",
         "type": "Passive",
-        "desc": "A PC who prays to a deity while in the Hallowed Temple can make an Instinct Roll to receive answers. If the god they beseech isn't welcome in this temple, this roll is made with disadvantage.\n  - Critical Success: The PC gains clear information. Additionally, they gain 1d4 Hope, which can be distributed between the party if they share the vision and guidance they received.\n  - Success with Hope: The PC receives clear information.\n  - Success with Fear: The PC receives brief flashes of insight and an emotional impression conveying an answer.\n  - Any Failure: The PC receives only vague flashes. They can mark a Stress to receive one clear image without context.",
+        "desc": "A PC who prays to a deity while in the Hallowed Temple can make an Instinct Roll to receive answers. If the god they beseech isn't welcome in this temple, this roll is made with disadvantage.\n- Critical Success: The PC gains clear information. Additionally, they gain 1d4 Hope, which can be distributed between the party if they share the vision and guidance they received.\n- Success with Hope: The PC receives clear information.\n- Success with Fear: The PC receives brief flashes of insight and an emotional impression conveying an answer.\n- Any Failure: The PC receives only vague flashes. They can mark a Stress to receive one clear image without context.",
         "flavor": "What does it feel like as you are touched by this vision? What feeling lingers after the images have passed?"
       },
       {
@@ -337,7 +337,7 @@
       {
         "name": "Buried Knowledge",
         "type": "Passive",
-        "desc": "The city has countless mysteries to unfold. A PC who seeks knowledge about the fallen city can make an Instinct or Knowledge Roll to learn about this place and discover (potentially haunted) loot.\n  - Critical Success: Gain valuable information and a related useful item.\n  - Success with Hope: Gain valuable information.\n  - Success with Fear: Uncover vague or incomplete information.\n  - Any Failure: Mark a Stress to find a lead after an exhaustive search.",
+        "desc": "The city has countless mysteries to unfold. A PC who seeks knowledge about the fallen city can make an Instinct or Knowledge Roll to learn about this place and discover (potentially haunted) loot.\n- Critical Success: Gain valuable information and a related useful item.\n- Success with Hope: Gain valuable information.\n- Success with Fear: Uncover vague or incomplete information.\n- Any Failure: Mark a Stress to find a lead after an exhaustive search.",
         "flavor": "What secret secrets does the city contain? Why have so many ghosts lingered here? What doomed adventurers have met a bad fate here already?"
       },
       {
@@ -413,7 +413,7 @@
       {
         "name": "The Indigo Flame",
         "type": "Passive",
-        "desc": "PCs who approach the central tree can make a Knowledge Roll to try to identify the magic that consumed this environment.\n  - On a success: They learn three of the below details. On a success with Fear, they learn two.\n  - On a failure: They can mark a Stress to learn one and gain advantage on the next action roll to investigate this environment.\n  - Details: This is a result of Fallen magic. The corruption is spread through the ashen moss. It can be cleansed only by a ritual of nature magic with a Progress Countdown (8).",
+        "desc": "PCs who approach the central tree can make a Knowledge Roll to try to identify the magic that consumed this environment.\n- On a success: They learn three of the below details. On a success with Fear, they learn two.\n- On a failure: They can mark a Stress to learn one and gain advantage on the next action roll to investigate this environment.\n- Details: This is a result of Fallen magic. The corruption is spread through the ashen moss. It can be cleansed only by a ritual of nature magic with a Progress Countdown (8).",
         "flavor": "What fell cult corrupted these woods? What have they already done with the cursed wood and sap from this tree?"
       },
       {
@@ -466,7 +466,7 @@
       {
         "name": "Collateral Damage",
         "type": "Reaction",
-        "desc": "When an adversary is defeated, you can spend a Fear to have a stray attack from a siege weapon hit a point on the battlefield. All targets within Very Close range of that point must make an Agility Reaction Roll.\n  - Targets who fail take 3d8+3 physical or magic damage and must mark a Stress.\n  - Targets who succeed must mark a Stress.",
+        "desc": "When an adversary is defeated, you can spend a Fear to have a stray attack from a siege weapon hit a point on the battlefield. All targets within Very Close range of that point must make an Agility Reaction Roll.\n- Targets who fail take 3d8+3 physical or magic damage and must mark a Stress.\n- Targets who succeed must mark a Stress.",
         "flavor": "What debris is scattered by the attack? What is broken by the strike that can't be easily mended?"
       }
     ]

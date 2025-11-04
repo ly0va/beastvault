@@ -69,7 +69,7 @@ export default class DaggerheartPlugin extends Plugin {
         this.registerEvent(this.app.workspace.on('active-leaf-change', () => this.updateStatusBar()));
 
         this.registerMarkdownCodeBlockProcessor("daggerheart", (src, el, ctx) => {
-            const adv = processAdversary(parseYaml(src), this.app.workspace.getActiveFile()!.path);
+            const adv = processAdversary(parseYaml(src) ?? {}, this.app.workspace.getActiveFile()!.path);
             const child = new AdversaryCard(el, adv, this);
             ctx.addChild(child);
             child.render();
