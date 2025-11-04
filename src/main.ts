@@ -1,4 +1,4 @@
-import { Editor, Plugin } from 'obsidian';
+import { Editor, Plugin, setTooltip } from 'obsidian';
 import * as yaml from 'yaml';
 import { SettingTab, type PluginSettings, DEFAULT_SETTINGS } from './settings';
 import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, reviver } from './utils';
@@ -12,7 +12,7 @@ export type PluginState = {
             stats?: {
                 hp?: number;
                 stress?: number;
-                uses?: { [featureName: string]: number }
+                uses?: number[]
             }[];
         }
     }
@@ -29,8 +29,10 @@ export default class DaggerheartPlugin extends Plugin {
         const file = this.app.workspace.getActiveFile();
         if (file) {
             const bp = Math.ceil(this.calculateBattlePoints(file?.path));
+            const pcs = this.state.settings.numberOfPCs;
             if (bp > 0) {
                 this.battlePoints.setText(`${bp} battle points`);
+                setTooltip(this.battlePoints, `${bp} / ${pcs * 3 + 2} for ${pcs} PCs`, { delay: 500, placement: 'top' });;
                 // TODO: add tooltip with base battle points for set number of PCs
                 // .title is not pretty :(
                 return;
@@ -57,6 +59,7 @@ export default class DaggerheartPlugin extends Plugin {
             if (path !== filePath) continue;
             const type = block.adv.type?.trim().toLowerCase();
             const count = block.adv.count ?? 1;
+            // TODO: how to differentiate social env vs social adversary
             if (type?.startsWith('horde')) totalBP += bpPerType['horde'] * count;
             if (type && bpPerType[type]) totalBP += bpPerType[type] * count;
         }
@@ -70,7 +73,8 @@ export default class DaggerheartPlugin extends Plugin {
         this.registerEvent(this.app.workspace.on('active-leaf-change', () => this.updateStatusBar()));
 
         this.registerMarkdownCodeBlockProcessor("daggerheart", (src, el, ctx) => {
-            const adv = (yaml.parse(src, reviver, { strict: false }) ?? {}) as Adversary;
+            // TODO: replace with parseYaml
+            const adv = yaml.parse(src, reviver, { strict: false }) ?? {};
             const child = new AdversaryCard(el, adv, this);
             ctx.addChild(child);
             child.render();

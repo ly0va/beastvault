@@ -206,6 +206,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             }
         }
 
+        // TODO: make this configurable?
         let hordeSize: any;
         const match = this.adv.type?.match(/^horde\s+\((\d+)\/hp\)$/i);
         if (match && this.adv.hp > 0) {
