@@ -59,17 +59,28 @@ export function hexToRgb(hex: string) {
     return `${rgb[0]}, ${rgb[1]}, ${rgb[2]}`;
 }
 
-export function reviver(key: any, value: any): any {
-    if (key == 'attack' && typeof value === 'number') {
-        return value > 0 ? `+${value}` : `${value}`;
+export function processAdversary(obj: any, filePath: string): Adversary {
+    if (typeof obj.attack === 'number') {
+        obj.attack = obj.attack > 0 ? `+${obj.attack}` : `${obj.attack}`;
     }
-    if (key == 'thresholds') {
-        if (typeof value === "string") return value.split(/[,\/]/).filter((s) => s.trim().toLowerCase() != 'none');
-        if (typeof value === "number") return [value];
+    if (typeof obj.thresholds === "string") {
+        obj.thresholds = obj.thresholds.split(/[,\/]/).filter((s: string) => s.trim().toLowerCase() != 'none');
     }
-    if (key == 'xp') {
-        if (typeof value === "string") return value.split(',').map((s) => s.trim()).filter((s) => s.length > 0);
+    if (typeof obj.thresholds === "number") {
+        obj.thresholds = [obj.thresholds];
     }
-    return value;
+    if (typeof obj.xp === "string") {
+        obj.xp = obj.xp.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
+    }
+    return {
+        id: `${filePath}::${obj.name || ''}`,
+        hp: 0,
+        stress: 0,
+        count: 1,
+        xp: [],
+        thresholds: [],
+        features: [],
+        ...obj,
+    };
 }
 

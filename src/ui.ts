@@ -1,18 +1,17 @@
-import { App, Editor, SuggestModal, Notice, MarkdownRenderChild } from 'obsidian';
+import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml } from 'obsidian';
 import { roll } from '@airjp73/dice-notation';
 import { marked } from 'marked';
 import DaggerheartPlugin from './main';
 import { hexToRgb, DICE_PATTERN } from './utils';
-import * as yaml from 'yaml';
 
 type Feature = {
     name?: string;
     type?: string;
     desc?: string;
     uses?: number;
-    // tokens?: number;
     flavor?: string;
-    // TODO: cost?
+    // tokens?: number;
+    // cost?
 }
 
 export type Adversary = {
@@ -41,7 +40,6 @@ export type Adversary = {
     features: Feature[]
     count: number;
     id: string;
-    // TODO:
     // syncProperties?: boolean
 };
 
@@ -62,30 +60,17 @@ export class AdversaryModal extends SuggestModal<Adversary> {
     }
 
     onChooseSuggestion(adv: Adversary, evt: MouseEvent | KeyboardEvent) {
-        const adversaryYaml = yaml.stringify(adv, { indent: 2, lineWidth: 0 });
-        this.editor.replaceSelection(`\`\`\`daggerheart\n${adversaryYaml}\n\`\`\`\n`);
+        this.editor.replaceSelection(`\`\`\`daggerheart\n${stringifyYaml(adv)}\n\`\`\`\n`);
     }
 }
 
 export class AdversaryCard extends MarkdownRenderChild {
-    public adv: Adversary;
-
     constructor(
         private container: HTMLElement,
-        adv: Partial<Adversary>,
+        public adv: Adversary,
         private plugin: DaggerheartPlugin
     ) {
         super(container);
-        this.adv = {
-            id: `${this.plugin.app.workspace.getActiveFile()?.path}::${adv.name || ''}`,
-            hp: 0,
-            stress: 0,
-            count: 1,
-            xp: [],
-            thresholds: [],
-            features: [],
-            ...adv,
-        }
     }
 
     createTitle(card: HTMLElement) {
@@ -206,7 +191,6 @@ export class AdversaryCard extends MarkdownRenderChild {
             }
         }
 
-        // TODO: make this configurable?
         let hordeSize: any;
         const match = this.adv.type?.match(/^horde\s+\((\d+)\/hp\)$/i);
         if (match && this.adv.hp > 0) {

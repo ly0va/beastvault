@@ -32,9 +32,6 @@ importers:
       typescript:
         specifier: ^5.4.0
         version: 5.9.3
-      yaml:
-        specifier: ^2.8.1
-        version: 2.8.1
 
 packages:
 
@@ -240,11 +237,6 @@ packages:
   w3c-keyname@2.2.8:
     resolution: {integrity: sha512-dpojBhNsCNN7T82Tm7k26A6G9ML3NkhDsnw9n/eoxSRlVBB4CEtIQ/KTCLI2Fwf3ataSXRhYFkQi3SlnFwPvPQ==}
 
-  yaml@2.8.1:
-    resolution: {integrity: sha512-lcYcMxX2PO9XMGvAJkJ3OsNMw+/7FKes7/hgerGUYWIoWu5j/+YQqcZr5JnPZWzOsEBgMbSbiSTn/dv/69Mkpw==}
-    engines: {node: '>= 14.6'}
-    hasBin: true
-
 snapshots:
 
   '@airjp73/dice-notation@2.2.2':
@@ -395,5 +387,3 @@ snapshots:
   undici-types@7.16.0: {}
 
   w3c-keyname@2.2.8: {}
-
-  yaml@2.8.1: {}
