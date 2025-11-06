@@ -37,7 +37,6 @@ input[type=checkbox].daggerheart-slot {
 }
 
 .rollable:hover {
-    /* text-decoration: underline; */
     color: rgb(var(--callout-color))
 }
 
@@ -50,9 +49,24 @@ input[type=checkbox].daggerheart-slot {
     margin-bottom: 0.5em;
 }
 
+.padded {
+    padding-right: 2em;
+}
+
 .corner {
   position: absolute;
   bottom: 0;
   right: 0;
-  margin: 0.5em
+  margin: 0.5em;
+}
+
+.daggerheart-count {
+    position: absolute;
+    top: var(--size-2-2);
+    right: var(--size-2-2);
+    display: none;
+}
+
+.block-language-daggerheart + .edit-block-button {
+    opacity: var(--icon-opacity) !important;
 }

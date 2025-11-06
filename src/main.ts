@@ -8,11 +8,12 @@ export type PluginState = {
     cards: {
         [id: string]: {
             color?: string;
-            stats?: {
+            count?: number;
+            [index: number]: {
                 hp?: number;
                 stress?: number;
                 uses?: number[]
-            }[];
+            };
         }
     }
 }
@@ -54,10 +55,10 @@ export default class DaggerheartPlugin extends Plugin {
         }
         for (const [block, path] of this.activeBlocks) {
             if (path !== filePath) continue;
+            if (!block.adv.hp && !block.adv.stress) continue; // is an env
             const type = block.adv.type?.trim().toLowerCase();
-            const count = block.adv.count ?? 1;
-            if (type?.startsWith('horde')) totalBP += bpPerType['horde'] * count;
-            if (type && bpPerType[type]) totalBP += bpPerType[type] * count;
+            if (type?.startsWith('horde')) totalBP += bpPerType['horde'] * block.count;
+            if (type && bpPerType[type]) totalBP += bpPerType[type] * block.count;
         }
         return totalBP;
     }
@@ -155,24 +156,24 @@ export default class DaggerheartPlugin extends Plugin {
 
     updateCard(keys: (string | number)[], value: string | number) {
         let data: Record<any, any> = this.state.cards;
-        const lastKey = keys.pop()!;
-        for (const key of keys) {
+        const keysCopy = [...keys];
+        const lastKey = keysCopy.pop()!;
+        for (const key of keysCopy) {
             if (!data[key]) data[key] = {};
             data = data[key]
         }
-        keys.push(lastKey)
         data[lastKey] = value;
         this.updateState();
     }
 
     getCardState(keys: (string | number)[]): number | undefined {
         let data: Record<any, any> = this.state.cards;
-        const lastKey = keys.pop()!;
-        for (const key of keys) {
+        const keysCopy = [...keys];
+        const lastKey = keysCopy.pop()!;
+        for (const key of keysCopy) {
             if (!data[key]) data[key] = {};
             data = data[key]
         }
-        keys.push(lastKey);
         return data[lastKey];
     }
 }

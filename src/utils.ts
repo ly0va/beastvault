@@ -72,11 +72,11 @@ export function processAdversary(obj: any, filePath: string): Adversary {
     if (typeof obj.xp === "string") {
         obj.xp = obj.xp.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
     }
+
     return {
         id: `${filePath}::${obj.name || ''}`,
         hp: 0,
         stress: 0,
-        count: 1,
         xp: [],
         thresholds: [],
         features: [],

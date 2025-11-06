@@ -1,4 +1,4 @@
-import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml } from 'obsidian';
+import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon, MarkdownView } from 'obsidian';
 import { roll } from '@airjp73/dice-notation';
 import { marked } from 'marked';
 import DaggerheartPlugin from './main';
@@ -38,7 +38,6 @@ export type Adversary = {
     desc?: string;
     source?: string;
     features: Feature[]
-    count: number;
     id: string;
     // syncProperties?: boolean
 };
@@ -65,26 +64,29 @@ export class AdversaryModal extends SuggestModal<Adversary> {
 }
 
 export class AdversaryCard extends MarkdownRenderChild {
+    count: number;
+
     constructor(
         private container: HTMLElement,
         public adv: Adversary,
         private plugin: DaggerheartPlugin
     ) {
         super(container);
+        this.count = this.plugin.state.cards[this.adv.id]?.count || 1;
     }
 
     createTitle(card: HTMLElement) {
         const title = card.createDiv({ cls: 'callout-title spreadout' });
         const mainTitle = title.createEl('b', { cls: 'larger', text: `${this.adv.name || ''}` });
-        const subTitle = title.createEl('b', { cls: 'smaller' });
+        const subTitle = title.createEl('b', { cls: 'smaller padded' });
         subTitle.innerHTML += this.adv.tier ? `Tier ${this.adv.tier} ` : '';
         subTitle.innerHTML += this.adv.type ? this.adv.type : '';
-        subTitle.innerHTML += '&nbsp;&nbsp;&nbsp'; // to accomodate the </> button
     }
 
     createHeader(content: HTMLElement) {
         if (this.adv.desc) {
-            content.createEl('p', { cls: "smaller muted" }).createEl('i', { text: this.adv.desc });
+            const desc = content.createEl('p', { cls: "smaller muted padded" });
+            desc.createEl('i', { text: this.adv.desc });
         }
 
         const header = content.createEl('p', { cls: 'smaller' });
@@ -116,8 +118,8 @@ export class AdversaryCard extends MarkdownRenderChild {
         paragraph.innerHTML += feature.type && feature.name ? ` - ` : '';
         paragraph.innerHTML += feature.type ? `${feature.type}` : '';
         paragraph.innerHTML += feature.type || feature.name ? `<br>` : '';
-        if (this.adv.count == 1) {
-            this.createStatSlots(paragraph, 'Uses', feature.uses || 0, [this.adv.id, 'stats', 0, 'uses', index]);
+        if (this.count == 1) {
+            this.createStatSlots(paragraph, 'Uses', feature.uses || 0, [this.adv.id, 0, 'uses', index]);
         }
         if (feature.desc) {
             let desc = marked.parse(feature.desc, { async: false })
@@ -178,15 +180,15 @@ export class AdversaryCard extends MarkdownRenderChild {
     createStatBar(content: HTMLElement, index: number) {
         const statBar = content.createEl('p');
         const [minor, major, severe, massive] = this.createThresholdButtons(statBar);
-        const hpSlots = this.createStatSlots(statBar, 'HP', this.adv.hp, [this.adv.id, 'stats', index, 'hp']);
-        this.createStatSlots(statBar, 'Stress', this.adv.stress, [this.adv.id, 'stats', index, 'stress']);
+        const hpSlots = this.createStatSlots(statBar, 'HP', this.adv.hp, [this.adv.id, index, 'hp']);
+        this.createStatSlots(statBar, 'Stress', this.adv.stress, [this.adv.id, index, 'stress']);
 
-        if (this.adv.count > 1) {
+        if (this.count > 1) {
             for (const [featureIndex, feature] of this.adv.features.entries()) {
                 const uses = feature.uses || 0;
                 const name = feature.name || 'Unnamed feature uses';
                 if (uses != 0) {
-                    this.createStatSlots(statBar, name, uses, [this.adv.id, 'stats', index, 'uses', featureIndex]);
+                    this.createStatSlots(statBar, name, uses, [this.adv.id, index, 'uses', featureIndex]);
                 }
             }
         }
@@ -197,7 +199,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             hordeSize = statBar.createEl('span', { cls: "muted" });
             hordeSize.update = () => {
                 const size = parseInt(match[1]);
-                const hp = this.plugin.getCardState([this.adv.id, 'stats', index, 'hp']) ?? 0;
+                const hp = this.plugin.getCardState([this.adv.id, index, 'hp']) ?? 0;
                 const currentHP = this.adv.hp - hp;
                 hordeSize!.innerText = `Horde size: ${size * currentHP}`;
             };
@@ -220,7 +222,7 @@ export class AdversaryCard extends MarkdownRenderChild {
                 }
                 if (slot.checked) marked++;
             }
-            this.plugin.updateCard([this.adv.id, 'stats', index, 'hp'], marked)
+            this.plugin.updateCard([this.adv.id, index, 'hp'], marked)
             hordeSize?.update();
         };
 
@@ -228,6 +230,69 @@ export class AdversaryCard extends MarkdownRenderChild {
         major?.addEventListener('click', slotMarker(2));
         severe?.addEventListener('click', slotMarker(3));
         massive?.addEventListener('click', slotMarker(4));
+    }
+
+    createPlusMinosButtons(card: HTMLElement, features: HTMLElement, statBlock: HTMLElement) {
+        if (!this.adv.hp && !this.adv.stress) return;
+        const add = card.createEl('button', { cls: 'daggerheart-count clickable-icon' })
+        const remove = card.createEl('button', { cls: 'daggerheart-count clickable-icon' })
+        setIcon(add, 'plus')
+        setIcon(remove, 'minus')
+        add.setAttribute('aria-label', 'Increase adversary count');
+        remove.setAttribute('aria-label', 'Decrease adversary count');
+
+        // hacky but works for now
+        setTimeout(() => {
+            const editable = card.parentElement?.nextElementSibling?.classList.contains('edit-block-button');
+            if (editable) {
+                add.style.top = '2.5em';
+                remove.style.top = '4.8em';
+            } else {
+                remove.style.top = '2.5em';
+            }
+            add.style.display = 'flex';
+            remove.style.display = 'flex';
+        }, 5);
+
+        const rerender = () => {
+            features.empty();
+            statBlock.empty();
+            this.createFeaturesAndStats(features, statBlock);
+        };
+
+        add.addEventListener('click', () => {
+            this.count += 1;
+            this.plugin.updateCard([this.adv.id, 'count'], this.count);
+            rerender();
+        });
+
+        remove.addEventListener('click', () => {
+            if (this.count > 1) {
+                this.count -= 1;
+                this.plugin.updateCard([this.adv.id, 'count'], this.count);
+                rerender();
+            }
+        });
+    }
+
+    createFeaturesAndStats(features: HTMLElement, statBlock: HTMLElement) {
+        const anyStats = this.adv.hp || this.adv.stress || this.adv.thresholds.length;
+        if (this.adv.features.length > 0 || anyStats) {
+            features.createEl('hr');
+        }
+
+        for (const [index, feature] of this.adv.features!.entries()) {
+            this.createFeature(features, index, feature);
+        }
+
+        if (this.adv.features.length > 0 && anyStats) {
+            features.createEl('hr')
+        }
+
+        for (let index = 0; index < this.count; index++) {
+            if (index != 0) statBlock.createEl('hr');
+            this.createStatBar(statBlock, index);
+        }
     }
 
     render() {
@@ -245,27 +310,15 @@ export class AdversaryCard extends MarkdownRenderChild {
         });
 
         const content = card.createDiv({ cls: 'callout-content' });
-        this.createHeader(content);
+        const header = content.createEl('div');
+        const features = content.createEl('div');
+        const statBlock = content.createEl('div');
 
-        const anyStats = this.adv.hp || this.adv.stress || this.adv.thresholds.length;
-        if (this.adv.features!.length > 0 || anyStats) {
-            content.createEl('hr');
-        }
+        this.createHeader(header);
+        this.createFeaturesAndStats(features, statBlock);
+        this.createPlusMinosButtons(card, features, statBlock);
 
-        for (const [index, feature] of this.adv.features!.entries()) {
-            this.createFeature(content, index, feature);
-        }
-
-        if (this.adv.features!.length > 0 && anyStats) {
-            content.createEl('hr')
-        }
-
-        for (let index = 0; index < this.adv.count!; index++) {
-            if (index != 0) content.createEl('hr');
-            this.createStatBar(content, index);
-        }
-
-        const data = this.plugin.state.cards?.[this.adv.id]?.color;
+        const data = this.plugin.state.cards[this.adv.id]?.color;
         const defaultColor = data || this.plugin.state.settings.defaultColor;
 
         const applyColor = (color: string) => {

@@ -15,7 +15,6 @@
     "thresholds": "8/15",
     "xp": "Tremor Sense +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (3)",
@@ -55,7 +54,6 @@
     "thresholds": "9/17",
     "xp": "Ambusher +3, Keen Senses +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Overwhelming Force",
@@ -90,7 +88,6 @@
     "thresholds": "8/15",
     "xp": "Throw +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Ramp Up",
@@ -130,7 +127,6 @@
     "thresholds": "7/15",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (2)",
@@ -175,7 +171,6 @@
     "thresholds": "4/8",
     "xp": "Socialite +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Mockery",
@@ -205,7 +200,6 @@
     "thresholds": "8/14",
     "xp": "Huge +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Ground Slam",
@@ -235,7 +229,6 @@
     "thresholds": "5/9",
     "xp": "Keen Senses +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Pack Tactics",
@@ -265,7 +258,6 @@
     "thresholds": "5/9",
     "xp": "Camouflage +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Horde (1d4+1)",
@@ -299,7 +291,6 @@
     "damage": "1 phy",
     "xp": "Keen Senses +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (3)",
@@ -329,7 +320,6 @@
     "thresholds": "7/13",
     "xp": "Camouflage +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Double Strike",
@@ -364,7 +354,6 @@
     "thresholds": "6/10",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Armor-Shredding Shards",
@@ -399,7 +388,6 @@
     "thresholds": "5/9",
     "xp": "Camouflage +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Maintain Distance",
@@ -429,7 +417,6 @@
     "thresholds": "4/8",
     "xp": "Local Knowledge +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Hobbling Shot",
@@ -454,7 +441,6 @@
     "thresholds": "5/9",
     "xp": "Local Knowledge +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Shield Wall",
@@ -484,7 +470,6 @@
     "thresholds": "7/13",
     "xp": "Commander +2, Local Knowledge +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Rally Guards",
@@ -519,7 +504,6 @@
     "thresholds": "8/14",
     "xp": "Thief +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Climber",
@@ -549,7 +533,6 @@
     "thresholds": "5/9",
     "xp": "Magical Knowledge +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Curse",
@@ -579,7 +562,6 @@
     "thresholds": "7/14",
     "xp": "Thief +2, Unveiled Threats +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "I've Got 'Em",
@@ -608,7 +590,6 @@
     "damage": "2 phy",
     "xp": "Thief +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (3)",
@@ -638,7 +619,6 @@
     "thresholds": "7/14",
     "xp": "Local Knowledge +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Tactician",
@@ -678,7 +658,6 @@
     "thresholds": "4/8",
     "xp": "Intrusion +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Backstab",
@@ -708,7 +687,6 @@
     "thresholds": "4/7",
     "xp": "Stealth +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Unseen Strike",
@@ -733,7 +711,6 @@
     "thresholds": "4/8",
     "xp": "Shrewd Negotiator +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Preferential Treatment",
@@ -763,7 +740,6 @@
     "thresholds": "7/14",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Arcane Form",
@@ -808,7 +784,6 @@
     "thresholds": "7/15",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (2)",
@@ -854,7 +829,6 @@
     "thresholds": "8/15",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (2)",
@@ -899,7 +873,6 @@
     "thresholds": "5/10",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (5)",
@@ -929,7 +902,6 @@
     "thresholds": "5/10",
     "xp": "Camouflage +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Slow",
@@ -969,7 +941,6 @@
     "thresholds": "4/none",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Acidic Form",
@@ -994,7 +965,6 @@
     "thresholds": "6/11",
     "xp": "Camouflage +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Creeping Fire",
@@ -1029,7 +999,6 @@
     "thresholds": "5/none",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Burning",
@@ -1054,7 +1023,6 @@
     "thresholds": "6/10",
     "xp": "Aristocrat +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "My Land, My Rules",
@@ -1090,7 +1058,6 @@
     "thresholds": "7/14",
     "xp": "Commander +2, Sailor +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Swashbuckler",
@@ -1131,7 +1098,6 @@
     "thresholds": "5/11",
     "xp": "Sailor +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Horde (1d4+1)",
@@ -1161,7 +1127,6 @@
     "thresholds": "8/15",
     "xp": "Sailor +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Swashbuckler",
@@ -1190,7 +1155,6 @@
     "damage": "3 phy",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (4)",
@@ -1220,7 +1184,6 @@
     "thresholds": "4/7",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Opportunist",
@@ -1249,7 +1212,6 @@
     "damage": "1 phy",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (4)",
@@ -1279,7 +1241,6 @@
     "thresholds": "7/13",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Terrifying",
@@ -1314,7 +1275,6 @@
     "thresholds": "4/8",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Only Bones",
@@ -1344,7 +1304,6 @@
     "thresholds": "8/14",
     "xp": "Magical Knowledge +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Arcane Steel",
@@ -1384,7 +1343,6 @@
     "thresholds": "6/10",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Horde (1d4+1)",
@@ -1414,7 +1372,6 @@
     "thresholds": "6/11",
     "xp": "Tracker +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Pack Tactics",
@@ -1449,7 +1406,6 @@
     "thresholds": "6/11",
     "xp": "Camouflage +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Horde (1d4+2)",
@@ -1483,7 +1439,6 @@
     "damage": "2 phy",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (4)",
@@ -1518,7 +1473,6 @@
     "thresholds": "8/15",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Goading Strike",
@@ -1554,7 +1508,6 @@
     "thresholds": "6/11",
     "xp": "Leadership +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Voice of the Forest",
@@ -1589,7 +1542,6 @@
     "thresholds": "8/15",
     "xp": "Collateral Damage +2, Throw +4",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Slow",
@@ -1624,7 +1576,6 @@
     "thresholds": "8/15",
     "xp": "Intimidation +2, Tear Things Apart +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Destructible",
@@ -1663,7 +1614,6 @@
     "damage": "2 phy",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (3)",
@@ -1693,7 +1643,6 @@
     "thresholds": "4/6",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Too Many to Handle",
@@ -1723,7 +1672,6 @@
     "thresholds": "6/12",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Horde (1d4+2)",
@@ -1753,7 +1701,6 @@
     "thresholds": "8/16",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Horde (1d6+3)",
@@ -1787,7 +1734,6 @@
     "damage": "4 phy",
     "xp": "Intrusion +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (6)",
@@ -1817,7 +1763,6 @@
     "thresholds": "8/16",
     "xp": "Intrusion +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Grindletooth Venom",
@@ -1852,7 +1797,6 @@
     "thresholds": "12/25",
     "xp": "Command +3, Intrusion +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Won't See It Coming",
@@ -1892,7 +1836,6 @@
     "thresholds": "10/20",
     "xp": "Camouflage +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (2)",
@@ -1932,7 +1875,6 @@
     "thresholds": "8/16",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Levitation",
@@ -1971,7 +1913,6 @@
     "damage": "6 phy",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (6)",
@@ -2001,7 +1942,6 @@
     "thresholds": "7/13",
     "xp": "Manipulation +3, Socialite +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Searing Glance",
@@ -2026,7 +1966,6 @@
     "thresholds": "9/18",
     "xp": "Fallen Lore +2, Rituals +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Enervating Blast",
@@ -2067,7 +2006,6 @@
     "thresholds": "9/17",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Shadow's Embrace",
@@ -2096,7 +2034,6 @@
     "damage": "5 phy",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (6)",
@@ -2126,7 +2063,6 @@
     "thresholds": "11/23",
     "xp": "Scent Tracking +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Horde (2d4+1)",
@@ -2161,7 +2097,6 @@
     "thresholds": "10/20",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Horde (2d4+1)",
@@ -2191,7 +2126,6 @@
     "thresholds": "9/18",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Reinforce",
@@ -2221,7 +2155,6 @@
     "thresholds": "12/23",
     "xp": "Copycat +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Warped Fortitude",
@@ -2256,7 +2189,6 @@
     "thresholds": "12/24",
     "xp": "Animal Handling +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Two as One",
@@ -2292,7 +2224,6 @@
     "thresholds": "14/28",
     "xp": "Intrusion +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Battering Ram",
@@ -2326,10 +2257,9 @@
     "damage": "5 phy",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
-        "name": "Minion ()",
+        "name": "Minion (7)",
         "type": "Passive",
         "desc": "The Recruit is defeated when they take any damage. For every 7 damage a PC deals to the Recruit, defeat an additional Minion within range the attack would succeed against."
       },
@@ -2356,7 +2286,6 @@
     "thresholds": "8/19",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Flight",
@@ -2396,7 +2325,6 @@
     "thresholds": "13/25",
     "xp": "Stealth +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (2)",
@@ -2441,7 +2369,6 @@
     "thresholds": "13/26",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (3)",
@@ -2481,7 +2408,6 @@
     "thresholds": "13/26",
     "xp": "Ancient Knowledge +3, High Society +2, Tactics +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Chevalier",
@@ -2521,7 +2447,6 @@
     "thresholds": "8/17",
     "xp": "Acrobatics +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Quick Hands",
@@ -2551,7 +2476,6 @@
     "thresholds": "9/19",
     "xp": "Nobility +2, Trade +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Everyone Has a Price",
@@ -2582,7 +2506,6 @@
     "thresholds": "14/27",
     "xp": "Navigation +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Ramp Up",
@@ -2617,7 +2540,6 @@
     "thresholds": "15/27",
     "xp": "Bloodhound +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Terrifying",
@@ -2657,7 +2579,6 @@
     "thresholds": "8/15",
     "xp": "Administration +3, Courtier +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Devastating Retort",
@@ -2692,7 +2613,6 @@
     "thresholds": "13/26",
     "xp": "Coercion +2, Fallen Lore +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Seize Your Moment",
@@ -2733,7 +2653,6 @@
     "thresholds": "14/28",
     "xp": "Sense of Smell +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Terrifying",
@@ -2768,7 +2687,6 @@
     "thresholds": "9/18",
     "xp": "Song Repertoire +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Captive Audience",
@@ -2798,7 +2716,6 @@
     "thresholds": "6/14",
     "xp": "Ancient Knowledge +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Ghost",
@@ -2828,7 +2745,6 @@
     "thresholds": "13/26",
     "xp": "Ancient Knowledge +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Ghost",
@@ -2868,7 +2784,6 @@
     "thresholds": "7/15",
     "xp": "Ancient Knowledge +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Ghost",
@@ -2898,7 +2813,6 @@
     "thresholds": "8/17",
     "xp": "Espionage +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Gathering Secrets",
@@ -2928,7 +2842,6 @@
     "thresholds": "11/22",
     "xp": "Stonesense +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Stonestrider",
@@ -2968,7 +2881,6 @@
     "thresholds": "11/23",
     "xp": "Magical Knowledge +2, Strategize +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Battle Teleport",
@@ -3013,7 +2925,6 @@
     "thresholds": "20/35",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (4)",
@@ -3068,7 +2979,6 @@
     "thresholds": "15/29",
     "xp": "Manipulation +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Money Talks",
@@ -3103,7 +3013,6 @@
     "thresholds": "18/35",
     "xp": "Manipulation +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Depths of Despair",
@@ -3143,7 +3052,6 @@
     "thresholds": "18/36",
     "xp": "Manipulation +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Terrifying",
@@ -3188,7 +3096,6 @@
     "thresholds": "17/30",
     "xp": "Manipulation +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Unprotected Mind",
@@ -3228,7 +3135,6 @@
     "thresholds": "22/40",
     "xp": "Intimidation +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Anger Unrelenting",
@@ -3268,7 +3174,6 @@
     "thresholds": "16/30",
     "xp": "Bloodthirsty +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Flying",
@@ -3303,7 +3208,6 @@
     "thresholds": "24/38",
     "xp": "Forest Knowledge +4",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Bramble Patch",
@@ -3337,7 +3241,6 @@
     "damage": "5 mag",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (9)",
@@ -3367,7 +3270,6 @@
     "thresholds": "22/40",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Slow",
@@ -3412,7 +3314,6 @@
     "thresholds": "17/34",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Water Jet",
@@ -3447,7 +3348,6 @@
     "thresholds": "15/30",
     "xp": "Blend In +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Slow",
@@ -3487,7 +3387,6 @@
     "thresholds": "19/35",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Many-Headed Menace",
@@ -3532,7 +3431,6 @@
     "thresholds": "16/32",
     "xp": "History +3, Nobility +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Execute Them!",
@@ -3568,7 +3466,6 @@
     "thresholds": "19/36",
     "xp": "Forest Knowledge +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "From Above",
@@ -3603,7 +3500,6 @@
     "thresholds": "22/40",
     "xp": "Forest Knowledge +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Just a Tree",
@@ -3637,7 +3533,6 @@
     "damage": "8 phy",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (6)",
@@ -3667,7 +3562,6 @@
     "thresholds": "22/42",
     "xp": "Aristocrat +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Terrifying",
@@ -3712,7 +3606,6 @@
     "thresholds": "18/35",
     "xp": "Nocturnal Hunter +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Draining Bite",
@@ -3742,7 +3635,6 @@
     "thresholds": "19/33",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Blocking Shield",
@@ -3772,7 +3664,6 @@
     "thresholds": "21/40",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Kinetic Slam",
@@ -3812,7 +3703,6 @@
     "thresholds": "20/32",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Slow Firing",
@@ -3852,7 +3742,6 @@
     "thresholds": "21/41",
     "xp": "Protect What Is Mine +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (3)",
@@ -3907,7 +3796,6 @@
     "thresholds": "33/66",
     "xp": "Forbidden Knowledge +3, Wisdom of Centuries +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Dance of Death",
@@ -3951,7 +3839,6 @@
     "damage": "12 phy",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (12)",
@@ -3986,7 +3873,6 @@
     "thresholds": "26/42",
     "xp": "Ancient Knowledge +2",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Conflagration",
@@ -4026,7 +3912,6 @@
     "thresholds": "36/66",
     "xp": "Conquest +3, History +2, Intimidation +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (2)",
@@ -4076,7 +3961,6 @@
     "thresholds": "35/58",
     "xp": "Conquest +3, History +2, Intimidation +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (3)",
@@ -4131,7 +4015,6 @@
     "thresholds": "25/45",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Punish the Guilty",
@@ -4160,7 +4043,6 @@
     "damage": "10 phy",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (13)",
@@ -4195,7 +4077,6 @@
     "thresholds": "37/70",
     "xp": "Divine Knowledge +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (3)",
@@ -4241,7 +4122,6 @@
     "thresholds": "35/70",
     "xp": "Swimming +3",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (3)",
@@ -4286,7 +4166,6 @@
     "thresholds": "38/68",
     "xp": "Boundless Knowledge +4",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Terrifying",
@@ -4337,7 +4216,6 @@
     "thresholds": "35/71",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Chaotic Form",
@@ -4377,7 +4255,6 @@
     "thresholds": "27/47",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Will-Shattering Touch",
@@ -4406,7 +4283,6 @@
     "damage": "11 phy",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Minion (13)",
@@ -4436,7 +4312,6 @@
     "thresholds": "30/58",
     "xp": "Hunt from Above +5",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (3)",
@@ -4491,7 +4366,6 @@
     "thresholds": "33/65",
     "xp": "Hunt from Above +5",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (2)",
@@ -4541,7 +4415,6 @@
     "thresholds": "29/55",
     "xp": "Hunt from Above +5",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Relentless (4)",
@@ -4596,7 +4469,6 @@
     "thresholds": "40/70",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Terrifying",
@@ -4636,7 +4508,6 @@
     "thresholds": "25/45",
     "xp": "",
     "source": "corebook",
-    "count": 1,
     "features": [
       {
         "name": "Horde (2d6+5)",
