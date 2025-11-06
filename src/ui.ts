@@ -1,4 +1,4 @@
-import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon, MarkdownView } from 'obsidian';
+import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon } from 'obsidian';
 import { roll } from '@airjp73/dice-notation';
 import { marked } from 'marked';
 import DaggerheartPlugin from './main';
@@ -45,8 +45,10 @@ export type Adversary = {
 export class AdversaryModal extends SuggestModal<Adversary> {
     constructor(app: App, private editor: Editor, private library: Adversary[]) {
         super(app);
+        this.limit = 200;
     }
 
+    // TODO: search over tiers, types, descriptions
     getSuggestions(query: string): Adversary[] {
         return this.library.filter((adv: Adversary) =>
             adv.name!.toLowerCase().includes(query.toLowerCase())
@@ -54,8 +56,10 @@ export class AdversaryModal extends SuggestModal<Adversary> {
     }
 
     renderSuggestion(adv: Adversary, el: HTMLElement) {
-        el.createEl('div', { text: adv.name });
-        el.createEl('small', { text: `Tier ${adv.tier} ${adv.type}` });
+        const heading = el.createEl('div', { cls: 'spreadout' });
+        heading.createEl('b', { text: adv.name || '' });
+        heading.createEl('span', { text: `Tier ${adv.tier} ${adv.type}`, cls: 'smaller' });
+        el.createEl('span', { text: adv.desc || '', cls: 'smaller muted' });
     }
 
     onChooseSuggestion(adv: Adversary, evt: MouseEvent | KeyboardEvent) {
