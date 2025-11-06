@@ -258,6 +258,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             features.empty();
             statBlock.empty();
             this.createFeaturesAndStats(features, statBlock);
+            this.plugin.updateStatusBar();
         };
 
         add.addEventListener('click', () => {

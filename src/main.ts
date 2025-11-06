@@ -167,14 +167,12 @@ export default class DaggerheartPlugin extends Plugin {
     }
 
     getCardState(keys: (string | number)[]): number | undefined {
-        let data: Record<any, any> = this.state.cards;
-        const keysCopy = [...keys];
-        const lastKey = keysCopy.pop()!;
-        for (const key of keysCopy) {
-            if (!data[key]) data[key] = {};
+        let data: any = this.state.cards;
+        for (const key of keys) {
+            if (data[key] == null) return undefined;
             data = data[key]
         }
-        return data[lastKey];
+        return data;
     }
 }
 
