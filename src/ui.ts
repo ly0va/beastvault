@@ -48,7 +48,6 @@ export class AdversaryModal extends SuggestModal<Adversary> {
         this.limit = 200;
     }
 
-    // TODO: search over tiers, types, descriptions
     getSuggestions(query: string): Adversary[] {
         return this.library.filter((adv: Adversary) =>
             adv.name!.toLowerCase().includes(query.toLowerCase())
@@ -56,13 +55,15 @@ export class AdversaryModal extends SuggestModal<Adversary> {
     }
 
     renderSuggestion(adv: Adversary, el: HTMLElement) {
-        const heading = el.createEl('div', { cls: 'spreadout' });
+        const heading = el.createDiv({ cls: 'spreadout' });
         heading.createEl('b', { text: adv.name || '' });
-        heading.createEl('span', { text: `Tier ${adv.tier} ${adv.type}`, cls: 'smaller' });
-        el.createEl('span', { text: adv.desc || '', cls: 'smaller muted' });
+        heading.createSpan({ text: `Tier ${adv.tier} ${adv.type}`, cls: 'smaller' });
+        el.createSpan({ text: adv.desc || '', cls: 'smaller muted' });
     }
 
     onChooseSuggestion(adv: Adversary, evt: MouseEvent | KeyboardEvent) {
+        adv.id = Math.random().toString(36).slice(2);
+        delete adv.source;
         this.editor.replaceSelection(`\`\`\`daggerheart\n${stringifyYaml(adv)}\n\`\`\`\n`);
     }
 }
@@ -98,7 +99,7 @@ export class AdversaryCard extends MarkdownRenderChild {
 
         if (this.adv.attack != null) {
             header.innerHTML += `<b>Attack:</b> `
-            header.createEl('span', { text: this.adv.attack, cls: 'rollable rollable-attack' });
+            header.createSpan({ text: this.adv.attack, cls: 'rollable rollable-attack' });
             header.createEl('br');
         }
 
@@ -131,7 +132,7 @@ export class AdversaryCard extends MarkdownRenderChild {
                 .replace(/\b([sS])pend a [fF]ear\b/g, "<b>$1pend a Fear</b>")
                 .replace(/\b([mM])ark a [sS]tress\b/g, "<b>$1ark a Stress</b>")
                 .replace(DICE_PATTERN, `<span class=rollable>$&</span>`)
-            paragraph.createEl('span').innerHTML = desc;
+            paragraph.createSpan().innerHTML = desc;
         }
         if (feature.flavor) {
             const flavor = paragraph.createEl('i', { cls: 'muted', text: feature.flavor });
@@ -143,7 +144,7 @@ export class AdversaryCard extends MarkdownRenderChild {
         const slots: HTMLInputElement[] = []
         const marked = this.plugin.getCardState(keys) ?? 0;
         if (stat > 0) {
-            statBar.createEl('span', { text: `${name}: ${stat} `, cls: "muted" });
+            statBar.createSpan({ text: `${name}: ${stat} `, cls: "muted" });
             for (let i = 0; i < stat; i++) {
                 const slot = statBar.createEl('input', { type: 'checkbox', cls: 'daggerheart-slot' });
                 if (i < marked) {
@@ -167,13 +168,13 @@ export class AdversaryCard extends MarkdownRenderChild {
         if (this.adv.thresholds.length > 0) {
             const thresholds = content.createEl('p', { cls: 'daggerheart-thresholds' });
             minor = thresholds.createEl('button', { text: 'MINOR' });
-            thresholds.createEl('span', { text: ` ${this.adv.thresholds[0]} ` });
+            thresholds.createSpan({ text: ` ${this.adv.thresholds[0]} ` });
             major = thresholds.createEl('button', { text: 'MAJOR' });
             if (this.adv.thresholds.length > 1) {
-                thresholds.createEl('span', { text: ` ${this.adv.thresholds[1]} ` });
+                thresholds.createSpan({ text: ` ${this.adv.thresholds[1]} ` });
                 severe = thresholds.createEl('button', { text: 'SEVERE' });
                 if (this.plugin.state.settings.showMassiveThreshold) {
-                    thresholds.createEl('span', { text: ` ${this.adv.thresholds?.[2] || 2 * this.adv.thresholds[1]} ` });
+                    thresholds.createSpan({ text: ` ${this.adv.thresholds?.[2] || 2 * this.adv.thresholds[1]} ` });
                     massive = thresholds.createEl('button', { text: 'MASSIVE' });
                 }
             }
@@ -200,7 +201,7 @@ export class AdversaryCard extends MarkdownRenderChild {
         let hordeSize: any;
         const match = this.adv.type?.match(/^horde\s+\((\d+)\/hp\)$/i);
         if (match && this.adv.hp > 0) {
-            hordeSize = statBar.createEl('span', { cls: "muted" });
+            hordeSize = statBar.createSpan({ cls: "muted" });
             hordeSize.update = () => {
                 const size = parseInt(match[1]);
                 const hp = this.plugin.getCardState([this.adv.id, index, 'hp']) ?? 0;
@@ -238,12 +239,16 @@ export class AdversaryCard extends MarkdownRenderChild {
 
     createPlusMinosButtons(card: HTMLElement, features: HTMLElement, statBlock: HTMLElement) {
         if (!this.adv.hp && !this.adv.stress) return;
-        const add = card.createEl('button', { cls: 'daggerheart-count clickable-icon' })
-        const remove = card.createEl('button', { cls: 'daggerheart-count clickable-icon' })
+        const add = card.createEl('button', {
+            cls: 'daggerheart-count clickable-icon',
+            attr: { 'aria-label': 'Increase adversary count' }
+        })
+        const remove = card.createEl('button', {
+            cls: 'daggerheart-count clickable-icon',
+            attr: { 'aria-label': 'Decrease adversary count' }
+        })
         setIcon(add, 'plus')
         setIcon(remove, 'minus')
-        add.setAttribute('aria-label', 'Increase adversary count');
-        remove.setAttribute('aria-label', 'Decrease adversary count');
 
         // hacky but works for now
         setTimeout(() => {
@@ -311,13 +316,15 @@ export class AdversaryCard extends MarkdownRenderChild {
             const dice = elt.classList.contains('rollable-attack')
                 ? `1d20${this.adv.attack == '0' ? '' : this.adv.attack}`
                 : elt.innerText;
-            new Notice(`${dice} = ${roll(dice).result}`);
+            const fragment = document.createDocumentFragment();
+            fragment.createEl('code', { text: `${dice} = ${roll(dice).result}` });
+            new Notice(fragment);
         });
 
         const content = card.createDiv({ cls: 'callout-content' });
-        const header = content.createEl('div');
-        const features = content.createEl('div');
-        const statBlock = content.createEl('div');
+        const header = content.createDiv();
+        const features = content.createDiv();
+        const statBlock = content.createDiv();
 
         this.createHeader(header);
         this.createFeaturesAndStats(features, statBlock);
