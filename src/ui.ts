@@ -9,6 +9,7 @@ type Feature = {
     type?: string;
     desc?: string;
     uses?: number;
+    countdown?: number;
     flavor?: string;
     // tokens?: number;
     // cost?

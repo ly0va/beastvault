@@ -25,8 +25,6 @@ features:
 - name:
   type:
   desc:
-
-count:
 \`\`\`
 `
 

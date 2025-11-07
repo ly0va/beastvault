@@ -132,6 +132,7 @@
       {
         "name": "The Climb",
         "type": "Passive",
+        "countdown": 12,
         "desc": "Climbing up the cliffside uses a Progress Countdown (12). It ticks down according to the following criteria when the PCs make an action roll to climb:\n- Critical Success: Tick down 3\n- Success with Hope: Tick down 2\n- Success with Fear: Tick down 1\n- Failure with Hope: No advancement\n- Failure with Fear: Tick up 1\n\nWhen the countdown triggers, the party has made it to the top of the cliff.",
         "flavor": "What strange formations are the stones arranged in? What ominous warnings did previous adventurers leave?"
       },
@@ -246,7 +247,8 @@
       {
         "name": "Dangerous Crossing",
         "type": "Passive",
-        "desc": "Crossing the river requires the party to complete a Progress Countdown (4). A PC who rolls a failure with Fear is immediately targeted by the “Undertow” action without requiring a Fear to be spent on the feature.",
+        "countdown": 4,
+        "desc": "Crossing the river requires the party to complete a Progress Countdown (4). A PC who rolls a failure with Fear is immediately targeted by the \"Undertow\" action without requiring a Fear to be spent on the feature.",
         "flavor": "Have any of the PCs forded rivers like this before? Are any of them afraid of drowning?"
       },
       {
@@ -258,7 +260,7 @@
       {
         "name": "Patient Hunter",
         "type": "Action",
-        "desc": "Spend a Fear to summon a Glass Snake within Close range of a chosen PC. The Snake appears in or near the river and immediately takes the spotlight to use their “Spinning Serpent” action.",
+        "desc": "Spend a Fear to summon a Glass Snake within Close range of a chosen PC. The Snake appears in or near the river and immediately takes the spotlight to use their \"Spinning Serpent\" action.",
         "flavor": "What treasures does the beast have in their burrow? What travelers have already fallen victim to this predator?"
       }
     ]
@@ -276,6 +278,7 @@
       {
         "name": "Desecrated Ground",
         "type": "Passive",
+        "countdown": 6,
         "desc": "Cultists dedicated this place to the Fallen Gods, and their foul influence seeps into it. Reduce the PCs' Hope Die to a d10 while in this environment. The desecration can be removed with a Progress Countdown (6).",
         "flavor": "How do the PCs first notice that something is wrong about this place? What fears resurface while hope is kept at bay?"
       },
@@ -288,6 +291,7 @@
       {
         "name": "The Summoning",
         "type": "Reaction",
+        "countdown": 6,
         "desc": "Countdown (6). When the PCs enter the scene or the cult begins the ritual to summon a demon, activate the countdown. Designate one adversary to lead the ritual. The countdown ticks down when a PC rolls with Fear. When it triggers, summon a Minor Demon within Very Close range of the ritual's leader. If the leader is defeated, the countdown ends with no effect as the ritual fails.",
         "flavor": "What will the cult do with this leashed demon if they succeed? What will they try to summon next?"
       },
@@ -342,7 +346,7 @@
     "desc": "An abandoned city populated by the restless spirits of eras past.",
     "difficulty": 14,
     "impulses": "Misdirect and disorient, replay apocalypses both public and personal",
-    "adversaries": "Ghosts (Spectral Archer, Spectral Captain, Spectral Guardian), (ghostly versions of other adversaries (see “Ghostly Form”))",
+    "adversaries": "Ghosts (Spectral Archer, Spectral Captain, Spectral Guardian), (ghostly versions of other adversaries (see \"Ghostly Form\"))",
     "source": "corebook",
     "features": [
       {
@@ -366,6 +370,7 @@
       {
         "name": "Apocalypse Then",
         "type": "Action",
+        "countdown": 5,
         "desc": "Spend a Fear to manifest the echo of a past disaster that ravaged the city. Activate a Progress Countdown (5) as the disaster replays around the PCs. To complete the countdown and escape the catastrophe, the PCs must overcome threats such as rampaging fires, stampeding civilians, collapsing buildings, or crumbling streets, while recalling history and finding clues to escape the inevitable.",
         "flavor": "Is this the disaster that led the city to be abandoned? What is known about this disaster, and how could that help the PCs escape?"
       }
@@ -402,6 +407,7 @@
       {
         "name": "Icy Winds",
         "type": "Reaction",
+        "countdown": 4,
         "desc": "Countdown (Loop 4). When the PCs enter the mountain pass, activate the countdown. When it triggers, all characters traveling through the pass must succeed on a Strength Reaction Roll or mark a Stress. A PC wearing clothes appropriate for extreme cold gains advantage on these rolls.",
         "flavor": "What parts of the PCs' bodies go numb first? How do they try to keep warm as they press forward?"
       }
@@ -426,6 +432,7 @@
       {
         "name": "The Indigo Flame",
         "type": "Passive",
+        "countdown": 8,
         "desc": "PCs who approach the central tree can make a Knowledge Roll to try to identify the magic that consumed this environment.\n- On a success: They learn three of the below details. On a success with Fear, they learn two.\n- On a failure: They can mark a Stress to learn one and gain advantage on the next action roll to investigate this environment.\n- Details: This is a result of Fallen magic. The corruption is spread through the ashen moss. It can be cleansed only by a ritual of nature magic with a Progress Countdown (8).",
         "flavor": "What fell cult corrupted these woods? What have they already done with the cursed wood and sap from this tree?"
       },
@@ -444,6 +451,7 @@
       {
         "name": "Choking Ash",
         "type": "Reaction",
+        "countdown": 6,
         "desc": "Countdown (Loop 6). When the PCs enter the Burning Heart of the Woods, activate the countdown. When it triggers, all characters must make a Strength or Instinct Reaction Roll. Targets who fail take 4d6+5 direct physical damage. Targets who succeed take half damage. Protective masks or clothes give advantage on the reaction roll.",
         "flavor": "What hallucinations does the ash induce? What incongruous taste does it possess?"
       }
@@ -468,6 +476,7 @@
       {
         "name": "Siege Weapons (Environment Change)",
         "type": "Action",
+        "countdown": 5,
         "desc": "Consequence Countdown (5). The attacking force deploys siege weapons to try to raze the defenders' fortifications. Activate the countdown when the siege begins (for a protracted siege, make this a long-term countdown instead). When it triggers, the defenders' fortifications have been breached and the attackers flood in. You gain 2 Fear, then shift to the Pitched Battle environment and spotlight it.",
         "flavor": "What siege weapons are being deployed? Are they magical, mundane, or a mixture of both? What defenses must the characters overcome to storm the castle?"
       },
@@ -534,12 +543,14 @@
       {
         "name": "Impossible Architecture",
         "type": "Passive",
+        "countdown": 8,
         "desc": "Up is down, down is right, right is a stairway. Gravity and directionality themselves are in flux, and any attempt to move through this realm is an odyssey unto itself, requiring a Progress Countdown (8). On a failure, a PC must mark a Stress in addition to the roll's other consequences.",
         "flavor": "What does it feel like to move in a space so alien to the Mortal Realm? What landmark or point do you fixate on to maintain your balance? What bizarre landmarks do you traverse on your journey?"
       },
       {
         "name": "Everything You Are This Place Will Take from You",
         "type": "Action",
+        "countdown": 14,
         "desc": "Countdown (Loop 14). Activate the countdown. When it triggers, all PCs must succeed on a Presence Reaction Roll or their highest trait is temporarily reduced by 1d4 unless they mark a number of Stress equal to its value. Any lost trait points are regained if the PC critically succeeds or escapes the Chaos Realm.",
         "flavor": "How does this place try to steal from you that which makes you legendary? What does it feel like to have this power taken from you?"
       },
@@ -576,7 +587,8 @@
       {
         "name": "Final Preparations",
         "type": "Passive",
-        "desc": "When the environment first takes the spotlight, designate one adversary as the Usurper seeking to overthrow the gods. Activate a Long-Term Countdown (8) as the Usurper assembles what they need to conduct the ritual. When it triggers, spotlight this environment to use the “Beginning of the End” feature. While this environment remains in play, you can hold up to 15 Fear.",
+        "countdown": 8,
+        "desc": "When the environment first takes the spotlight, designate one adversary as the Usurper seeking to overthrow the gods. Activate a Long-Term Countdown (8) as the Usurper assembles what they need to conduct the ritual. When it triggers, spotlight this environment to use the \"Beginning of the End\" feature. While this environment remains in play, you can hold up to 15 Fear.",
         "flavor": "What does the Usurper still require: The heart of a High Seraph? The last notes of an ancient vignette? The loyalty of two archenemies? The heartbroken tears of a pure soul?"
       },
       {
@@ -588,19 +600,20 @@
       {
         "name": "Defiers Abound",
         "type": "Action",
-        "desc": "Spend 2 Fear to summon 1d4+2 Fallen Shock Troops that appear within Close range of the Usurper to assist their divine siege. Immediately spotlight the Shock Troops to use a “Group Attack” action.",
+        "desc": "Spend 2 Fear to summon 1d4+2 Fallen Shock Troops that appear within Close range of the Usurper to assist their divine siege. Immediately spotlight the Shock Troops to use a \"Group Attack\" action.",
         "flavor": "Which High Fallen do these troops serve? Which god's flesh do they wish to feast upon?"
       },
       {
         "name": "Godslayer",
         "type": "Action",
-        "desc": "If the Divine Siege Countdown (see “Beginning of the End”) has triggered, you can spend 3 Fear to describe the Usurper slaying one of the gods of the Hallows Above, feasting upon their power and growing stronger. The Usurper clears 2 HP. Increase their Difficulty, damage, attack modifier, or give them a new feature from the slain god.",
+        "desc": "If the Divine Siege Countdown (see \"Beginning of the End\") has triggered, you can spend 3 Fear to describe the Usurper slaying one of the gods of the Hallows Above, feasting upon their power and growing stronger. The Usurper clears 2 HP. Increase their Difficulty, damage, attack modifier, or give them a new feature from the slain god.",
         "flavor": "Which god meets their end? What are their last words? How does the Usurper's new stolen power manifest?"
       },
       {
         "name": "Beginning of the End",
         "type": "Reaction",
-        "desc": "When the “Final Preparations” long-term countdown triggers, the Usurper begins hammering on the gates of the Hallows themselves. Activate a Divine Siege Countdown (10). Spotlight the Usurper to describe the Usurper's assault and tick down this countdown by 1. If the Usurper takes Major or greater damage, tick up the countdown by 1. When it triggers, the Usurper shatters the barrier between the Mortal Realm and the Hallows Above to slay the gods and take their place. You gain a Fear for each unmarked HP the Usurper has. You can immediately use the “Godslayer” feature without spending Fear to make an additional GM move.",
+        "countdown": 10,
+        "desc": "When the \"Final Preparations\" long-term countdown triggers, the Usurper begins hammering on the gates of the Hallows themselves. Activate a Divine Siege Countdown (10). Spotlight the Usurper to describe the Usurper's assault and tick down this countdown by 1. If the Usurper takes Major or greater damage, tick up the countdown by 1. When it triggers, the Usurper shatters the barrier between the Mortal Realm and the Hallows Above to slay the gods and take their place. You gain a Fear for each unmarked HP the Usurper has. You can immediately use the \"Godslayer\" feature without spending Fear to make an additional GM move.",
         "flavor": "How does the Mortal Realm writhe as the natural order is violated? What mortals witness this blasphemy from afar?"
       },
       {

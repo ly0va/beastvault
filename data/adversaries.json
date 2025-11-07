@@ -2890,7 +2890,7 @@
       {
         "name": "Refresh Warding Sphere",
         "type": "Action",
-        "desc": "Mark a Stress to refresh the Wizard's “Warding Sphere” reaction."
+        "desc": "Mark a Stress to refresh the Wizard's \"Warding Sphere\" reaction."
       },
       {
         "name": "Eruption",
@@ -2905,7 +2905,7 @@
       {
         "name": "Warding Sphere",
         "type": "Reaction",
-        "desc": "When the Wizard takes damage from an attack within Close range, deal 2d6 magic damage to the attacker. This reaction can't be used again until the Wizard refreshes it with their “Refresh Warding Sphere” action."
+        "desc": "When the Wizard takes damage from an attack within Close range, deal 2d6 magic damage to the attacker. This reaction can't be used again until the Wizard refreshes it with their \"Refresh Warding Sphere\" action."
       }
     ]
   },
