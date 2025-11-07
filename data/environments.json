@@ -132,7 +132,7 @@
       {
         "name": "The Climb",
         "type": "Passive",
-        "desc": "Climbing up the cliffside uses a Progress Countdown (12). It ticks down according to the following criteria when the PCs make an action roll to climb:\n- Critical Success: Tick down 3\n- Success with Hope: Tick down 2\n- Success with Fear: Tick down 1\n- Failure with Hope: No advancement\n- Failure with Fear: Tick up 1\n  When the countdown triggers, the party has made it to the top of the cliff.",
+        "desc": "Climbing up the cliffside uses a Progress Countdown (12). It ticks down according to the following criteria when the PCs make an action roll to climb:\n- Critical Success: Tick down 3\n- Success with Hope: Tick down 2\n- Success with Fear: Tick down 1\n- Failure with Hope: No advancement\n- Failure with Fear: Tick up 1\n\nWhen the countdown triggers, the party has made it to the top of the cliff.",
         "flavor": "What strange formations are the stones arranged in? What ominous warnings did previous adventurers leave?"
       },
       {
@@ -282,7 +282,7 @@
       {
         "name": "Blasphemous Might",
         "type": "Action",
-        "desc": "A portion of the ritual's power is diverted into a cult member to fight off interlopers. Choose one adversary to become Imbued with terrible magic until the scene ends or they're defeated. An Imbued adversary immediately takes the spotlight and gains one of the following benefits, or all three if you spend a Fear:\n- They gain advantage on all attacks.\n- They deal an extra 1d10 damage on a successful attack.\n- They gain the following feature:\\\n**Relentless (2)** - Passive: This adversary can be spotlighted multiple times per GM turn. Spend Fear as usual to spotlight them.",
+        "desc": "A portion of the ritual's power is diverted into a cult member to fight off interlopers. Choose one adversary to become Imbued with terrible magic until the scene ends or they're defeated. An Imbued adversary immediately takes the spotlight and gains one of the following benefits, or all three if you spend a Fear:\n- They gain advantage on all attacks.\n- They deal an extra 1d10 damage on a successful attack.\n- They gain the following feature:\n**Relentless (2)** - Passive: This adversary can be spotlighted multiple times per GM turn. Spend Fear as usual to spotlight them.",
         "flavor": "How does the enemy change in appearance? What fears do their blows bring to the surface?"
       },
       {

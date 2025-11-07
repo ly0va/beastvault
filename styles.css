@@ -68,6 +68,10 @@ input[type=checkbox].daggerheart-slot {
     display: none;
 }
 
+.block {
+    display: block;
+}
+
 .block-language-daggerheart + .edit-block-button {
     opacity: var(--icon-opacity) !important;
 }

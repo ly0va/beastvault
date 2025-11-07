@@ -64,7 +64,7 @@ export class AdversaryModal extends SuggestModal<Adversary> {
     onChooseSuggestion(adv: Adversary, evt: MouseEvent | KeyboardEvent) {
         adv.id = Math.random().toString(36).slice(2);
         delete adv.source;
-        this.editor.replaceSelection(`\`\`\`daggerheart\n${stringifyYaml(adv)}\n\`\`\`\n`);
+        this.editor.replaceSelection(`\`\`\`daggerheart\n${stringifyYaml(adv)}\`\`\`\n`);
     }
 }
 
@@ -127,16 +127,16 @@ export class AdversaryCard extends MarkdownRenderChild {
             this.createStatSlots(paragraph, 'Uses', feature.uses || 0, [this.adv.id, 0, 'uses', index]);
         }
         if (feature.desc) {
-            let desc = marked.parse(feature.desc, { async: false })
-                .replace(/<p>|<\/p>/g, "")
+            let desc = marked.parse(feature.desc, { async: false, breaks: true })
+                .replace(/<p>/g, "<span class=block>")
+                .replace(/<\/p>/g, "</span>")
                 .replace(/\b([sS])pend a [fF]ear\b/g, "<b>$1pend a Fear</b>")
                 .replace(/\b([mM])ark a [sS]tress\b/g, "<b>$1ark a Stress</b>")
                 .replace(DICE_PATTERN, `<span class=rollable>$&</span>`)
             paragraph.createSpan().innerHTML = desc;
         }
         if (feature.flavor) {
-            const flavor = paragraph.createEl('i', { cls: 'muted', text: feature.flavor });
-            flavor.style.display = 'block';
+            paragraph.createEl('i', { cls: 'muted block', text: feature.flavor });
         }
     }
 
