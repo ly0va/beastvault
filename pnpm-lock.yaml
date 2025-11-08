@@ -20,9 +20,6 @@ importers:
       esbuild:
         specifier: 0.17.3
         version: 0.17.3
-      marked:
-        specifier: ^16.4.1
-        version: 16.4.1
       obsidian:
         specifier: latest
         version: 1.10.0(@codemirror/state@6.5.0)(@codemirror/view@6.38.1)
@@ -203,11 +200,6 @@ packages:
     engines: {node: '>=12'}
     hasBin: true
 
-  marked@16.4.1:
-    resolution: {integrity: sha512-ntROs7RaN3EvWfy3EZi14H4YxmT6A5YvywfhO+0pm+cH/dnSQRmdAmoFIc3B9aiwTehyk7pESH4ofyBY+V5hZg==}
-    engines: {node: '>= 20'}
-    hasBin: true
-
   moment@2.29.4:
     resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}
 
@@ -364,8 +356,6 @@ snapshots:
       '@esbuild/win32-arm64': 0.17.3
       '@esbuild/win32-ia32': 0.17.3
       '@esbuild/win32-x64': 0.17.3
-
-  marked@16.4.1: {}
 
   moment@2.29.4: {}
 

@@ -1,6 +1,5 @@
-import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon } from 'obsidian';
+import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon, MarkdownRenderer } from 'obsidian';
 import { roll } from '@airjp73/dice-notation';
-import { marked } from 'marked';
 import DaggerheartPlugin from './main';
 import { hexToRgb, DICE_PATTERN } from './utils';
 
@@ -128,13 +127,24 @@ export class AdversaryCard extends MarkdownRenderChild {
             this.createStatSlots(paragraph, 'Uses', feature.uses || 0, [this.adv.id, 0, 'uses', index]);
         }
         if (feature.desc) {
-            let desc = marked.parse(feature.desc, { async: false, breaks: true })
-                .replace(/<p>/g, "<span class=block>")
-                .replace(/<\/p>/g, "</span>")
-                .replace(/\b([sS])pend a [fF]ear\b/g, "<b>$1pend a Fear</b>")
-                .replace(/\b([mM])ark a [sS]tress\b/g, "<b>$1ark a Stress</b>")
-                .replace(DICE_PATTERN, `<span class=rollable>$&</span>`)
-            paragraph.createSpan().innerHTML = desc;
+            const path = this.plugin.app.workspace.getActiveFile()!.path;
+            const div = document.createDocumentFragment().createDiv();
+            const featureSpan = paragraph.createSpan();
+            MarkdownRenderer.render(
+                this.plugin.app,
+                feature
+                    .desc
+                    .replace(/\b([sS])pend a [fF]ear\b/g, "<b>$1pend a Fear</b>")
+                    .replace(/\b([mM])ark a [sS]tress\b/g, "<b>$1ark a Stress</b>")
+                    .replace(DICE_PATTERN, `<span class=rollable>$&</span>`),
+                div,
+                path,
+                this
+            ).then(() => {
+                featureSpan.innerHTML = div.innerHTML
+                    .replace(/<p.*?>/g, "<span class=block>")
+                    .replace(/<\/p>/g, "</span>");
+            });
         }
         if (feature.flavor) {
             paragraph.createEl('i', { cls: 'muted block', text: feature.flavor });
