@@ -548,7 +548,7 @@
         "flavor": "What does it feel like to move in a space so alien to the Mortal Realm? What landmark or point do you fixate on to maintain your balance? What bizarre landmarks do you traverse on your journey?"
       },
       {
-        "name": "Everything You Are This Place Will Take from You",
+        "name": "Everything You Are This Place Will Take From You",
         "type": "Action",
         "countdown": 14,
         "desc": "Countdown (Loop 14). Activate the countdown. When it triggers, all PCs must succeed on a Presence Reaction Roll or their highest trait is temporarily reduced by 1d4 unless they mark a number of Stress equal to its value. Any lost trait points are regained if the PC critically succeeds or escapes the Chaos Realm.",

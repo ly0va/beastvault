@@ -12,7 +12,8 @@ export type PluginState = {
             [index: number]: {
                 hp?: number;
                 stress?: number;
-                uses?: number[]
+                uses?: number[];
+                countdown?: number[];
             };
         }
     }

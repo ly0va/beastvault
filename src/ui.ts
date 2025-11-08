@@ -125,6 +125,8 @@ export class AdversaryCard extends MarkdownRenderChild {
         paragraph.innerHTML += feature.type || feature.name ? `<br>` : '';
         if (this.count == 1) {
             this.createStatSlots(paragraph, 'Uses', feature.uses || 0, [this.adv.id, 0, 'uses', index]);
+            // For now, we only have countdowns in environments
+            this.createStatSlots(paragraph, 'Countdown', feature.countdown || 0, [this.adv.id, 0, 'countdown', index]);
         }
         if (feature.desc) {
             const path = this.plugin.app.workspace.getActiveFile()!.path;

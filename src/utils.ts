@@ -71,14 +71,13 @@ export function processAdversary(obj: any, filePath: string): Adversary {
         obj.xp = obj.xp.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
     }
 
-    return {
-        id: `${filePath}::${obj.name || ''}`,
-        hp: 0,
-        stress: 0,
-        xp: [],
-        thresholds: [],
-        features: [],
-        ...obj,
-    };
+    obj.id ??= `${filePath}::${obj.name || ''}`;
+    obj.hp ??= 0;
+    obj.stress ??= 0;
+    obj.xp ??= [];
+    obj.thresholds ??= [];
+    obj.features ??= [];
+
+    return obj;
 }
 
