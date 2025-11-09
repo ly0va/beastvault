@@ -28,12 +28,16 @@ Insert an adversary via a command by going `Ctrl+P` > `Insert adversary from lib
 > For quicker access, bind plugin commands to a key combination of your choice from the Hotkeys settings tab.
 > I use `Alt+A` to insert an adversary & `Alt+E` to insert an environment.
 
+---
+
 Create your own homebrew adversary by creating a `daggerheart` code block or editing an inserted one.
 
-![Create homebrew adversary](./media/create.gif)
+![Create homebrew adversary](./media/create.png)
 
 > [!TIP]
 > You can insert an empty adversary template by using the `Insert adversary template` command.
+
+---
 
 Build out full encounters in a canvas and track their HP & stress during a session:
 
