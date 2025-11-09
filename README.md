@@ -14,7 +14,8 @@ An [obsidian.md](https://obsidian.md) plugin for Daggerheart TTRPG GMs to search
 
 ### Planned
 
-- [ ] Local library support for homebrew stat blocks to seach over
+- [ ] Local library support for homebrew stat blocks to search over
+- [ ] Filtering and sorting via Bases
 - [ ] "Summon" buttons for adversaries/environments that might summon others
 - [ ] Ability to mark adversaries with conditions (e.g. Vulnerable, Restrained)
 
