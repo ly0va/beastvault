@@ -20,11 +20,11 @@ An [obsidian.md](https://obsidian.md) plugin for Daggerheart TTRPG GMs to search
 
 ## Examples
 
-Insert an adversary via a command by going "Ctrl+P > Insert adversary from library".
+Insert an adversary via a command by going `Ctrl+P` > `Insert adversary from library`.
 
 ![Insert an adversary from library](./media/insert.gif)
 
-> [!tip] Keybind
+> [!TIP]
 > For quicker access, bind plugin commands to a key combination of your choice from the Hotkeys settings tab.
 > I use `Alt+A` to insert an adversary & `Alt+E` to insert an environment.
 
@@ -32,14 +32,14 @@ Create your own homebrew adversary by creating a `daggerheart` code block or edi
 
 ![Create homebrew adversary](./media/create.gif)
 
-> [!tip] Template
-> You can insert an empty adversary template by using the "Insert adversary template" command.
+> [!TIP]
+> You can insert an empty adversary template by using the `Insert adversary template` command.
 
 Build out full encounters in a canvas and track their HP & stress during a session:
 
 ![Canvas encounter](./media/encounter.gif)
 
-> [!tip] Canvas node auto-resizing
+> [!TIP]
 > Building encounters in a canvas is made much more convenient by enabling node auto-resizing in [this plugin](https://github.com/Developer-Mike/obsidian-advanced-canvas).
 > During a playing session, using canvas in read-only mode is recommended.
 
@@ -66,7 +66,7 @@ The `daggerheart` code block parses the adversary or an environment as [YAML](ht
 | `features` | List of feature objects, see table below | |
 | `id` | Stat block id, used by the plugin to track marked HP, stress etc; inserted automatically, can be any random string; defaults to `fileName::adversaryName` | `a2sd4vsf` |
 
-`feature` properties:
+`features` properties:
 
 | Property | Definition | Example |
 | --- | --- | --- |
