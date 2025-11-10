@@ -1,4 +1,4 @@
-import { Editor, Plugin, setTooltip, parseYaml } from 'obsidian';
+import { Editor, Plugin, setTooltip, parseYaml, Menu, Notice } from 'obsidian';
 import { SettingTab, type PluginSettings, DEFAULT_SETTINGS } from './settings';
 import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, processAdversary } from './utils';
 import { AdversaryCard, AdversaryModal } from './ui';
@@ -123,6 +123,38 @@ export default class DaggerheartPlugin extends Plugin {
             editorCallback: (editor: Editor) => {
                 new AdversaryModal(this.app, editor, ENV_LIBRARY).open();
             },
+        });
+
+        this.addRibbonIcon('swords', 'BeastVault menu', (event) => {
+            const menu = new Menu();
+            const onClick = (callback: (editor: Editor) => void) => () => {
+                const editor = this.app.workspace.activeEditor?.editor;
+                if (!editor) {
+                    new Notice('No active editor');
+                } else {
+                    callback(editor);
+                }
+            }
+
+            menu.addItem((item) => item
+                .setTitle('Insert adversary from library')
+                .onClick(onClick((editor) => new AdversaryModal(this.app, editor, ADV_LIBRARY).open())));
+
+            menu.addItem((item) => item
+                .setTitle('Insert adversary template')
+                .onClick(onClick((editor) => editor.replaceRange(ADV_TEMPLATE.trim(), editor.getCursor()))));
+
+            menu.addSeparator();
+
+            menu.addItem((item) => item
+                .setTitle('Insert environment from library')
+                .onClick(onClick((editor) => new AdversaryModal(this.app, editor, ENV_LIBRARY).open())));
+
+            menu.addItem((item) => item
+                .setTitle('Insert environment template')
+                .onClick(onClick((editor) => editor.replaceRange(ENV_TEMPLATE.trim(), editor.getCursor()))));
+
+            menu.showAtMouseEvent(event);
         });
     }
 
