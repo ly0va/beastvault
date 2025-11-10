@@ -1,6 +1,6 @@
 # BeastVault
 
-An [obsidian.md](https://obsidian.md) plugin for Daggerheart TTRPG GMs to search, edit, and create beautiful adversary & environment stat blocks.
+An [Obsidian.md](https://obsidian.md) plugin for Daggerheart TTRPG GMs to search, edit, and create beautiful adversary & environment stat blocks.
 
 ## Features
 
@@ -29,6 +29,9 @@ Insert an adversary via a command by going `Ctrl+P` > `Insert adversary from lib
 > For quicker access, bind plugin commands to a key combination of your choice from the Hotkeys settings tab.
 > I use `Alt+A` to insert an adversary & `Alt+E` to insert an environment.
 
+> [!TIP]
+> `Click` threshold buttons to mark the corresponding amount of HP. Use `Alt+Click` to clear it instead.
+
 ---
 
 Create your own homebrew adversary by creating a `daggerheart` code block or editing an inserted one.
@@ -47,6 +50,23 @@ Build out full encounters in a canvas and track their HP & stress during a sessi
 > [!TIP]
 > Building encounters in a canvas is made much more convenient by enabling node auto-resizing in [this plugin](https://github.com/Developer-Mike/obsidian-advanced-canvas).
 > During a playing session, using canvas in read-only mode is recommended.
+
+## Installation
+
+### Manual
+
+1. Go to the [latest release](https://github.com/ly0va/beastvault/releases/latest)
+2. Download `main.js`, `manifest.json` and `styles.css`
+3. Inside your Obsidian vault, create folder `.obsidian/plugins/beastvault`
+4. Copy the downloaded files to this folder
+5. If Obsidian was open, restart it
+6. Navigate to `Settings` > `Community plugins` and enable BeastVault
+
+### Automatic via [BRAT](https://github.com/TfTHacker/obsidian42-brat)
+
+1. Install the [BRAT](https://obsidian.md/plugins?search=brat) plugin from the community plugins browser
+2. Navigate to BRAT settings and click `Add beta plugin`
+3. Enter `ly0va/beastvault` as the repository and click `Add plugin`
 
 ## Reference
 
