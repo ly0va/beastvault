@@ -56,7 +56,7 @@ export class SettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Number of PCs')
-            .setDesc('Used for Battle Boint calculation in the status bar')
+            .setDesc('Used for Battle Point calculation in the status bar')
             .addSlider(slider => slider
                 .setLimits(0, 10, 1)
                 .setValue(this.plugin.state.settings.numberOfPCs)
