@@ -3,7 +3,7 @@
 	"name": "BeastVault",
 	"version": "1.0.0",
 	"minAppVersion": "1.9.14",
-	"description": "Search, edit, and create beautiful adversary and environment stat blocks for Daggerheart TTRPG.",
+	"description": "Adversary and environment stat blocks for Daggerheart TTRPG.",
 	"author": "Lyova Potyomkin",
 	"authorUrl": "https://github.com/ly0va",
 	"isDesktopOnly": false
