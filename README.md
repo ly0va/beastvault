@@ -19,38 +19,6 @@ An [Obsidian.md](https://obsidian.md) plugin for Daggerheart TTRPG GMs to search
 - [ ] "Summon" buttons for adversaries/environments that might summon others
 - [ ] Ability to mark adversaries with conditions (e.g. Vulnerable, Restrained)
 
-## Examples
-
-Insert an adversary via a command by going `Ctrl+P` > `Insert adversary from library`.
-
-![Insert an adversary from library](./media/insert.gif)
-
-> [!TIP]
-> For quicker access, bind plugin commands to a key combination of your choice from the Hotkeys settings tab.
-> I use `Alt+A` to insert an adversary & `Alt+E` to insert an environment.
-
-> [!TIP]
-> `Click` threshold buttons to mark the corresponding amount of HP. Use `Alt+Click` to clear it instead.
-
----
-
-Create your own homebrew adversary by creating a `daggerheart` code block or editing an inserted one.
-
-![Create homebrew adversary](./media/create.png)
-
-> [!TIP]
-> You can insert an empty adversary template by using the `Insert adversary template` command.
-
----
-
-Build out full encounters in a canvas and track their HP & stress during a session:
-
-![Canvas encounter](./media/encounter.gif)
-
-> [!TIP]
-> Building encounters in a canvas is made much more convenient by enabling node auto-resizing in [this plugin](https://github.com/Developer-Mike/obsidian-advanced-canvas).
-> During a playing session, using canvas in read-only mode is recommended.
-
 ## Installation
 
 ### Manual
@@ -67,6 +35,38 @@ Build out full encounters in a canvas and track their HP & stress during a sessi
 1. Install the [BRAT](https://obsidian.md/plugins?search=brat) plugin from the community plugins browser
 2. Navigate to BRAT settings and click `Add beta plugin`
 3. Enter `ly0va/beastvault` as the repository and click `Add plugin`
+
+## Showcase
+
+Insert an adversary via a command by going `Ctrl+P` > `Insert adversary from library` or using the side ribbon button.
+
+![Insert an adversary from library](./media/insert.gif)
+
+> [!TIP]
+> For quicker access, bind plugin commands to a key combination of your choice from the Hotkeys settings tab.
+> I use `Alt+A` to insert an adversary & `Alt+E` to insert an environment.
+
+> [!TIP]
+> `Click` threshold buttons to mark the corresponding amount of HP. Use `Alt+Click` to clear it instead.
+
+---
+
+Make your own homebrew adversary by creating a `daggerheart` code block, or edit an inserted one by clicking the `</>` button in the top-right corner.
+
+![Create homebrew adversary](./media/create.png)
+
+> [!TIP]
+> You can insert an empty adversary template by using the `Insert adversary template` command.
+
+---
+
+Build out full encounters in a canvas and track their HP & stress during a session. Marked HP & stress are preserved even after you close Obsidian.
+
+![Canvas encounter](./media/encounter.gif)
+
+> [!TIP]
+> Building encounters in a canvas is made much more convenient by enabling node auto-resizing in [this plugin](https://github.com/Developer-Mike/obsidian-advanced-canvas).
+> During a playing session, using canvas in read-only mode is recommended.
 
 ## Reference
 
