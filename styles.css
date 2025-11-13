@@ -65,6 +65,17 @@ input[type=checkbox].daggerheart-slot {
     position: absolute;
     top: var(--size-2-2);
     right: var(--size-2-2);
+}
+
+.daggerheart-count-lower {
+    top: 30px;
+}
+
+.daggerheart-count-even-lower {
+    top: 56px;
+}
+
+.invisible {
     display: none;
 }
 

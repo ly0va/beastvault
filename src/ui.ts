@@ -10,8 +10,6 @@ type Feature = {
     uses?: number;
     countdown?: number;
     flavor?: string;
-    // tokens?: number;
-    // cost?
 }
 
 export type Adversary = {
@@ -19,27 +17,29 @@ export type Adversary = {
     tier?: number;
     type?: string;
     difficulty?: string;
-
-    weapon?: string;
-    range?: string;
-    damage?: string;
+    desc?: string;
+    features: Feature[];
 
     // these are for environments
     tone?: string;
     impulses?: string;
     adversaries?: string;
 
+    // these are for adversaries
     hp: number;
     stress: number;
     thresholds: number[];
     attack?: string;
     xp: string[];
     motives?: string;
-    desc?: string;
+
+    weapon?: string;
+    range?: string;
+    damage?: string;
+
+    // these are not rendered
     source?: string;
-    features: Feature[]
     id: string;
-    // syncProperties?: boolean
 };
 
 export class AdversaryModal extends SuggestModal<Adversary> {
@@ -80,12 +80,23 @@ export class AdversaryCard extends MarkdownRenderChild {
         this.count = this.plugin.state.cards[this.adv.id]?.count || 1;
     }
 
+
     createTitle(card: HTMLElement) {
         const title = card.createDiv({ cls: 'callout-title spreadout' });
         const mainTitle = title.createEl('b', { cls: 'larger', text: `${this.adv.name || ''}` });
         const subTitle = title.createEl('b', { cls: 'smaller padded' });
-        subTitle.innerHTML += this.adv.tier ? `Tier ${this.adv.tier} ` : '';
-        subTitle.innerHTML += this.adv.type ? this.adv.type : '';
+        subTitle.setText(
+            (this.adv.tier ? `Tier ${this.adv.tier} ` : '')
+            + (this.adv.type ? this.adv.type : '')
+        );
+    }
+
+    createHeaderEntry(header: HTMLElement, name: string, entry: string | string[] | undefined) {
+        const isEmpty = Array.isArray(entry) ? entry.length == 0 : entry == null || entry == '';
+        if (isEmpty) return;
+        header.createEl('b', { text: `${name}: ` });
+        header.createSpan({ text: Array.isArray(entry) ? entry.join(', ') : entry });
+        header.createEl('br');
     }
 
     createHeader(content: HTMLElement) {
@@ -95,43 +106,43 @@ export class AdversaryCard extends MarkdownRenderChild {
         }
 
         const header = content.createEl('p', { cls: 'smaller' });
-        header.innerHTML += this.adv.difficulty ? `<b>Difficulty:</b> ${this.adv.difficulty}<br>` : '';
+        this.createHeaderEntry(header, 'Difficulty', this.adv.difficulty);
 
         if (this.adv.attack != null) {
-            header.innerHTML += `<b>Attack:</b> `
+            header.createEl('b', { text: 'Attack: ' });
             header.createSpan({ text: this.adv.attack, cls: 'rollable rollable-attack' });
             header.createEl('br');
         }
 
         if (this.adv.weapon || this.adv.range || this.adv.damage) {
-            header.innerHTML += `<b>${this.adv.weapon || 'Weapon'}:</b> `
-            header.innerHTML += `${this.adv.range || ''}`
-            header.innerHTML += (this.adv.range && this.adv.damage) ? ' | ' : '';
-            header.innerHTML += this.adv.damage?.replace(DICE_PATTERN, '<span class=rollable>$&</span>') || '';
+            header.createEl('b', { text: `${this.adv.weapon || 'Weapon'}: ` })
+            header.createSpan(this.adv.range || '')
+            header.createSpan((this.adv.range && this.adv.damage) ? ' | ' : '');
+            this.adv.damage?.split(DICE_PATTERN).forEach(part => {
+                header.createSpan({ text: part, cls: DICE_PATTERN.test(part) ? 'rollable' : '' });
+            });
             header.createEl('br');
         }
-        header.innerHTML += this.adv.xp.length > 0 ? `<b>Experience:</b> ${this.adv.xp.join(', ')}<br>` : '';
-        header.innerHTML += this.adv.motives ? `<b>Motives &amp; Tactics:</b> ${this.adv.motives}<br>` : '';
-        header.innerHTML += this.adv.tone ? `<b>Tone &amp Feel:</b> ${this.adv.tone}<br>` : '';
-        header.innerHTML += this.adv.impulses ? `<b>Impulses:</b> ${this.adv.impulses}<br>` : '';
-        header.innerHTML += this.adv.adversaries ? `<b>Potential Adversaries:</b> ${this.adv.adversaries}<br>` : '';
+        this.createHeaderEntry(header, 'Experience', this.adv.xp);
+        this.createHeaderEntry(header, 'Motives & Tactics', this.adv.motives);
+        this.createHeaderEntry(header, 'Tone & Feel', this.adv.tone);
+        this.createHeaderEntry(header, 'Impulses', this.adv.impulses);
+        this.createHeaderEntry(header, 'Potential Adversaries', this.adv.adversaries);
     }
 
     createFeature(content: HTMLElement, index: number, feature: Feature) {
         const paragraph = content.createEl('p', { cls: 'smaller' })
-        paragraph.innerHTML += feature.name ? `<b>${feature.name}</b>` : '';
-        paragraph.innerHTML += feature.type && feature.name ? ` - ` : '';
-        paragraph.innerHTML += feature.type ? `${feature.type}` : '';
-        paragraph.innerHTML += feature.type || feature.name ? `<br>` : '';
+        paragraph.createEl('b', { text: feature.name || '' });
+        paragraph.createSpan({ text: feature.type && `${feature.name}` ? ' - ' : '' });
+        paragraph.createSpan({ text: feature.type || '' });
+        feature.type || feature.name ? paragraph.createEl('br') : '';
         if (this.count == 1) {
             this.createStatSlots(paragraph, 'Uses', feature.uses || 0, [this.adv.id, 0, 'uses', index]);
             // For now, we only have countdowns in environments
             this.createStatSlots(paragraph, 'Countdown', feature.countdown || 0, [this.adv.id, 0, 'countdown', index]);
         }
         if (feature.desc) {
-            const path = this.plugin.app.workspace.getActiveFile()!.path;
-            const div = document.createDocumentFragment().createDiv();
-            const featureSpan = paragraph.createSpan();
+            const featureDiv = paragraph.createDiv();
             MarkdownRenderer.render(
                 this.plugin.app,
                 feature
@@ -139,11 +150,12 @@ export class AdversaryCard extends MarkdownRenderChild {
                     .replace(/\b([sS])pend a [fF]ear\b/g, "<b>$1pend a Fear</b>")
                     .replace(/\b([mM])ark a [sS]tress\b/g, "<b>$1ark a Stress</b>")
                     .replace(DICE_PATTERN, `<span class=rollable>$&</span>`),
-                div,
-                path,
+                featureDiv,
+                this.plugin.app.workspace.getActiveFile()!.path,
                 this
             ).then(() => {
-                featureSpan.innerHTML = div.innerHTML
+                // Using innerHTML like this is safe since we're only replacing tags
+                featureDiv.innerHTML = featureDiv.innerHTML
                     .replace(/<p.*?>/g, "<span class=block>")
                     .replace(/<\/p>/g, "</span>");
             });
@@ -253,11 +265,11 @@ export class AdversaryCard extends MarkdownRenderChild {
     createPlusMinosButtons(card: HTMLElement, features: HTMLElement, statBlock: HTMLElement) {
         if (!this.adv.hp && !this.adv.stress) return;
         const add = card.createEl('button', {
-            cls: 'daggerheart-count clickable-icon',
+            cls: 'daggerheart-count clickable-icon invisible',
             attr: { 'aria-label': 'Increase adversary count' }
         })
         const remove = card.createEl('button', {
-            cls: 'daggerheart-count clickable-icon',
+            cls: 'daggerheart-count clickable-icon invisible',
             attr: { 'aria-label': 'Decrease adversary count' }
         })
         setIcon(add, 'plus')
@@ -267,13 +279,13 @@ export class AdversaryCard extends MarkdownRenderChild {
         setTimeout(() => {
             const editable = card.parentElement?.nextElementSibling?.classList.contains('edit-block-button');
             if (editable) {
-                add.style.top = '2.5em';
-                remove.style.top = '4.8em';
+                add.addClass('daggerheart-count-lower');
+                remove.addClass('daggerheart-count-even-lower');
             } else {
-                remove.style.top = '2.5em';
+                remove.addClass('daggerheart-count-lower');
             }
-            add.style.display = 'flex';
-            remove.style.display = 'flex';
+            add.removeClass('invisible');
+            remove.removeClass('invisible');
         }, 5);
 
         const rerender = () => {
