@@ -76,10 +76,10 @@ You can also import adversaries in bulk, by creating `.json` or `.yaml` files in
 The structure of the stat blocks is documented below.
 
 > [!IMPORTANT]
-> Only entries with a valid string `name` are added to the library.
-> After adding, deleting, or modifying anything in the library, run `Refresh library` either by using the side ribbon menu or the command palette.
-> If an entry has no `hp` and no `stress` fields, it is added as an environment; otherwise - as an adversary.
-> All other fields are optional.
+> - Only entries with a valid string `name` are added to the library.
+> - After adding, deleting, or modifying anything in the library, run `Refresh library` either by using the side ribbon menu or the command palette.
+> - If an entry has no `hp` and no `stress` fields, it is added as an environment; otherwise - as an adversary.
+> - All other fields are optional.
 
 ## Reference
 
