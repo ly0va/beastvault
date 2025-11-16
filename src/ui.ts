@@ -1,7 +1,7 @@
 import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon, MarkdownRenderer } from 'obsidian';
 import { roll } from '@airjp73/dice-notation';
 import BeastVault from './main';
-import { hexToRgb, DICE_PATTERN } from './utils';
+import { hexToRgb, DICE_PATTERN, subTitle } from './utils';
 
 type Feature = {
     name?: string;
@@ -41,10 +41,6 @@ export type Adversary = {
     source?: string;
     id: string;
 };
-
-function subTitle(tier?: number, type?: string) {
-    return (tier ? `Tier ${tier} ` : '') + (type ? type : '');
-}
 
 export class AdversaryModal extends SuggestModal<Adversary> {
     constructor(app: App, private editor: Editor, private library: Adversary[]) {

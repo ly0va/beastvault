@@ -86,3 +86,12 @@ input[type=checkbox].daggerheart-slot {
 .block-language-daggerheart + .edit-block-button {
     opacity: var(--icon-opacity) !important;
 }
+
+.daggerheart-library {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
+}
+
+.library-item {
+    margin: 0.5em 0.5em !important;
+}

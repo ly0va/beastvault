@@ -1,7 +1,8 @@
-import { Editor, Plugin, setTooltip, parseYaml, Menu, Notice, type TFolder } from 'obsidian';
+import { Editor, Plugin, setTooltip, parseYaml, Menu, Notice, type TFolder, type WorkspaceLeaf } from 'obsidian';
 import { SettingTab, type PluginSettings, DEFAULT_SETTINGS } from './settings';
 import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, processAdversary, walkFolder } from './utils';
 import { AdversaryCard, AdversaryModal, type Adversary } from './ui';
+import { LIBRARY_VIEW_TYPE, LibraryView } from './library';
 
 export type PluginState = {
     settings: PluginSettings;
@@ -39,6 +40,18 @@ export default class BeastVault extends Plugin {
             }
         }
         this.battlePoints.setText('');
+    }
+
+    async openLibraryView() {
+        const leaves = this.app.workspace.getLeavesOfType(LIBRARY_VIEW_TYPE);
+        let leaf: WorkspaceLeaf | null;
+        if (leaves.length > 0) {
+            leaf = leaves[0];
+        } else {
+            leaf = this.app.workspace.getLeaf('tab');
+            await leaf?.setViewState({ type: LIBRARY_VIEW_TYPE, active: true });
+        }
+        this.app.workspace.revealLeaf(leaf);
     }
 
     calculateBattlePoints(filePath: string): number {
@@ -144,6 +157,7 @@ export default class BeastVault extends Plugin {
         this.battlePoints = this.addStatusBarItem();
         this.registerEvent(this.app.workspace.on('active-leaf-change', () => this.updateStatusBar()));
         this.app.workspace.onLayoutReady(() => this.scanLibrary(false, 'no'));
+        this.registerView(LIBRARY_VIEW_TYPE, (leaf) => new LibraryView(leaf, this))
 
         this.registerMarkdownCodeBlockProcessor("daggerheart", (src, el, ctx) => {
             const adv = processAdversary(parseYaml(src) ?? {}, this.app.workspace.getActiveFile()!.path);
