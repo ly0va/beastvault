@@ -38,7 +38,7 @@ An [Obsidian.md](https://obsidian.md) plugin for Daggerheart TTRPG GMs to search
 
 ## Showcase
 
-Insert an adversary via a command by going `Ctrl+P` > `Insert adversary from library` or using the side ribbon button.
+Insert an adversary via a command by going `Ctrl+P` > `Insert adversary from library` or using the side ribbon menu.
 
 ![Insert an adversary from library](./media/insert.gif)
 
@@ -73,10 +73,11 @@ Build out full encounters in a canvas and track their HP & stress during a sessi
 Go to `BeastVault settings` > `Library folder location` and enter a folder name. All notes in this folder will be scanned for `daggerheart` codeblocks, which will be available in search.
 
 You can also import adversaries in bulk, by creating `.json` or `.yaml` files in this folder, which can contain a single stat block or an array of stat blocks.
-The structure of the statblocks is documented below.
+The structure of the stat blocks is documented below.
 
 > [!IMPORTANT]
 > Only entries with a valid string `name` are added to the library.
+> After adding, deleting, or modifying anything in the library, run `Refresh library` either by using the side ribbon menu or the command palette.
 > If an entry has no `hp` and no `stress` fields, it is added as an environment; otherwise - as an adversary.
 > All other fields are optional.
 
