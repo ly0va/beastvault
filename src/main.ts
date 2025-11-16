@@ -1,7 +1,7 @@
-import { Editor, Plugin, setTooltip, parseYaml, Menu, Notice } from 'obsidian';
+import { Editor, Plugin, setTooltip, parseYaml, Menu, Notice, type TFolder } from 'obsidian';
 import { SettingTab, type PluginSettings, DEFAULT_SETTINGS } from './settings';
-import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, processAdversary } from './utils';
-import { AdversaryCard, AdversaryModal } from './ui';
+import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, processAdversary, walkFolder } from './utils';
+import { AdversaryCard, AdversaryModal, type Adversary } from './ui';
 
 export type PluginState = {
     settings: PluginSettings;
@@ -15,16 +15,17 @@ export type PluginState = {
                 uses?: number[];
                 countdown?: number[];
             };
-        }
-    }
-}
+        };
+    };
+};
 
-export default class DaggerheartPlugin extends Plugin {
+export default class BeastVault extends Plugin {
     activeBlocks: Map<AdversaryCard, string> = new Map();
     state: PluginState;
     saveTimer?: number;
     saving?: Promise<void>;
     battlePoints: HTMLElement;
+    library: Adversary[] = [];
 
     updateStatusBar() {
         const file = this.app.workspace.getActiveFile();
@@ -64,11 +65,87 @@ export default class DaggerheartPlugin extends Plugin {
         return totalBP;
     }
 
+    async scanLibrary(notFoundNotice: boolean, loadedNotice: 'yes' | 'no' | 'conditional') {
+        new Notice('Scanning library folder...');
+        const folderPath = this.state.settings.libraryFolder;
+        let folder: TFolder | null;
+        if (!folderPath || !(folder = this.app.vault.getFolderByPath(folderPath))) {
+            this.library = [];
+            if (notFoundNotice) {
+                new Notice('Library folder does not exist in the vault');
+            }
+            return;
+        }
+        const newLibrary: Adversary[] = [];
+        await walkFolder(folder, async (file) => {
+            let content: any;
+
+            if (file.extension == 'json') {
+                content = JSON.parse(await this.app.vault.read(file));
+            } else if (file.extension == 'yml' || file.extension == 'yaml') {
+                content = parseYaml(await this.app.vault.read(file));
+            } else if (file.extension == 'md') {
+                const metadata = this.app.metadataCache.getFileCache(file)
+                const codeblocks = metadata?.sections?.filter(sec => sec.type == 'code') ?? [];
+                if (codeblocks.length == 0) return;
+                const lines = (await this.app.vault.read(file)).split('\n');
+                content = codeblocks
+                    .filter(sec => lines[sec.position.start.line].trim() === '```daggerheart')
+                    .map(sec => parseYaml(lines.slice(sec.position.start.line + 1, sec.position.end.line).join("\n")));
+            } else {
+                return;
+            }
+
+            if (!Array.isArray(content)) content = [content];
+            for (const item of content) {
+                if (item && typeof item == 'object' && typeof item.name == 'string') {
+                    newLibrary.push(processAdversary({ source: file.path, ...item }, file.path));
+                }
+            }
+        })
+
+        if (this.state.settings.ignoreDuplicateNames) {
+            this.library = [];
+            for (const adv of newLibrary) {
+                if (ADV_LIBRARY.find(a => a.name == adv.name)
+                    || ENV_LIBRARY.find(a => a.name == adv.name)
+                    || this.library.find(a => a.name == adv.name)) {
+                    adv.id = 'duplicate';
+                    continue;
+                }
+                this.library.push(adv);
+            }
+        } else {
+            this.library = newLibrary;
+        }
+
+        const length = this.library.length;
+        if (loadedNotice === 'yes' || loadedNotice === 'conditional' && length > 0) {
+            if (length == 0) {
+                new Notice(`No valid stat blocks found in ${this.state.settings.libraryFolder}`);
+            } else {
+                new Notice(`Loaded ${length} stat block${length != 1 ? 's' : ''}`)
+            }
+        }
+
+        return newLibrary;
+    }
+
+    allAdversaries(): Adversary[] {
+        return this.library.filter(adv => (adv.hp && adv.hp > 0) || (adv.stress && adv.stress > 0)).concat(ADV_LIBRARY);
+    }
+
+    allEnvironments(): Adversary[] {
+        return this.library.filter(adv => (!adv.hp || adv.hp == 0) && (!adv.stress || adv.stress == 0)).concat(ENV_LIBRARY);
+    }
+
     async onload() {
         this.state = Object.assign({}, { settings: {}, cards: {} }, await this.loadData());
         this.state.settings = Object.assign({}, DEFAULT_SETTINGS, this.state.settings);
         this.battlePoints = this.addStatusBarItem();
         this.registerEvent(this.app.workspace.on('active-leaf-change', () => this.updateStatusBar()));
+        // TODO: this might be overkill, as it fires everytime anything changes
+        this.registerEvent(this.app.metadataCache.on("resolved", () => this.scanLibrary(false, 'no')));
 
         this.registerMarkdownCodeBlockProcessor("daggerheart", (src, el, ctx) => {
             const adv = processAdversary(parseYaml(src) ?? {}, this.app.workspace.getActiveFile()!.path);
@@ -111,19 +188,24 @@ export default class DaggerheartPlugin extends Plugin {
             }
         })
         this.addCommand({
-            id: 'insert-from-library',
+            id: 'insert-adversary-from-library',
             name: 'Insert adversary from library',
             editorCallback: (editor: Editor) => {
-                new AdversaryModal(this.app, editor, ADV_LIBRARY).open();
+                new AdversaryModal(this.app, editor, this.allAdversaries()).open();
             },
         });
         this.addCommand({
             id: 'insert-environment-from-library',
             name: 'Insert environment from library',
             editorCallback: (editor: Editor) => {
-                new AdversaryModal(this.app, editor, ENV_LIBRARY).open();
+                new AdversaryModal(this.app, editor, this.allEnvironments()).open();
             },
         });
+        this.addCommand({
+            id: 'refresh-library',
+            name: 'Refresh library',
+            callback: () => this.scanLibrary(true, 'yes')
+        })
 
         this.addRibbonIcon('swords', 'BeastVault menu', (event) => {
             const menu = new Menu();
@@ -138,21 +220,32 @@ export default class DaggerheartPlugin extends Plugin {
 
             menu.addItem((item) => item
                 .setTitle('Insert adversary from library')
-                .onClick(onClick((editor) => new AdversaryModal(this.app, editor, ADV_LIBRARY).open())));
+                .setIcon('book-copy')
+                .onClick(onClick((editor) => new AdversaryModal(this.app, editor, this.allAdversaries()).open())));
 
             menu.addItem((item) => item
                 .setTitle('Insert adversary template')
+                .setIcon('book-dashed')
                 .onClick(onClick((editor) => editor.replaceRange(ADV_TEMPLATE.trim(), editor.getCursor()))));
 
             menu.addSeparator();
 
             menu.addItem((item) => item
                 .setTitle('Insert environment from library')
-                .onClick(onClick((editor) => new AdversaryModal(this.app, editor, ENV_LIBRARY).open())));
+                .setIcon('book-copy')
+                .onClick(onClick((editor) => new AdversaryModal(this.app, editor, this.allEnvironments()).open())));
 
             menu.addItem((item) => item
                 .setTitle('Insert environment template')
+                .setIcon('book-dashed')
                 .onClick(onClick((editor) => editor.replaceRange(ENV_TEMPLATE.trim(), editor.getCursor()))));
+
+            menu.addSeparator();
+
+            menu.addItem((item) => item
+                .setTitle('Refresh library')
+                .setIcon('refresh-cw')
+                .onClick(() => this.scanLibrary(true, 'yes')));
 
             menu.showAtMouseEvent(event);
         });

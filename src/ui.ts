@@ -1,6 +1,6 @@
 import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon, MarkdownRenderer } from 'obsidian';
 import { roll } from '@airjp73/dice-notation';
-import DaggerheartPlugin from './main';
+import BeastVault from './main';
 import { hexToRgb, DICE_PATTERN } from './utils';
 
 type Feature = {
@@ -56,7 +56,7 @@ export class AdversaryModal extends SuggestModal<Adversary> {
 
     renderSuggestion(adv: Adversary, el: HTMLElement) {
         const heading = el.createDiv({ cls: 'spreadout' });
-        heading.createEl('b', { text: adv.name || '' });
+        heading.createEl('b', { text: adv.name?.toUpperCase() || '' });
         heading.createSpan({ text: `Tier ${adv.tier} ${adv.type}`, cls: 'smaller' });
         el.createSpan({ text: adv.desc || '', cls: 'smaller muted' });
     }
@@ -74,7 +74,7 @@ export class AdversaryCard extends MarkdownRenderChild {
     constructor(
         private container: HTMLElement,
         public adv: Adversary,
-        private plugin: DaggerheartPlugin
+        private plugin: BeastVault
     ) {
         super(container);
         this.count = this.plugin.state.cards[this.adv.id]?.count || 1;

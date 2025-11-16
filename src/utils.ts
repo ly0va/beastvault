@@ -1,4 +1,5 @@
 import type { Adversary } from './ui';
+import { TFile, TFolder } from "obsidian";
 
 export const ADV_LIBRARY: Adversary[] = require('../data/adversaries.json');
 export const ENV_LIBRARY: Adversary[] = require('../data/environments.json');
@@ -78,6 +79,17 @@ export function processAdversary(obj: any, filePath: string): Adversary {
     obj.thresholds ??= [];
     obj.features ??= [];
 
+    // TODO: clean up stray keys
+
     return obj;
 }
 
+export async function walkFolder(folder: TFolder, callback: (file: TFile) => Promise<void>) {
+    for (const child of folder.children) {
+        if (child instanceof TFile) {
+            await callback(child);
+        } else if (child instanceof TFolder) {
+            await walkFolder(child, callback); // recurse
+        }
+    }
+}
