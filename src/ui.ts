@@ -42,6 +42,10 @@ export type Adversary = {
     id: string;
 };
 
+function subTitle(tier?: number, type?: string) {
+    return (tier ? `Tier ${tier} ` : '') + (type ? type : '');
+}
+
 export class AdversaryModal extends SuggestModal<Adversary> {
     constructor(app: App, private editor: Editor, private library: Adversary[]) {
         super(app);
@@ -57,7 +61,7 @@ export class AdversaryModal extends SuggestModal<Adversary> {
     renderSuggestion(adv: Adversary, el: HTMLElement) {
         const heading = el.createDiv({ cls: 'spreadout' });
         heading.createEl('b', { text: adv.name?.toUpperCase() || '' });
-        heading.createSpan({ text: `Tier ${adv.tier} ${adv.type}`, cls: 'smaller' });
+        heading.createSpan({ text: subTitle(adv.tier, adv.type), cls: 'smaller' });
         el.createSpan({ text: adv.desc || '', cls: 'smaller muted' });
     }
 
@@ -83,12 +87,8 @@ export class AdversaryCard extends MarkdownRenderChild {
 
     createTitle(card: HTMLElement) {
         const title = card.createDiv({ cls: 'callout-title spreadout' });
-        const mainTitle = title.createEl('b', { cls: 'larger', text: `${this.adv.name || ''}` });
-        const subTitle = title.createEl('b', { cls: 'smaller padded' });
-        subTitle.setText(
-            (this.adv.tier ? `Tier ${this.adv.tier} ` : '')
-            + (this.adv.type ? this.adv.type : '')
-        );
+        title.createEl('b', { cls: 'larger', text: `${this.adv.name || ''}` });
+        title.createEl('b', { cls: 'smaller padded', text: subTitle(this.adv.tier, this.adv.type) });
     }
 
     createHeaderEntry(header: HTMLElement, name: string, entry: string | string[] | undefined) {

@@ -76,7 +76,7 @@ export class SettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Library folder location')
-            .setDesc('All stat blocks from notes and .json files in this folder will become available in search')
+            .setDesc('All stat blocks from notes, .json and .yaml files in this folder will become available in search')
             .addText(text => text
                 .setPlaceholder('Example: daggerheart/homebrew')
                 .setValue(this.plugin.state.settings.libraryFolder ?? '')

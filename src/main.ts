@@ -66,7 +66,6 @@ export default class BeastVault extends Plugin {
     }
 
     async scanLibrary(notFoundNotice: boolean, loadedNotice: 'yes' | 'no' | 'conditional') {
-        new Notice('Scanning library folder...');
         const folderPath = this.state.settings.libraryFolder;
         let folder: TFolder | null;
         if (!folderPath || !(folder = this.app.vault.getFolderByPath(folderPath))) {
@@ -144,8 +143,7 @@ export default class BeastVault extends Plugin {
         this.state.settings = Object.assign({}, DEFAULT_SETTINGS, this.state.settings);
         this.battlePoints = this.addStatusBarItem();
         this.registerEvent(this.app.workspace.on('active-leaf-change', () => this.updateStatusBar()));
-        // TODO: this might be overkill, as it fires everytime anything changes
-        this.registerEvent(this.app.metadataCache.on("resolved", () => this.scanLibrary(false, 'no')));
+        this.app.workspace.onLayoutReady(() => this.scanLibrary(false, 'no'));
 
         this.registerMarkdownCodeBlockProcessor("daggerheart", (src, el, ctx) => {
             const adv = processAdversary(parseYaml(src) ?? {}, this.app.workspace.getActiveFile()!.path);

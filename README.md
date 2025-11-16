@@ -14,7 +14,7 @@ An [Obsidian.md](https://obsidian.md) plugin for Daggerheart TTRPG GMs to search
 
 ### Planned
 
-- [ ] Local library support for homebrew stat blocks to search over
+- [x] Local library support for homebrew stat blocks to search over
 - [ ] Filtering and sorting via Bases
 - [ ] "Summon" buttons for adversaries/environments that might summon others
 - [ ] Ability to mark adversaries with conditions (e.g. Vulnerable, Restrained)
@@ -67,6 +67,18 @@ Build out full encounters in a canvas and track their HP & stress during a sessi
 > [!TIP]
 > Building encounters in a canvas is made much more convenient by enabling node auto-resizing in [this plugin](https://github.com/Developer-Mike/obsidian-advanced-canvas).
 > During a playing session, using canvas in read-only mode is recommended.
+
+### Library management
+
+Go to `BeastVault settings` > `Library folder location` and enter a folder name. All notes in this folder will be scanned for `daggerheart` codeblocks, which will be available in search.
+
+You can also import adversaries in bulk, by creating `.json` or `.yaml` files in this folder, which can contain a single stat block or an array of stat blocks.
+The structure of the statblocks is documented below.
+
+> [!IMPORTANT]
+> Only entries with a valid string `name` are added to the library.
+> If an entry has no `hp` and no `stress` fields, it is added as an environment; otherwise - as an adversary.
+> All other fields are optional.
 
 ## Reference
 
