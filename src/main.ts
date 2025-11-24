@@ -111,7 +111,7 @@ export default class BeastVault extends Plugin {
             if (!Array.isArray(content)) content = [content];
             for (const item of content) {
                 if (item && typeof item == 'object' && typeof item.name == 'string') {
-                    newLibrary.push(processAdversary({ source: file.path, ...item }, file.path));
+                    newLibrary.push(processAdversary({ source: 'homebrew', ...item }, file.path));
                 }
             }
         })
