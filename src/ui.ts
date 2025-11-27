@@ -135,7 +135,9 @@ export class AdversaryCard extends MarkdownRenderChild {
         paragraph.createEl('b', { text: feature.name || '' });
         paragraph.createSpan({ text: feature.type && `${feature.name}` ? ' - ' : '' });
         paragraph.createSpan({ text: feature.type || '' });
-        feature.type || feature.name ? paragraph.createEl('br') : '';
+        if (feature.type || feature.name) {
+            paragraph.createEl('br');
+        }
         if (this.count == 1) {
             this.createStatSlots(paragraph, 'Uses', feature.uses || 0, [this.adv.id, 0, 'uses', index]);
             // For now, we only have countdowns in environments
@@ -143,7 +145,7 @@ export class AdversaryCard extends MarkdownRenderChild {
         }
         if (feature.desc) {
             const featureDiv = paragraph.createDiv({ cls: 'bv-feature' });
-            MarkdownRenderer.render(
+            void MarkdownRenderer.render(
                 this.plugin.app,
                 feature
                     .desc
@@ -311,7 +313,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             features.createEl('hr');
         }
 
-        for (const [index, feature] of this.adv.features!.entries()) {
+        for (const [index, feature] of this.adv.features.entries()) {
             this.createFeature(features, index, feature);
         }
 

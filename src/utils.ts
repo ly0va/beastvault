@@ -65,7 +65,7 @@ export function processAdversary(obj: any, filePath: string): Adversary {
         obj.attack = obj.attack > 0 ? `+${obj.attack}` : `${obj.attack}`;
     }
     if (typeof obj.thresholds === "string") {
-        obj.thresholds = obj.thresholds.split(/[,\/]/).filter((s: string) => s.trim().toLowerCase() != 'none');
+        obj.thresholds = obj.thresholds.split(/[,/]/).filter((s: string) => s.trim().toLowerCase() != 'none');
     }
     if (typeof obj.thresholds === "number") {
         obj.thresholds = [obj.thresholds];

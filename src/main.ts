@@ -251,7 +251,7 @@ export default class BeastVault extends Plugin {
 
     onunload() {
         if (this.saveTimer != null) {
-            this.flushSave();
+            void this.flushSave();
         }
     }
 
@@ -264,7 +264,7 @@ export default class BeastVault extends Plugin {
     updateState() {
         // Debounce writes
         if (this.saveTimer != null) window.clearTimeout(this.saveTimer);
-        this.saveTimer = window.setTimeout(() => { this.flushSave(); }, 1000);
+        this.saveTimer = window.setTimeout(() => { void this.flushSave(); }, 1000);
     }
 
     async flushSave() {
