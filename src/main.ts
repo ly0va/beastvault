@@ -12,8 +12,8 @@ export type PluginState = {
             [index: number]: {
                 hp?: number;
                 stress?: number;
-                uses?: number[];
-                countdown?: number[];
+                uses?: { [key: string]: number };
+                countdown?: { [key: string]: number}
             };
         };
     };
@@ -77,7 +77,7 @@ export default class BeastVault extends Plugin {
         }
         const newLibrary: Adversary[] = [];
         await walkFolder(folder, async (file) => {
-            let content: any;
+            let content: Adversary | Adversary[];
 
             if (file.extension == 'json') {
                 content = JSON.parse(await this.app.vault.read(file));
@@ -279,24 +279,26 @@ export default class BeastVault extends Plugin {
     }
 
     updateCard(keys: (string | number)[], value: string | number) {
-        let data: Record<any, any> = this.state.cards;
+        type Data = { [key: string]: Data | number | string };
+        let data: Data = this.state.cards;
         const keysCopy = [...keys];
         const lastKey = keysCopy.pop()!;
         for (const key of keysCopy) {
             if (!data[key]) data[key] = {};
-            data = data[key]
+            data = data[key] as Data;
         }
         data[lastKey] = value;
         this.updateState();
     }
 
     getCardState(keys: (string | number)[]): number | undefined {
-        let data: any = this.state.cards;
+        type Data = { [key: string]: Data | string | number }
+        let data: Data = this.state.cards;
         for (const key of keys) {
-            if (data[key] == null) return undefined;
-            data = data[key]
+            if (!data[key]) return undefined;
+            data = data[key] as Data;
         }
-        return data;
+        return data as any;
     }
 }
 

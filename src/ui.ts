@@ -220,24 +220,26 @@ export class AdversaryCard extends MarkdownRenderChild {
             }
         }
 
-        let hordeSize: any;
+        let hordeSize: HTMLElement | null = null;
+        let updateHordeSize: (() => void) | null = null;
         const match = this.adv.type?.match(/^horde\s+\((\d+)\/hp\)$/i);
         if (match && this.adv.hp > 0) {
             hordeSize = statBar.createSpan({ cls: "bv-muted" });
-            hordeSize.update = () => {
+            updateHordeSize = () => {
+                if (hordeSize == null) return;
                 const size = parseInt(match[1]);
                 const hp = this.plugin.getCardState([this.adv.id, index, 'hp']) ?? 0;
                 const currentHP = this.adv.hp - hp;
-                hordeSize!.innerText = `Horde size: ${size * currentHP}`;
+                hordeSize.innerText = `Horde size: ${size * currentHP}`;
             };
-            hordeSize.update();
+            updateHordeSize();
             statBar.addEventListener('input', (event) => {
                 if (!hpSlots.contains(event.target as HTMLInputElement)) return;
-                hordeSize?.update();
+                updateHordeSize?.();
             })
         }
 
-        const slotMarker = (x: number) => (event: any) => {
+        const slotMarker = (x: number) => (event: MouseEvent) => {
             const slots = event.altKey ? hpSlots.toReversed() : hpSlots;
             let toMark = x;
             let marked = 0;
@@ -250,7 +252,7 @@ export class AdversaryCard extends MarkdownRenderChild {
                 if (slot.checked) marked++;
             }
             this.plugin.updateCard([this.adv.id, index, 'hp'], marked)
-            hordeSize?.update();
+            updateHordeSize?.();
         };
 
         minor?.addEventListener('click', slotMarker(1));
