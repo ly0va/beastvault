@@ -59,10 +59,10 @@ export class AdversaryModal extends SuggestModal<Adversary> {
     }
 
     renderSuggestion(adv: Adversary, el: HTMLElement) {
-        const heading = el.createDiv({ cls: 'spreadout' });
+        const heading = el.createDiv({ cls: 'bv-spreadout' });
         heading.createEl('b', { text: adv.name?.toUpperCase() || '' });
-        heading.createSpan({ text: subTitle(adv.tier, adv.type), cls: 'smaller' });
-        el.createSpan({ text: adv.desc || '', cls: 'smaller muted' });
+        heading.createSpan({ text: subTitle(adv.tier, adv.type), cls: 'bv-smaller' });
+        el.createSpan({ text: adv.desc || '', cls: 'bv-smaller bv-muted' });
     }
 
     onChooseSuggestion(adv: Adversary, evt: MouseEvent | KeyboardEvent) {
@@ -86,9 +86,9 @@ export class AdversaryCard extends MarkdownRenderChild {
 
 
     createTitle(card: HTMLElement) {
-        const title = card.createDiv({ cls: 'callout-title spreadout' });
-        title.createEl('b', { cls: 'larger', text: `${this.adv.name || ''}` });
-        title.createEl('b', { cls: 'smaller padded', text: subTitle(this.adv.tier, this.adv.type) });
+        const title = card.createDiv({ cls: 'callout-title bv-spreadout' });
+        title.createEl('b', { cls: 'bv-larger', text: `${this.adv.name || ''}` });
+        title.createEl('b', { cls: 'bv-smaller bv-padded', text: subTitle(this.adv.tier, this.adv.type) });
     }
 
     createHeaderEntry(header: HTMLElement, name: string, entry: string | string[] | undefined) {
@@ -101,16 +101,16 @@ export class AdversaryCard extends MarkdownRenderChild {
 
     createHeader(content: HTMLElement) {
         if (this.adv.desc) {
-            const desc = content.createEl('p', { cls: "smaller muted padded" });
+            const desc = content.createEl('p', { cls: "bv-smaller bv-muted bv-padded" });
             desc.createEl('i', { text: this.adv.desc });
         }
 
-        const header = content.createEl('p', { cls: 'smaller' });
+        const header = content.createEl('p', { cls: 'bv-smaller' });
         this.createHeaderEntry(header, 'Difficulty', this.adv.difficulty);
 
         if (this.adv.attack != null) {
             header.createEl('b', { text: 'Attack: ' });
-            header.createSpan({ text: this.adv.attack, cls: 'rollable rollable-attack' });
+            header.createSpan({ text: this.adv.attack, cls: 'bv-rollable bv-rollable-attack' });
             header.createEl('br');
         }
 
@@ -119,7 +119,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             header.createSpan(this.adv.range || '')
             header.createSpan((this.adv.range && this.adv.damage) ? ' | ' : '');
             this.adv.damage?.split(DICE_PATTERN).forEach(part => {
-                header.createSpan({ text: part, cls: DICE_PATTERN.test(part) ? 'rollable' : '' });
+                header.createSpan({ text: part, cls: DICE_PATTERN.test(part) ? 'bv-rollable' : '' });
             });
             header.createEl('br');
         }
@@ -131,7 +131,7 @@ export class AdversaryCard extends MarkdownRenderChild {
     }
 
     createFeature(content: HTMLElement, index: number, feature: Feature) {
-        const paragraph = content.createEl('p', { cls: 'smaller' })
+        const paragraph = content.createEl('p', { cls: 'bv-smaller' })
         paragraph.createEl('b', { text: feature.name || '' });
         paragraph.createSpan({ text: feature.type && `${feature.name}` ? ' - ' : '' });
         paragraph.createSpan({ text: feature.type || '' });
@@ -149,19 +149,19 @@ export class AdversaryCard extends MarkdownRenderChild {
                     .desc
                     .replace(/\b([sS])pend a [fF]ear\b/g, "<b>$1pend a Fear</b>")
                     .replace(/\b([mM])ark a [sS]tress\b/g, "<b>$1ark a Stress</b>")
-                    .replace(DICE_PATTERN, `<span class=rollable>$&</span>`),
+                    .replace(DICE_PATTERN, `<span class=bv-rollable>$&</span>`),
                 featureDiv,
                 this.plugin.app.workspace.getActiveFile()!.path,
                 this
             ).then(() => {
                 // Using innerHTML like this is safe since we're only replacing tags
                 featureDiv.innerHTML = featureDiv.innerHTML
-                    .replace(/<p.*?>/g, "<span class=block>")
+                    .replace(/<p.*?>/g, "<span class=bv-block>")
                     .replace(/<\/p>/g, "</span>");
             });
         }
         if (feature.flavor) {
-            paragraph.createEl('i', { cls: 'muted block', text: feature.flavor });
+            paragraph.createEl('i', { cls: 'bv-muted bv-block', text: feature.flavor });
         }
     }
 
@@ -169,9 +169,9 @@ export class AdversaryCard extends MarkdownRenderChild {
         const slots: HTMLInputElement[] = []
         const marked = this.plugin.getCardState(keys) ?? 0;
         if (stat > 0) {
-            statBar.createSpan({ text: `${name}: ${stat} `, cls: "muted" });
+            statBar.createSpan({ text: `${name}: ${stat} `, cls: "bv-muted" });
             for (let i = 0; i < stat; i++) {
-                const slot = statBar.createEl('input', { type: 'checkbox', cls: 'daggerheart-slot' });
+                const slot = statBar.createEl('input', { type: 'checkbox', cls: 'bv-slot' });
                 if (i < marked) {
                     slot.checked = true;
                 }
@@ -191,7 +191,7 @@ export class AdversaryCard extends MarkdownRenderChild {
     createThresholdButtons(content: HTMLElement) {
         let minor, major, severe, massive;
         if (this.adv.thresholds.length > 0) {
-            const thresholds = content.createEl('p', { cls: 'daggerheart-thresholds' });
+            const thresholds = content.createEl('p', { cls: 'bv-thresholds' });
             minor = thresholds.createEl('button', { text: 'MINOR' });
             thresholds.createSpan({ text: ` ${this.adv.thresholds[0]} ` });
             major = thresholds.createEl('button', { text: 'MAJOR' });
@@ -226,7 +226,7 @@ export class AdversaryCard extends MarkdownRenderChild {
         let hordeSize: any;
         const match = this.adv.type?.match(/^horde\s+\((\d+)\/hp\)$/i);
         if (match && this.adv.hp > 0) {
-            hordeSize = statBar.createSpan({ cls: "muted" });
+            hordeSize = statBar.createSpan({ cls: "bv-muted" });
             hordeSize.update = () => {
                 const size = parseInt(match[1]);
                 const hp = this.plugin.getCardState([this.adv.id, index, 'hp']) ?? 0;
@@ -265,11 +265,11 @@ export class AdversaryCard extends MarkdownRenderChild {
     createPlusMinosButtons(card: HTMLElement, features: HTMLElement, statBlock: HTMLElement) {
         if (!this.adv.hp && !this.adv.stress) return;
         const add = card.createEl('button', {
-            cls: 'daggerheart-count clickable-icon invisible',
+            cls: 'bv-top-corner clickable-icon bv-invisible',
             attr: { 'aria-label': 'Increase adversary count' }
         })
         const remove = card.createEl('button', {
-            cls: 'daggerheart-count clickable-icon invisible',
+            cls: 'bv-top-corner clickable-icon bv-invisible',
             attr: { 'aria-label': 'Decrease adversary count' }
         })
         setIcon(add, 'plus')
@@ -279,13 +279,13 @@ export class AdversaryCard extends MarkdownRenderChild {
         setTimeout(() => {
             const editable = card.parentElement?.nextElementSibling?.classList.contains('edit-block-button');
             if (editable) {
-                add.addClass('daggerheart-count-lower');
-                remove.addClass('daggerheart-count-even-lower');
+                add.addClass('bv-lower-1');
+                remove.addClass('bv-lower-2');
             } else {
-                remove.addClass('daggerheart-count-lower');
+                remove.addClass('bv-lower-1');
             }
-            add.removeClass('invisible');
-            remove.removeClass('invisible');
+            add.removeClass('bv-invisible');
+            remove.removeClass('bv-invisible');
         }, 5);
 
         const rerender = () => {
@@ -332,13 +332,13 @@ export class AdversaryCard extends MarkdownRenderChild {
 
     render() {
         this.container.empty();
-        const card = this.container.createDiv({ cls: 'callout daggerheart', attr: { 'data-callout': 'daggerheart-card' } });
+        const card = this.container.createDiv({ cls: 'callout bv-statblock', attr: { 'data-callout': 'daggerheart-card' } });
         this.createTitle(card);
 
         card.addEventListener('click', (event) => {
             const elt = event.target as HTMLElement;
-            if (!elt.classList.contains('rollable')) return;
-            const dice = elt.classList.contains('rollable-attack')
+            if (!elt.classList.contains('bv-rollable')) return;
+            const dice = elt.classList.contains('bv-rollable-attack')
                 ? `1d20${this.adv.attack == '0' ? '' : this.adv.attack}`
                 : elt.innerText;
             const fragment = document.createDocumentFragment();
@@ -367,7 +367,7 @@ export class AdversaryCard extends MarkdownRenderChild {
         applyColor(defaultColor);
 
         if (this.plugin.state.settings.showColorPicker) {
-            const colorpicker = card.createEl('input', { type: 'color', value: defaultColor, cls: 'corner' });
+            const colorpicker = card.createEl('input', { type: 'color', value: defaultColor, cls: 'bv-bottom-corner' });
             colorpicker.addEventListener('input', () => {
                 applyColor(colorpicker.value);
                 this.plugin.updateCard([this.adv.id, 'color'], colorpicker.value);

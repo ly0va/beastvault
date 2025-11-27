@@ -1,85 +1,85 @@
 
-.daggerheart {
+.bv-statblock {
     font-family: monospace;
     position: relative
 }
 
-input[type=checkbox].daggerheart-slot {
+input[type=checkbox].bv-slot {
     vertical-align: middle;
     top: -0.1em;
 }
 
-.smaller {
+.bv-smaller {
     font-size: smaller;
 }
 
-.larger {
+.bv-larger {
     font-size: larger;
     text-transform: uppercase;
 }
 
-.spreadout {
+.bv-spreadout {
     display: flex;
     justify-content: space-between;
 }
 
-.muted {
+.bv-muted {
     color: var(--text-muted)
 }
 
-.daggerheart-thresholds {
+.bv-thresholds {
     text-align: center;
     margin-bottom: 0.2em !important;
 }
 
-.rollable {
+.bv-rollable {
     cursor: pointer;
     font-weight: bold;
 }
 
-.rollable:hover {
+.bv-rollable:hover {
     color: rgb(var(--callout-color))
 }
 
-.daggerheart hr {
+.bv-statblock hr {
     margin: 0
 }
 
-.daggerheart ul, .daggerheart ol {
+.bv-statblock ul, .bv-statblock ol {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
 }
 
-.padded {
+.bv-padded {
     padding-right: 2em;
 }
 
-.corner {
+.bv-bottom-corner {
   position: absolute;
   bottom: 0;
   right: 0;
   margin: 0.5em;
 }
 
-.daggerheart-count {
+.bv-top-corner {
     position: absolute;
     top: var(--size-2-2);
     right: var(--size-2-2);
 }
 
-.daggerheart-count-lower {
+.bv-lower-1 {
     top: 30px;
 }
 
-.daggerheart-count-even-lower {
+.bv-lower-2 {
     top: 56px;
 }
 
-.invisible {
+.bv-invisible {
     display: none;
 }
 
-.block {
+.bv-block {
     display: block;
 }
 

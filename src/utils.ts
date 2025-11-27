@@ -1,8 +1,10 @@
 import type { Adversary } from './ui';
 import { TFile, TFolder } from "obsidian";
+import ADV_LIBRARY_DATA from '../data/adversaries.json';
+import ENV_LIBRARY_DATA from '../data/environments.json';
 
-export const ADV_LIBRARY: Adversary[] = require('../data/adversaries.json');
-export const ENV_LIBRARY: Adversary[] = require('../data/environments.json');
+export const ADV_LIBRARY: Adversary[] = ADV_LIBRARY_DATA as any;
+export const ENV_LIBRARY: Adversary[] = ENV_LIBRARY_DATA as any;
 
 export const ADV_TEMPLATE = `\`\`\`daggerheart
 name:
