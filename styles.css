@@ -79,8 +79,8 @@ input[type=checkbox].bv-slot {
     display: none;
 }
 
-.bv-block {
-    display: block;
+.bv-feature p {
+    margin: 0 !important;
 }
 
 .block-language-daggerheart + .edit-block-button {

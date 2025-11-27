@@ -142,7 +142,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             this.createStatSlots(paragraph, 'Countdown', feature.countdown || 0, [this.adv.id, 0, 'countdown', index]);
         }
         if (feature.desc) {
-            const featureDiv = paragraph.createDiv();
+            const featureDiv = paragraph.createDiv({ cls: 'bv-feature' });
             MarkdownRenderer.render(
                 this.plugin.app,
                 feature
@@ -153,15 +153,10 @@ export class AdversaryCard extends MarkdownRenderChild {
                 featureDiv,
                 this.plugin.app.workspace.getActiveFile()!.path,
                 this
-            ).then(() => {
-                // Using innerHTML like this is safe since we're only replacing tags
-                featureDiv.innerHTML = featureDiv.innerHTML
-                    .replace(/<p.*?>/g, "<span class=bv-block>")
-                    .replace(/<\/p>/g, "</span>");
-            });
+            );
         }
         if (feature.flavor) {
-            paragraph.createEl('i', { cls: 'bv-muted bv-block', text: feature.flavor });
+            paragraph.createDiv().createEl('i', { cls: 'bv-muted', text: feature.flavor });
         }
     }
 
