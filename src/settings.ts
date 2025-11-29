@@ -50,7 +50,8 @@ export class SettingTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl)
-            .setName('Show "Massive" threshold button')
+            .setName('Show the "massive" threshold button')
+            .setDesc('Adds a 4th threshold button, for damage ≥ double the severe threshold')
             .addToggle(toggle => toggle
                 .setValue(this.plugin.state.settings.showMassiveThreshold)
                 .onChange((value) => {
@@ -60,8 +61,8 @@ export class SettingTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl)
-            .setName('Number of PCs')
-            .setDesc('Used for Battle Point calculation in the status bar')
+            .setName('Number of player characters')
+            .setDesc('Used for battle points calculation in the status bar')
             .addSlider(slider => slider
                 .setLimits(0, 10, 1)
                 .setValue(this.plugin.state.settings.numberOfPCs)
@@ -76,7 +77,7 @@ export class SettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Library folder location')
-            .setDesc('All stat blocks from notes, .json and .yaml files in this folder will become available in search')
+            .setDesc('Adversaries from notes, JSON and YAML files in this folder will become available in search')
             .addText(text => text
                 .setPlaceholder('Example: daggerheart/homebrew')
                 .setValue(this.plugin.state.settings.libraryFolder ?? '')
