@@ -1,7 +1,7 @@
 import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon, MarkdownRenderer } from 'obsidian';
 import { roll } from '@airjp73/dice-notation';
 import BeastVault from './main';
-import { hexToRgb, DICE_PATTERN, subTitle } from './utils';
+import { hexToRgb, DICE_PATTERN, processAdversary, subTitle } from './utils';
 
 type Feature = {
     name?: string;
@@ -12,13 +12,15 @@ type Feature = {
     flavor?: string;
 }
 
-export type Adversary = {
+// Stored in library, as entered by user.
+// Pasted into editor when inserted.
+export type RawAdversary = {
     name?: string;
     tier?: number;
     type?: string;
-    difficulty?: string;
     desc?: string;
-    features: Feature[];
+    difficulty?: string | number;
+    features?: Feature[];
 
     // these are for environments
     tone?: string;
@@ -26,11 +28,11 @@ export type Adversary = {
     adversaries?: string;
 
     // these are for adversaries
-    hp: number;
-    stress: number;
-    thresholds: number[];
-    attack?: string;
-    xp: string[];
+    hp?: number;
+    stress?: number;
+    thresholds?: string | number | number[];
+    attack?: string | number;
+    xp?: string | string[];
     motives?: string;
 
     weapon?: string;
@@ -39,53 +41,73 @@ export type Adversary = {
 
     // these are not rendered
     source?: string;
-    id: string;
+    id?: string;
+    raw?: string;
 };
 
-export class AdversaryModal extends SuggestModal<Adversary> {
-    constructor(app: App, private editor: Editor, private library: Adversary[]) {
+// Used when rendering.
+// 'id' is not rendered but required to track state.
+export type Adversary = Omit<RawAdversary, 'source' | 'raw'> & {
+    difficulty?: string;
+    features: Feature[];
+    hp: number; // 0 for environments
+    stress: number; // 0 for environments
+    thresholds: number[];
+    attack?: string;
+    xp: string[];
+    id: string;
+}
+
+export class AdversaryModal extends SuggestModal<RawAdversary> {
+    constructor(app: App, private editor: Editor, private library: RawAdversary[]) {
         super(app);
         this.limit = 200;
     }
 
-    getSuggestions(query: string): Adversary[] {
+    getSuggestions(query: string): RawAdversary[] {
         return this.library.filter((adv: Adversary) =>
             adv.name!.toLowerCase().includes(query.toLowerCase())
         );
     }
 
-    renderSuggestion(adv: Adversary, el: HTMLElement) {
-        const heading = el.createDiv({ cls: 'spreadout' });
+    renderSuggestion(adv: RawAdversary, el: HTMLElement) {
+        const heading = el.createDiv({ cls: 'bv-spreadout' });
         heading.createEl('b', { text: adv.name?.toUpperCase() || '' });
-        heading.createSpan({ text: subTitle(adv.tier, adv.type), cls: 'smaller' });
-        el.createSpan({ text: adv.desc || '', cls: 'smaller muted' });
+        heading.createSpan({ text: subTitle(adv.tier, adv.type), cls: 'bv-smaller' });
+        el.createSpan({ text: adv.desc ?? '', cls: 'bv-smaller bv-muted' });
     }
 
-    onChooseSuggestion(adv: Adversary, evt: MouseEvent | KeyboardEvent) {
-        adv.id = Math.random().toString(36).slice(2);
-        delete adv.source;
-        this.editor.replaceSelection(`\`\`\`daggerheart\n${stringifyYaml(adv)}\`\`\`\n`);
+    onChooseSuggestion(adv: RawAdversary, evt: MouseEvent | KeyboardEvent) {
+        const copy = { ...adv };
+        copy.id = Math.random().toString(36).slice(2);
+        delete copy.source;
+        delete copy.raw;
+        this.editor.replaceSelection(`\`\`\`daggerheart\n${adv.raw ? adv.raw : stringifyYaml(copy)}\`\`\`\n`);
     }
 }
 
 export class AdversaryCard extends MarkdownRenderChild {
     count: number;
+    filePath: string;
+    public adv: Adversary;
 
     constructor(
         private container: HTMLElement,
-        public adv: Adversary,
+        public raw: RawAdversary,
         private plugin: BeastVault,
         private preview: boolean = false
     ) {
         super(container);
+        this.filePath = this.plugin.app.workspace.getActiveFile()?.path ?? '/';
+        this.adv = processAdversary(raw, this.filePath);
         this.count = this.plugin.state.cards[this.adv.id]?.count || 1;
     }
 
 
     createTitle(card: HTMLElement) {
-        const title = card.createDiv({ cls: 'callout-title spreadout' });
-        title.createEl('b', { cls: 'larger', text: `${this.adv.name || ''}` });
-        title.createEl('b', { cls: 'smaller padded', text: subTitle(this.adv.tier, this.adv.type) });
+        const title = card.createDiv({ cls: 'callout-title bv-spreadout' });
+        title.createEl('b', { cls: 'bv-larger', text: `${this.adv.name || ''}` });
+        title.createEl('b', { cls: 'bv-smaller bv-padded', text: subTitle(this.adv.tier, this.adv.type) });
     }
 
     createHeaderEntry(header: HTMLElement, name: string, entry: string | string[] | undefined) {
@@ -98,16 +120,16 @@ export class AdversaryCard extends MarkdownRenderChild {
 
     createHeader(content: HTMLElement) {
         if (this.adv.desc) {
-            const desc = content.createEl('p', { cls: "smaller muted padded" });
+            const desc = content.createEl('p', { cls: "bv-smaller bv-muted bv-padded" });
             desc.createEl('i', { text: this.adv.desc });
         }
 
-        const header = content.createEl('p', { cls: 'smaller' });
+        const header = content.createEl('p', { cls: 'bv-smaller' });
         this.createHeaderEntry(header, 'Difficulty', this.adv.difficulty);
 
         if (this.adv.attack != null) {
             header.createEl('b', { text: 'Attack: ' });
-            header.createSpan({ text: this.adv.attack, cls: 'rollable rollable-attack' });
+            header.createSpan({ text: this.adv.attack, cls: 'bv-rollable bv-rollable-attack' });
             header.createEl('br');
         }
 
@@ -116,7 +138,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             header.createSpan(this.adv.range || '')
             header.createSpan((this.adv.range && this.adv.damage) ? ' | ' : '');
             this.adv.damage?.split(DICE_PATTERN).forEach(part => {
-                header.createSpan({ text: part, cls: DICE_PATTERN.test(part) ? 'rollable' : '' });
+                header.createSpan({ text: part, cls: DICE_PATTERN.test(part) ? 'bv-rollable' : '' });
             });
             header.createEl('br');
         }
@@ -128,37 +150,34 @@ export class AdversaryCard extends MarkdownRenderChild {
     }
 
     createFeature(content: HTMLElement, index: number, feature: Feature) {
-        const paragraph = content.createEl('p', { cls: 'smaller' })
+        const paragraph = content.createEl('p', { cls: 'bv-smaller' })
         paragraph.createEl('b', { text: feature.name || '' });
         paragraph.createSpan({ text: feature.type && `${feature.name}` ? ' - ' : '' });
         paragraph.createSpan({ text: feature.type || '' });
-        feature.type || feature.name ? paragraph.createEl('br') : '';
+        if (feature.type || feature.name) {
+            paragraph.createEl('br');
+        }
         if (this.count == 1) {
             this.createStatSlots(paragraph, 'Uses', feature.uses || 0, [this.adv.id, 0, 'uses', index]);
             // For now, we only have countdowns in environments
             this.createStatSlots(paragraph, 'Countdown', feature.countdown || 0, [this.adv.id, 0, 'countdown', index]);
         }
         if (feature.desc) {
-            const featureDiv = paragraph.createDiv();
-            MarkdownRenderer.render(
+            const featureDiv = paragraph.createDiv({ cls: 'bv-feature' });
+            void MarkdownRenderer.render(
                 this.plugin.app,
                 feature
                     .desc
                     .replace(/\b([sS])pend a [fF]ear\b/g, "<b>$1pend a Fear</b>")
                     .replace(/\b([mM])ark a [sS]tress\b/g, "<b>$1ark a Stress</b>")
-                    .replace(DICE_PATTERN, `<span class=rollable>$&</span>`),
+                    .replace(DICE_PATTERN, `<span class=bv-rollable>$&</span>`),
                 featureDiv,
-                this.plugin.app.workspace.getActiveFile()?.path ?? '/',
+                this.filePath,
                 this
-            ).then(() => {
-                // Using innerHTML like this is safe since we're only replacing tags
-                featureDiv.innerHTML = featureDiv.innerHTML
-                    .replace(/<p.*?>/g, "<span class=block>")
-                    .replace(/<\/p>/g, "</span>");
-            });
+            );
         }
         if (feature.flavor) {
-            paragraph.createEl('i', { cls: 'muted block', text: feature.flavor });
+            paragraph.createDiv().createEl('i', { cls: 'bv-muted', text: feature.flavor });
         }
     }
 
@@ -166,9 +185,9 @@ export class AdversaryCard extends MarkdownRenderChild {
         const slots: HTMLInputElement[] = []
         const marked = this.plugin.getCardState(keys) ?? 0;
         if (stat > 0) {
-            statBar.createSpan({ text: `${name}: ${stat} `, cls: "muted" });
+            statBar.createSpan({ text: `${name}: ${stat} `, cls: "bv-muted" });
             for (let i = 0; i < stat; i++) {
-                const slot = statBar.createEl('input', { type: 'checkbox', cls: 'daggerheart-slot' });
+                const slot = statBar.createEl('input', { type: 'checkbox', cls: 'bv-slot' });
                 if (i < marked) {
                     slot.checked = true;
                 }
@@ -190,7 +209,7 @@ export class AdversaryCard extends MarkdownRenderChild {
     createThresholdButtons(content: HTMLElement) {
         let minor, major, severe, massive;
         if (this.adv.thresholds.length > 0) {
-            const thresholds = content.createEl('p', { cls: 'daggerheart-thresholds' });
+            const thresholds = content.createEl('p', { cls: 'bv-thresholds' });
             minor = thresholds.createEl('button', { text: 'MINOR' });
             thresholds.createSpan({ text: ` ${this.adv.thresholds[0]} ` });
             major = thresholds.createEl('button', { text: 'MAJOR' });
@@ -222,24 +241,26 @@ export class AdversaryCard extends MarkdownRenderChild {
             }
         }
 
-        let hordeSize: any;
+        let hordeSize: HTMLElement | null = null;
+        let updateHordeSize: (() => void) | null = null;
         const match = this.adv.type?.match(/^horde\s+\((\d+)\/hp\)$/i);
         if (match && this.adv.hp > 0) {
-            hordeSize = statBar.createSpan({ cls: "muted" });
-            hordeSize.update = () => {
+            hordeSize = statBar.createSpan({ cls: "bv-muted" });
+            updateHordeSize = () => {
+                if (hordeSize == null) return;
                 const size = parseInt(match[1]);
                 const hp = this.plugin.getCardState([this.adv.id, index, 'hp']) ?? 0;
                 const currentHP = this.adv.hp - hp;
-                hordeSize!.innerText = `Horde size: ${size * currentHP}`;
+                hordeSize.innerText = `Horde size: ${size * currentHP}`;
             };
-            hordeSize.update();
+            updateHordeSize();
             statBar.addEventListener('input', (event) => {
                 if (!hpSlots.contains(event.target as HTMLInputElement)) return;
-                hordeSize?.update();
+                updateHordeSize?.();
             })
         }
 
-        const slotMarker = (x: number) => (event: any) => {
+        const slotMarker = (x: number) => (event: MouseEvent) => {
             const slots = event.altKey ? hpSlots.toReversed() : hpSlots;
             let toMark = x;
             let marked = 0;
@@ -254,7 +275,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             if (!this.preview) {
                 this.plugin.updateCard([this.adv.id, index, 'hp'], marked)
             }
-            hordeSize?.update();
+            updateHordeSize?.();
         };
 
         minor?.addEventListener('click', slotMarker(1));
@@ -265,30 +286,17 @@ export class AdversaryCard extends MarkdownRenderChild {
 
     createCopyButton(card: HTMLElement) {
         const copy = card.createEl('button', {
-            cls: 'clickable-icon daggerheart-count',
+            cls: 'clickable-icon bv-top-corner',
             attr: { 'aria-label': 'Copy to clipboard' }
         })
         setIcon(copy, 'copy');
         copy.addEventListener('click', () => {
-            // TODO: for library, add `raw` field to paste them as they were entered
-            const adv: Partial<Adversary> = { ...this.adv };
-            adv.id = Math.random().toString(36).slice(2);
-            if (adv.thresholds?.length == 0) {
-                delete adv.thresholds;
-            } else {
-                adv.thresholds = adv.thresholds?.join('/') as any;
-            }
-            if (adv.xp?.length == 0) {
-                delete adv.xp;
-            } else {
-                adv.xp = adv.xp?.join(', ') as any;
-            }
-            if (adv.hp == 0) delete adv.hp;
-            if (adv.stress == 0) delete adv.stress;
-            if (adv.features?.length == 0) delete adv.features;
-            delete adv.source;
+            const copy = { ... this.raw };
+            copy.id = Math.random().toString(36).slice(2);
+            delete copy.source;
+            delete copy.raw;
 
-            navigator.clipboard.writeText(`\`\`\`daggerheart\n${stringifyYaml(adv)}\`\`\`\n`)
+            navigator.clipboard.writeText(`\`\`\`daggerheart\n${this.raw.raw ? this.raw.raw : stringifyYaml(copy)}\`\`\`\n`)
             new Notice('Adversary copied to clipboard');
         })
     }
@@ -296,27 +304,27 @@ export class AdversaryCard extends MarkdownRenderChild {
     createPlusMinusButtons(card: HTMLElement, features: HTMLElement, statBlock: HTMLElement) {
         if (!this.adv.hp && !this.adv.stress) return;
         const add = card.createEl('button', {
-            cls: 'daggerheart-count clickable-icon invisible',
+            cls: 'bv-top-corner clickable-icon bv-invisible',
             attr: { 'aria-label': 'Increase adversary count' }
         })
         const remove = card.createEl('button', {
-            cls: 'daggerheart-count clickable-icon invisible',
+            cls: 'bv-top-corner clickable-icon bv-invisible',
             attr: { 'aria-label': 'Decrease adversary count' }
         })
         setIcon(add, 'plus')
         setIcon(remove, 'minus')
 
         // hacky but works for now
-        setTimeout(() => {
+        window.setTimeout(() => {
             const editable = card.parentElement?.nextElementSibling?.classList.contains('edit-block-button');
             if (editable) {
-                add.addClass('daggerheart-count-lower');
-                remove.addClass('daggerheart-count-even-lower');
+                add.addClass('bv-lower-1');
+                remove.addClass('bv-lower-2');
             } else {
-                remove.addClass('daggerheart-count-lower');
+                remove.addClass('bv-lower-1');
             }
-            add.removeClass('invisible');
-            remove.removeClass('invisible');
+            add.removeClass('bv-invisible');
+            remove.removeClass('bv-invisible');
         }, 5);
 
         const rerender = () => {
@@ -347,7 +355,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             features.createEl('hr');
         }
 
-        for (const [index, feature] of this.adv.features!.entries()) {
+        for (const [index, feature] of this.adv.features.entries()) {
             this.createFeature(features, index, feature);
         }
 
@@ -363,13 +371,13 @@ export class AdversaryCard extends MarkdownRenderChild {
 
     render() {
         this.container.empty();
-        const card = this.container.createDiv({ cls: 'callout daggerheart', attr: { 'data-callout': 'daggerheart-card' } });
+        const card = this.container.createDiv({ cls: 'callout bv-statblock', attr: { 'data-callout': 'daggerheart-card' } });
         this.createTitle(card);
 
         card.addEventListener('click', (event) => {
             const elt = event.target as HTMLElement;
-            if (!elt.classList.contains('rollable')) return;
-            const dice = elt.classList.contains('rollable-attack')
+            if (!elt.classList.contains('bv-rollable')) return;
+            const dice = elt.classList.contains('bv-rollable-attack')
                 ? `1d20${this.adv.attack == '0' ? '' : this.adv.attack}`
                 : elt.innerText;
             const fragment = document.createDocumentFragment();
@@ -402,7 +410,7 @@ export class AdversaryCard extends MarkdownRenderChild {
         applyColor(defaultColor);
 
         if (this.plugin.state.settings.showColorPicker && !this.preview) {
-            const colorpicker = card.createEl('input', { type: 'color', value: defaultColor, cls: 'corner' });
+            const colorpicker = card.createEl('input', { type: 'color', value: defaultColor, cls: 'bv-bottom-corner' });
             colorpicker.addEventListener('input', () => {
                 applyColor(colorpicker.value);
                 this.plugin.updateCard([this.adv.id, 'color'], colorpicker.value);

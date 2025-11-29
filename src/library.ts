@@ -1,7 +1,7 @@
 import { ItemView, WorkspaceLeaf, Modal } from 'obsidian';
 import BeastVault from './main';
-import { subTitle, hexToRgb, processAdversary } from './utils';
-import { type Adversary, AdversaryCard } from './ui';
+import { subTitle, hexToRgb } from './utils';
+import { type RawAdversary, AdversaryCard } from './ui';
 
 export const LIBRARY_VIEW_TYPE = 'beastvault-library-view';
 
@@ -61,7 +61,7 @@ export class LibraryView extends ItemView {
     // FIXME: for some reason battle points are sometimes displayed
     async onOpen() {
         this.contentEl.empty();
-        const controls = this.contentEl.createDiv({ cls: 'fixed' });
+        const controls = this.contentEl.createDiv({ cls: 'bv-fixed' });
 
         const searchInput = controls.createDiv('search-input-container').createEl('input', {
             attr: {
@@ -115,9 +115,9 @@ export class LibraryView extends ItemView {
 
         const byTier = controls.createDiv({ text: 'Tiers: ' });
         for (let i = 1; i <= 4; i++) {
-            const button = byTier.createEl('button', { cls: 'tier-button inactive', text: `${i}` });
+            const button = byTier.createEl('button', { cls: 'bv-tier-button bv-inactive', text: `${i}` });
             button.addEventListener('click', () => {
-                button.toggleClass('inactive', this.filters.tier[i]);
+                button.toggleClass('bv-inactive', this.filters.tier[i]);
                 this.filters.tier[i] = !this.filters.tier[i];
                 this.renderBlocks();
             })
@@ -144,11 +144,11 @@ export class LibraryView extends ItemView {
         this.grid.empty();
         const everything = this.everything();
         for (const item of everything) {
-            const card = this.grid.createDiv({ cls: 'callout daggerheart library-item', attr: { 'data-callout': 'daggerheart-card' } });
-            card.createDiv({ cls: 'callout-title larger' }).createEl('b', { text: item.name });
+            const card = this.grid.createDiv({ cls: 'callout bv-statblock bv-library-item', attr: { 'data-callout': 'daggerheart-card' } });
+            card.createDiv({ cls: 'callout-title bv-larger' }).createEl('b', { text: item.name });
             card.createDiv({ text: subTitle(item.tier, item.type) })
-            card.createEl('p', { cls: 'smaller muted' }).createEl('i', { text: item.desc || '' })
-            card.createDiv({ cls: 'source', text: `[${item.source}]` });
+            card.createEl('p', { cls: 'bv-smaller bv-muted' }).createEl('i', { text: item.desc || '' })
+            card.createDiv({ cls: 'bv-source', text: `[${item.source}]` });
             card.addEventListener('click', () => {
                 new AdversaryPreviewModal(this.plugin, item).open();
             })
@@ -164,9 +164,9 @@ export class LibraryView extends ItemView {
 }
 
 class AdversaryPreviewModal extends Modal {
-    constructor(plugin: BeastVault, adv: Adversary) {
+    constructor(plugin: BeastVault, adv: RawAdversary) {
         super(plugin.app);
-        const card = new AdversaryCard(this.contentEl, processAdversary(adv, '/'), plugin, true);
+        const card = new AdversaryCard(this.contentEl, adv, plugin, true);
         card.render();
     }
 }

@@ -1,7 +1,7 @@
-import { Editor, Plugin, setTooltip, parseYaml, Menu, Notice, type TFolder, type WorkspaceLeaf } from 'obsidian';
+import { Editor, Plugin, setTooltip, parseYaml, Menu, Notice, type TFolder, type WorkspaceLeaf, debounce, type Debouncer } from 'obsidian';
 import { SettingTab, type PluginSettings, DEFAULT_SETTINGS } from './settings';
-import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, processAdversary, walkFolder } from './utils';
-import { AdversaryCard, AdversaryModal, type Adversary } from './ui';
+import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, walkFolder } from './utils';
+import { AdversaryCard, AdversaryModal, type RawAdversary } from './ui';
 import { LIBRARY_VIEW_TYPE, LibraryView } from './library';
 
 export type PluginState = {
@@ -13,8 +13,8 @@ export type PluginState = {
             [index: number]: {
                 hp?: number;
                 stress?: number;
-                uses?: number[];
-                countdown?: number[];
+                uses?: { [key: string]: number };
+                countdown?: { [key: string]: number}
             };
         };
     };
@@ -26,7 +26,8 @@ export default class BeastVault extends Plugin {
     saveTimer?: number;
     saving?: Promise<void>;
     battlePoints: HTMLElement;
-    library: Adversary[] = [];
+    library: RawAdversary[] = [];
+    updateState: Debouncer<[], Promise<void>>;
 
     updateStatusBar() {
         const file = this.app.workspace.getActiveFile();
@@ -88,9 +89,9 @@ export default class BeastVault extends Plugin {
             }
             return;
         }
-        const newLibrary: Adversary[] = [];
+        const newLibrary: RawAdversary[] = [];
         await walkFolder(folder, async (file) => {
-            let content: any;
+            let content: RawAdversary | RawAdversary[];
 
             if (file.extension == 'json') {
                 content = JSON.parse(await this.app.vault.read(file));
@@ -103,7 +104,10 @@ export default class BeastVault extends Plugin {
                 const lines = (await this.app.vault.read(file)).split('\n');
                 content = codeblocks
                     .filter(sec => lines[sec.position.start.line].trim() === '```daggerheart')
-                    .map(sec => parseYaml(lines.slice(sec.position.start.line + 1, sec.position.end.line).join("\n")));
+                    .map(sec => {
+                        const targetLines = lines.slice(sec.position.start.line + 1, sec.position.end.line).join("\n");
+                        return { raw: targetLines, ...parseYaml(targetLines) };
+                    });
             } else {
                 return;
             }
@@ -111,7 +115,7 @@ export default class BeastVault extends Plugin {
             if (!Array.isArray(content)) content = [content];
             for (const item of content) {
                 if (item && typeof item == 'object' && typeof item.name == 'string') {
-                    newLibrary.push(processAdversary({ source: 'homebrew', ...item }, file.path));
+                    newLibrary.push({ source: 'homebrew', ...item });
                 }
             }
         })
@@ -136,6 +140,7 @@ export default class BeastVault extends Plugin {
             if (length == 0) {
                 new Notice(`No valid stat blocks found in ${this.state.settings.libraryFolder}`);
             } else {
+                // TODO: message about duplicates?
                 new Notice(`Loaded ${length} stat block${length != 1 ? 's' : ''}`)
             }
         }
@@ -143,11 +148,11 @@ export default class BeastVault extends Plugin {
         return newLibrary;
     }
 
-    allAdversaries(): Adversary[] {
+    allAdversaries(): RawAdversary[] {
         return this.library.filter(adv => (adv.hp && adv.hp > 0) || (adv.stress && adv.stress > 0)).concat(ADV_LIBRARY);
     }
 
-    allEnvironments(): Adversary[] {
+    allEnvironments(): RawAdversary[] {
         return this.library.filter(adv => (!adv.hp || adv.hp == 0) && (!adv.stress || adv.stress == 0)).concat(ENV_LIBRARY);
     }
 
@@ -158,10 +163,10 @@ export default class BeastVault extends Plugin {
         this.registerEvent(this.app.workspace.on('active-leaf-change', () => this.updateStatusBar()));
         this.app.workspace.onLayoutReady(() => this.scanLibrary(false, 'no'));
         this.registerView(LIBRARY_VIEW_TYPE, (leaf) => new LibraryView(leaf, this))
+        this.updateState = debounce(() => this.saveData(this.state), 1000, true);
 
         this.registerMarkdownCodeBlockProcessor("daggerheart", (src, el, ctx) => {
-            const adv = processAdversary(parseYaml(src) ?? {}, this.app.workspace.getActiveFile()!.path);
-            const child = new AdversaryCard(el, adv, this);
+            const child = new AdversaryCard(el, parseYaml(src) ?? {}, this);
             ctx.addChild(child);
             child.render();
             // Track it so we can refresh on settings change:
@@ -264,9 +269,7 @@ export default class BeastVault extends Plugin {
     }
 
     onunload() {
-        if (this.saveTimer != null) {
-            this.flushSave();
-        }
+        void this.updateState.run();
     }
 
     renderAll() {
@@ -275,43 +278,27 @@ export default class BeastVault extends Plugin {
         }
     }
 
-    updateState() {
-        // Debounce writes
-        if (this.saveTimer != null) window.clearTimeout(this.saveTimer);
-        this.saveTimer = window.setTimeout(() => { this.flushSave(); }, 1000);
-    }
-
-    async flushSave() {
-        if (this.saveTimer != null) {
-            window.clearTimeout(this.saveTimer);
-            this.saveTimer = undefined;
-        }
-        const run = async () => await this.saveData(this.state);
-        // Chain to the previous save if one is in-flight
-        this.saving = (this.saving ?? Promise.resolve()).then(run, run);
-        await this.saving;
-    }
-
     updateCard(keys: (string | number)[], value: string | number) {
-        let data: Record<any, any> = this.state.cards;
+        type Data = { [key: string]: Data | number | string };
+        let data: Data = this.state.cards;
         const keysCopy = [...keys];
         const lastKey = keysCopy.pop()!;
         for (const key of keysCopy) {
             if (!data[key]) data[key] = {};
-            data = data[key]
+            data = data[key] as Data;
         }
         data[lastKey] = value;
         this.updateState();
     }
 
     getCardState(keys: (string | number)[]): number | undefined {
-        let data: any = this.state.cards;
-        for (const key of keys) {
-            if (data[key] == null) return undefined;
-            data = data[key]
+        type Data = { [key: string]: Data | string | number }
+        let data: Data = this.state.cards;
+        for (const [i, key] of keys.entries()) {
+            if (!data[key]) return undefined;
+            if (i === keys.length - 1) return data[key] as number;
+            data = data[key] as Data;
         }
-        return data;
     }
 }
-
 
