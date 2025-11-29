@@ -1,7 +1,7 @@
-import { Editor, Plugin, setTooltip, parseYaml, Menu, Notice, type TFolder } from 'obsidian';
+import { Editor, Plugin, setTooltip, parseYaml, Menu, Notice, type TFolder, debounce, type Debouncer } from 'obsidian';
 import { SettingTab, type PluginSettings, DEFAULT_SETTINGS } from './settings';
-import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, processAdversary, walkFolder } from './utils';
-import { AdversaryCard, AdversaryModal, type Adversary } from './ui';
+import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, walkFolder } from './utils';
+import { AdversaryCard, AdversaryModal, type RawAdversary } from './ui';
 
 export type PluginState = {
     settings: PluginSettings;
@@ -25,7 +25,8 @@ export default class BeastVault extends Plugin {
     saveTimer?: number;
     saving?: Promise<void>;
     battlePoints: HTMLElement;
-    library: Adversary[] = [];
+    library: RawAdversary[] = [];
+    updateState: Debouncer<[], Promise<void>>;
 
     updateStatusBar() {
         const file = this.app.workspace.getActiveFile();
@@ -75,9 +76,9 @@ export default class BeastVault extends Plugin {
             }
             return;
         }
-        const newLibrary: Adversary[] = [];
+        const newLibrary: RawAdversary[] = [];
         await walkFolder(folder, async (file) => {
-            let content: Adversary | Adversary[];
+            let content: RawAdversary | RawAdversary[];
 
             if (file.extension == 'json') {
                 content = JSON.parse(await this.app.vault.read(file));
@@ -90,7 +91,10 @@ export default class BeastVault extends Plugin {
                 const lines = (await this.app.vault.read(file)).split('\n');
                 content = codeblocks
                     .filter(sec => lines[sec.position.start.line].trim() === '```daggerheart')
-                    .map(sec => parseYaml(lines.slice(sec.position.start.line + 1, sec.position.end.line).join("\n")));
+                    .map(sec => {
+                        const targetLines = lines.slice(sec.position.start.line + 1, sec.position.end.line).join("\n");
+                        return { raw: targetLines, ...parseYaml(targetLines) };
+                    });
             } else {
                 return;
             }
@@ -98,7 +102,7 @@ export default class BeastVault extends Plugin {
             if (!Array.isArray(content)) content = [content];
             for (const item of content) {
                 if (item && typeof item == 'object' && typeof item.name == 'string') {
-                    newLibrary.push(processAdversary({ source: file.path, ...item }, file.path));
+                    newLibrary.push({ source: 'homebrew', ...item });
                 }
             }
         })
@@ -123,6 +127,7 @@ export default class BeastVault extends Plugin {
             if (length == 0) {
                 new Notice(`No valid stat blocks found in ${this.state.settings.libraryFolder}`);
             } else {
+                // TODO: message about duplicates?
                 new Notice(`Loaded ${length} stat block${length != 1 ? 's' : ''}`)
             }
         }
@@ -130,11 +135,11 @@ export default class BeastVault extends Plugin {
         return newLibrary;
     }
 
-    allAdversaries(): Adversary[] {
+    allAdversaries(): RawAdversary[] {
         return this.library.filter(adv => (adv.hp && adv.hp > 0) || (adv.stress && adv.stress > 0)).concat(ADV_LIBRARY);
     }
 
-    allEnvironments(): Adversary[] {
+    allEnvironments(): RawAdversary[] {
         return this.library.filter(adv => (!adv.hp || adv.hp == 0) && (!adv.stress || adv.stress == 0)).concat(ENV_LIBRARY);
     }
 
@@ -144,10 +149,10 @@ export default class BeastVault extends Plugin {
         this.battlePoints = this.addStatusBarItem();
         this.registerEvent(this.app.workspace.on('active-leaf-change', () => this.updateStatusBar()));
         this.app.workspace.onLayoutReady(() => this.scanLibrary(false, 'no'));
+        this.updateState = debounce(() => this.saveData(this.state), 1000, true);
 
         this.registerMarkdownCodeBlockProcessor("daggerheart", (src, el, ctx) => {
-            const adv = processAdversary(parseYaml(src) ?? {}, this.app.workspace.getActiveFile()!.path);
-            const child = new AdversaryCard(el, adv, this);
+            const child = new AdversaryCard(el, parseYaml(src) ?? {}, this);
             ctx.addChild(child);
             child.render();
             // Track it so we can refresh on settings change:
@@ -250,32 +255,13 @@ export default class BeastVault extends Plugin {
     }
 
     onunload() {
-        if (this.saveTimer != null) {
-            void this.flushSave();
-        }
+        void this.updateState.run();
     }
 
     renderAll() {
         for (const [block] of this.activeBlocks) {
             block.render();
         }
-    }
-
-    updateState() {
-        // Debounce writes
-        if (this.saveTimer != null) window.clearTimeout(this.saveTimer);
-        this.saveTimer = window.setTimeout(() => { void this.flushSave(); }, 1000);
-    }
-
-    async flushSave() {
-        if (this.saveTimer != null) {
-            window.clearTimeout(this.saveTimer);
-            this.saveTimer = undefined;
-        }
-        const run = async () => await this.saveData(this.state);
-        // Chain to the previous save if one is in-flight
-        this.saving = (this.saving ?? Promise.resolve()).then(run, run);
-        await this.saving;
     }
 
     updateCard(keys: (string | number)[], value: string | number) {
@@ -294,12 +280,11 @@ export default class BeastVault extends Plugin {
     getCardState(keys: (string | number)[]): number | undefined {
         type Data = { [key: string]: Data | string | number }
         let data: Data = this.state.cards;
-        for (const key of keys) {
+        for (const [i, key] of keys.entries()) {
             if (!data[key]) return undefined;
+            if (i === keys.length - 1) return data[key] as number;
             data = data[key] as Data;
         }
-        return data as any;
     }
 }
-
 

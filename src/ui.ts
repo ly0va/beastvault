@@ -1,7 +1,7 @@
 import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon, MarkdownRenderer } from 'obsidian';
 import { roll } from '@airjp73/dice-notation';
 import BeastVault from './main';
-import { hexToRgb, DICE_PATTERN } from './utils';
+import { hexToRgb, DICE_PATTERN, processAdversary } from './utils';
 
 type Feature = {
     name?: string;
@@ -12,13 +12,15 @@ type Feature = {
     flavor?: string;
 }
 
-export type Adversary = {
+// Stored in library, as entered by user.
+// Pasted into editor when inserted.
+export type RawAdversary = {
     name?: string;
     tier?: number;
     type?: string;
-    difficulty?: string;
     desc?: string;
-    features: Feature[];
+    difficulty?: string | number;
+    features?: Feature[];
 
     // these are for environments
     tone?: string;
@@ -26,11 +28,11 @@ export type Adversary = {
     adversaries?: string;
 
     // these are for adversaries
-    hp: number;
-    stress: number;
-    thresholds: number[];
-    attack?: string;
-    xp: string[];
+    hp?: number;
+    stress?: number;
+    thresholds?: string | number | number[];
+    attack?: string | number;
+    xp?: string | string[];
     motives?: string;
 
     weapon?: string;
@@ -39,48 +41,68 @@ export type Adversary = {
 
     // these are not rendered
     source?: string;
-    id: string;
+    id?: string;
+    raw?: string;
 };
+
+// Used when rendering.
+// 'id' is not rendered but required to track state.
+export type Adversary = Omit<RawAdversary, 'source' | 'raw'> & {
+    difficulty?: string;
+    features: Feature[];
+    hp: number; // 0 for environments
+    stress: number; // 0 for environments
+    thresholds: number[];
+    attack?: string;
+    xp: string[];
+    id: string;
+}
 
 function subTitle(tier?: number, type?: string) {
     return (tier ? `Tier ${tier} ` : '') + (type ? type : '');
 }
 
-export class AdversaryModal extends SuggestModal<Adversary> {
-    constructor(app: App, private editor: Editor, private library: Adversary[]) {
+export class AdversaryModal extends SuggestModal<RawAdversary> {
+    constructor(app: App, private editor: Editor, private library: RawAdversary[]) {
         super(app);
         this.limit = 200;
     }
 
-    getSuggestions(query: string): Adversary[] {
+    getSuggestions(query: string): RawAdversary[] {
         return this.library.filter((adv: Adversary) =>
             adv.name!.toLowerCase().includes(query.toLowerCase())
         );
     }
 
-    renderSuggestion(adv: Adversary, el: HTMLElement) {
+    renderSuggestion(adv: RawAdversary, el: HTMLElement) {
         const heading = el.createDiv({ cls: 'bv-spreadout' });
         heading.createEl('b', { text: adv.name?.toUpperCase() || '' });
         heading.createSpan({ text: subTitle(adv.tier, adv.type), cls: 'bv-smaller' });
-        el.createSpan({ text: adv.desc || '', cls: 'bv-smaller bv-muted' });
+        el.createSpan({ text: adv.desc ?? '', cls: 'bv-smaller bv-muted' });
     }
 
-    onChooseSuggestion(adv: Adversary, evt: MouseEvent | KeyboardEvent) {
-        adv.id = Math.random().toString(36).slice(2);
-        delete adv.source;
-        this.editor.replaceSelection(`\`\`\`daggerheart\n${stringifyYaml(adv)}\`\`\`\n`);
+    onChooseSuggestion(adv: RawAdversary, evt: MouseEvent | KeyboardEvent) {
+        const copy = { ... adv };
+        copy.id = Math.random().toString(36).slice(2);
+        delete copy.source;
+        delete copy.raw;
+        this.editor.replaceSelection(`\`\`\`daggerheart\n${adv.raw ? adv.raw : stringifyYaml(copy)}\`\`\`\n`);
     }
 }
 
 export class AdversaryCard extends MarkdownRenderChild {
     count: number;
+    filePath: string;
+    public adv: Adversary;
 
     constructor(
         private container: HTMLElement,
-        public adv: Adversary,
+        public raw: RawAdversary,
         private plugin: BeastVault
     ) {
         super(container);
+        this.filePath = this.plugin.app.workspace.getActiveFile()?.path ?? '/';
+        this.adv = processAdversary(raw, this.filePath);
         this.count = this.plugin.state.cards[this.adv.id]?.count || 1;
     }
 
@@ -153,7 +175,7 @@ export class AdversaryCard extends MarkdownRenderChild {
                     .replace(/\b([mM])ark a [sS]tress\b/g, "<b>$1ark a Stress</b>")
                     .replace(DICE_PATTERN, `<span class=bv-rollable>$&</span>`),
                 featureDiv,
-                this.plugin.app.workspace.getActiveFile()!.path,
+                this.filePath,
                 this
             );
         }
@@ -275,7 +297,7 @@ export class AdversaryCard extends MarkdownRenderChild {
         setIcon(remove, 'minus')
 
         // hacky but works for now
-        setTimeout(() => {
+        window.setTimeout(() => {
             const editable = card.parentElement?.nextElementSibling?.classList.contains('edit-block-button');
             if (editable) {
                 add.addClass('bv-lower-1');

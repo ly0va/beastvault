@@ -4209,7 +4209,7 @@
     "motives": "Demolish, devour, undermine",
     "hp": 7,
     "stress": 5,
-    "attack": null,
+    "attack": "+2d4",
     "weapon": "Massive Pseudopod",
     "range": "Very Close",
     "damage": "4d6+13 mag",

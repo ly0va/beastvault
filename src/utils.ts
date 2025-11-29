@@ -1,10 +1,10 @@
-import type { Adversary } from './ui';
+import type { Adversary, RawAdversary } from './ui';
 import { TFile, TFolder } from "obsidian";
 import ADV_LIBRARY_DATA from '../data/adversaries.json';
 import ENV_LIBRARY_DATA from '../data/environments.json';
 
-export const ADV_LIBRARY: Adversary[] = ADV_LIBRARY_DATA as any;
-export const ENV_LIBRARY: Adversary[] = ENV_LIBRARY_DATA as any;
+export const ADV_LIBRARY: RawAdversary[] = ADV_LIBRARY_DATA;
+export const ENV_LIBRARY: RawAdversary[] = ENV_LIBRARY_DATA;
 
 export const ADV_TEMPLATE = `\`\`\`daggerheart
 name:
@@ -60,18 +60,23 @@ export function hexToRgb(hex: string) {
     return `${rgb[0]}, ${rgb[1]}, ${rgb[2]}`;
 }
 
-export function processAdversary(obj: any, filePath: string): Adversary {
+export function processAdversary(obj: RawAdversary, filePath: string): Adversary {
     if (typeof obj.attack === 'number') {
         obj.attack = obj.attack > 0 ? `+${obj.attack}` : `${obj.attack}`;
     }
     if (typeof obj.thresholds === "string") {
-        obj.thresholds = obj.thresholds.split(/[,/]/).filter((s: string) => s.trim().toLowerCase() != 'none');
+        obj.thresholds = obj.thresholds.split(/[,/]/)
+            .filter((s: string) => s.trim().toLowerCase() != 'none')
+            .map((s: string) => parseInt(s));
     }
     if (typeof obj.thresholds === "number") {
         obj.thresholds = [obj.thresholds];
     }
     if (typeof obj.xp === "string") {
         obj.xp = obj.xp.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
+    }
+    if (typeof obj.difficulty === "number") {
+        obj.difficulty = obj.difficulty.toString();
     }
 
     obj.id ??= `${filePath}::${obj.name || ''}`;
@@ -81,9 +86,31 @@ export function processAdversary(obj: any, filePath: string): Adversary {
     obj.thresholds ??= [];
     obj.features ??= [];
 
-    // TODO: clean up stray keys
+    return {
+        name: obj.name,
+        tier: obj.tier,
+        type: obj.type,
+        desc: obj.desc,
+        difficulty: obj.difficulty,
+        features: obj.features,
 
-    return obj;
+        tone: obj.tone,
+        impulses: obj.impulses,
+        adversaries: obj.adversaries,
+
+        hp: obj.hp,
+        stress: obj.stress,
+        thresholds: obj.thresholds,
+        attack: obj.attack,
+        xp: obj.xp,
+        motives: obj.motives,
+
+        weapon: obj.weapon,
+        range: obj.range,
+        damage: obj.damage,
+
+        id: obj.id,
+    };
 }
 
 export async function walkFolder(folder: TFolder, callback: (file: TFile) => Promise<void>) {
