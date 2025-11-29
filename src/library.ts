@@ -5,8 +5,10 @@ import { type RawAdversary, AdversaryCard } from './ui';
 
 export const LIBRARY_VIEW_TYPE = 'beastvault-library-view';
 
+type SortBy = 'tier' | 'type' | 'source' | 'name';
+
 export class LibraryView extends ItemView {
-    private sortBy: 'tier' | 'type' | 'source' | 'name' = 'tier';
+    private sortBy: SortBy = 'tier';
     private filters: { tier: boolean[]; type: string; source: string; search?: string } = {
         tier: [false /* this is a fake one */, false, false, false, false],
         type: 'all',
@@ -132,7 +134,7 @@ export class LibraryView extends ItemView {
         sortDropdown.createEl('option', { text: 'Source', value: 'source' });
 
         sortBy.addEventListener('change', (event) => {
-            this.sortBy = (event.target as HTMLSelectElement).value as any;
+            this.sortBy = (event.target as HTMLSelectElement).value as SortBy;
             this.renderBlocks();
         });
 
@@ -140,7 +142,7 @@ export class LibraryView extends ItemView {
     }
 
     renderBlocks() {
-        this.grid ??= this.contentEl.createDiv('daggerheart-library');
+        this.grid ??= this.contentEl.createDiv('bv-library');
         this.grid.empty();
         const everything = this.everything();
         for (const item of everything) {

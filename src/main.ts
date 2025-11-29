@@ -52,7 +52,7 @@ export default class BeastVault extends Plugin {
             leaf = this.app.workspace.getLeaf('tab');
             await leaf?.setViewState({ type: LIBRARY_VIEW_TYPE, active: true });
         }
-        this.app.workspace.revealLeaf(leaf);
+        await this.app.workspace.revealLeaf(leaf);
     }
 
     calculateBattlePoints(filePath: string): number {

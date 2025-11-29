@@ -296,7 +296,7 @@ export class AdversaryCard extends MarkdownRenderChild {
             delete copy.source;
             delete copy.raw;
 
-            navigator.clipboard.writeText(`\`\`\`daggerheart\n${this.raw.raw ? this.raw.raw : stringifyYaml(copy)}\`\`\`\n`)
+            void navigator.clipboard.writeText(`\`\`\`daggerheart\n${this.raw.raw ? this.raw.raw : stringifyYaml(copy)}\`\`\`\n`)
             new Notice('Adversary copied to clipboard');
         })
     }
