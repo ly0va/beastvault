@@ -13,7 +13,7 @@ export type PluginState = {
                 hp?: number;
                 stress?: number;
                 uses?: { [key: string]: number };
-                countdown?: { [key: string]: number}
+                countdown?: { [key: string]: number }
             };
         };
     };
@@ -95,6 +95,47 @@ export default class BeastVault extends Plugin {
                         const targetLines = lines.slice(sec.position.start.line + 1, sec.position.end.line).join("\n");
                         return { raw: targetLines, ...parseYaml(targetLines) };
                     });
+                // Also scan FSB-compatible statblocks
+                if (this.state.settings.compatibleWithFSB) {
+                    const fsb: RawAdversary[] = codeblocks
+                        .filter(sec => lines[sec.position.start.line].trim() === '```statblock')
+                        .map(sec => {
+                            const targetLines = lines.slice(sec.position.start.line + 1, sec.position.end.line).join("\n");
+                            const statblock = parseYaml(targetLines);
+                            const isDaggerheart = statblock.layout && typeof statblock.layout == 'string' && /daggerheart\s+(environment|adversary)/i.test(statblock.layout);
+                            if (!isDaggerheart) return null;
+                            return {
+                                name: statblock.name,
+                                tier: statblock.tier,
+                                type: statblock.type,
+                                desc: statblock.description,
+                                difficulty: statblock.difficulty,
+
+                                hp: statblock.hp,
+                                stress: statblock.stress,
+                                thresholds: statblock.thresholds,
+                                motives: statblock.motives_and_tactics,
+                                xp: statblock.experience,
+                                attack: statblock.atk,
+
+                                weapon: statblock.attack,
+                                range: statblock.range,
+                                damage: statblock.damage,
+
+                                impulses: statblock.impulses,
+                                adversaries: statblock.potential_adversaries,
+
+                                features: statblock.feats?.map((f: { name?: string, text?: string }) => ({
+                                    name: f.name,
+                                    desc: f.text
+                                })),
+
+                                source: statblock.source,
+                            } as RawAdversary;
+                        })
+                        .filter((s: RawAdversary | null) => s != null);
+                    content = content.concat(fsb);
+                }
             } else {
                 return;
             }

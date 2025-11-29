@@ -8,6 +8,7 @@ export type PluginSettings = {
     numberOfPCs: number;
     libraryFolder?: string;
     ignoreDuplicateNames: boolean;
+    compatibleWithFSB: boolean;
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -16,6 +17,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     defaultColor: '#8A5CF5',
     numberOfPCs: 4,
     ignoreDuplicateNames: true,
+    compatibleWithFSB: false,
 }
 
 export class SettingTab extends PluginSettingTab {
@@ -102,6 +104,17 @@ export class SettingTab extends PluginSettingTab {
                 .setValue(this.plugin.state.settings.ignoreDuplicateNames)
                 .onChange(async (value) => {
                     this.plugin.state.settings.ignoreDuplicateNames = value;
+                    this.plugin.updateState();
+                    await this.plugin.scanLibrary(false, 'no');
+                }));
+
+        new Setting(containerEl)
+            .setName('Compatibility with Fantasy Statblocks')
+            .setDesc('Any FSB-compatible statblocks in the notes inside the library folder will be also be available in search')
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.state.settings.compatibleWithFSB)
+                .onChange(async (value) => {
+                    this.plugin.state.settings.compatibleWithFSB = value;
                     this.plugin.updateState();
                     await this.plugin.scanLibrary(false, 'no');
                 }));
