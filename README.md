@@ -32,11 +32,13 @@ An [Obsidian.md](https://obsidian.md) plugin for Daggerheart TTRPG GMs to search
 
 ### Automatic via [BRAT](https://github.com/TfTHacker/obsidian42-brat)
 
-1. Install the [BRAT](https://obsidian.md/plugins?search=brat) plugin from the community plugins browser
+1. Install the [BRAT](obsidian://show-plugin?id=obsidian42-brat) plugin from the community plugins browser
 2. Navigate to BRAT settings and click `Add beta plugin`
 3. Enter `ly0va/beastvault` as the repository and click `Add plugin`
 
 ## Showcase
+
+### Insert from library
 
 Insert an adversary via a command by going `Ctrl+P` > `Insert adversary from library` or using the side ribbon menu.
 
@@ -51,6 +53,8 @@ Insert an adversary via a command by going `Ctrl+P` > `Insert adversary from lib
 
 ---
 
+### Homebrew
+
 Make your own homebrew adversary by creating a `daggerheart` code block, or edit an inserted one by clicking the `</>` button in the top-right corner.
 
 ![Create homebrew adversary](./media/create.png)
@@ -58,9 +62,14 @@ Make your own homebrew adversary by creating a `daggerheart` code block, or edit
 > [!TIP]
 > You can insert an empty adversary template by using the `Insert adversary template` command.
 
+> [!IMPORTANT]
+> Do not use `TAB` in stat blocks. The indents for features must be manually indented with spaces.
+
 ---
 
-Build out full encounters in a canvas and track their HP & stress during a session. Marked HP & stress are preserved even after you close Obsidian.
+### Build encounters
+
+Build out full encounters (works in a canvas too!) and track their HP & stress during a session. Marked HP & stress are preserved even after you close Obsidian.
 
 ![Canvas encounter](./media/encounter.gif)
 
@@ -68,12 +77,17 @@ Build out full encounters in a canvas and track their HP & stress during a sessi
 > Building encounters in a canvas is made much more convenient by enabling node auto-resizing in [this plugin](https://github.com/Developer-Mike/obsidian-advanced-canvas).
 > During a playing session, using canvas in read-only mode is recommended.
 
+---
+
 ### Library management
 
 Go to `BeastVault settings` > `Library folder location` and enter a folder name. All notes in this folder will be scanned for `daggerheart` codeblocks, which will be available in search.
 
 You can also import adversaries in bulk, by creating `.json` or `.yaml` files in this folder, which can contain a single stat block or an array of stat blocks.
 The structure of the stat blocks is documented below.
+
+Additionally, it is possible to enable compatibility with [Fantasy Statblocks](https://github.com/javalent/fantasy-statblocks) in settings.
+With this enabled, any FSB-compatible blocks found in the notes inside the library folder will also be available in search, as long as they have `layout: Daggerheart Adversary` or `layout: Daggerheart Environment`.
 
 > [!IMPORTANT]
 > - Only entries with a valid string `name` are added to the library.
@@ -113,15 +127,16 @@ The `daggerheart` code block parses the adversary or an environment as [YAML](ht
 | `desc` | Feature description; supports markdown | `Make a standard attack. On a success, the target is *Vulnerable* until they next act.` |
 | `uses` | Uses per scene (for those features that limit them) | `2` |
 | `countdown` | Size of the countdown activated by the feature, if any | `6` |
-| `flavor` | Hints for GM/PCs when using an adversary or environment in their setting | `Have any of the PCs forded rivers like this before? Are any of them afraid of drowning?` |
+| `flavor` | Hints for GM/PCs for flavoring an adversary or environment for their setting | `Have any of the PCs forded rivers like this before? Are any of them afraid of drowning?` |
 
-For environments, additional properties are available:
+For environments, `weapon`, `damage`, `range`, `hp`, `stress`, `thresholds`, `attack`, `xp`, `motives` are not set.
+Instead, additional properties are available:
 
 | Property | Definition | Example |
 | --- | --- | --- |
-| `tone` | Tone and feel of the environment | `Musty and mournful, serene yet slightly wrong` |
 | `impulses` | Environment impulses | `Bar crossing, carry away the unready, divide the land` |
 | `adversaries` | Potential adversaries in an environment | `Guards (Bladed Guard, Head Guard), Masked Thief, Merchant` |
+| `tone` | Tone and feel of the environment | `Musty and mournful, serene yet slightly wrong` |
 
 All of the properties are optional, and simply won't render if skipped.
 
