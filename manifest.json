@@ -1,7 +1,7 @@
 {
 	"id": "beastvault",
 	"name": "BeastVault",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"minAppVersion": "1.9.14",
 	"description": "Adversary and environment stat blocks for Daggerheart TTRPG.",
 	"author": "Lyova Potyomkin",

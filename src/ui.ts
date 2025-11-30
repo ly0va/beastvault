@@ -139,8 +139,8 @@ export class AdversaryCard extends MarkdownRenderChild {
 
         if (this.adv.weapon || this.adv.range || this.adv.damage) {
             header.createEl('b', { text: `${this.adv.weapon || 'Weapon'}: ` })
-            header.createSpan(this.adv.range || '')
-            header.createSpan((this.adv.range && this.adv.damage) ? ' | ' : '');
+            header.createSpan({ text: this.adv.range || '' })
+            header.createSpan({ text: (this.adv.range && this.adv.damage) ? ' | ' : '' });
             this.adv.damage?.split(DICE_PATTERN).forEach(part => {
                 header.createSpan({ text: part, cls: DICE_PATTERN.test(part) ? 'bv-rollable' : '' });
             });
