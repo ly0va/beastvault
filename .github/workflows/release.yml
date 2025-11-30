@@ -21,7 +21,10 @@ jobs:
           cache: pnpm
 
       - name: Check versions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          tag="${GITHUB_REF#refs/tags/}"
           test "$tag" = "$(jq -r .version package.json)"
           test "$tag" = "$(jq -r .version manifest.json)"
           jq -e --arg v "$tag" 'has($v)' versions.json
@@ -36,7 +39,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           tag="${GITHUB_REF#refs/tags/}"
-
           gh release create "$tag" \
             --title="$tag" \
             --draft \
