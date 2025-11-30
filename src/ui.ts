@@ -82,7 +82,8 @@ export class AdversaryModal extends SuggestModal<RawAdversary> {
         copy.id = Math.random().toString(36).slice(2);
         delete copy.source;
         delete copy.raw;
-        this.editor.replaceSelection(`\`\`\`daggerheart\n${adv.raw ? adv.raw : stringifyYaml(copy)}\`\`\`\n`);
+        const inserted = adv.raw ? adv.raw : stringifyYaml(copy);
+        this.editor.replaceSelection(`\`\`\`daggerheart\n${inserted.trim()}\n\`\`\`\n`);
     }
 }
 
@@ -135,8 +136,8 @@ export class AdversaryCard extends MarkdownRenderChild {
 
         if (this.adv.weapon || this.adv.range || this.adv.damage) {
             header.createEl('b', { text: `${this.adv.weapon || 'Weapon'}: ` })
-            header.createSpan(this.adv.range || '')
-            header.createSpan((this.adv.range && this.adv.damage) ? ' | ' : '');
+            header.createSpan({ text: this.adv.range || '' })
+            header.createSpan({ text: (this.adv.range && this.adv.damage) ? ' | ' : '' });
             this.adv.damage?.split(DICE_PATTERN).forEach(part => {
                 header.createSpan({ text: part, cls: DICE_PATTERN.test(part) ? 'bv-rollable' : '' });
             });
@@ -295,8 +296,9 @@ export class AdversaryCard extends MarkdownRenderChild {
             copy.id = Math.random().toString(36).slice(2);
             delete copy.source;
             delete copy.raw;
+            const inserted = this.raw.raw ? this.raw.raw : stringifyYaml(copy);
 
-            void navigator.clipboard.writeText(`\`\`\`daggerheart\n${this.raw.raw ? this.raw.raw : stringifyYaml(copy)}\`\`\`\n`)
+            void navigator.clipboard.writeText(`\`\`\`daggerheart\n${inserted.trim()}\n\`\`\`\n`)
             new Notice('Adversary copied to clipboard');
         })
     }
