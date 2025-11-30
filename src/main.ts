@@ -101,7 +101,7 @@ export default class BeastVault extends Plugin {
                         .filter(sec => lines[sec.position.start.line].trim() === '```statblock')
                         .map(sec => {
                             const targetLines = lines.slice(sec.position.start.line + 1, sec.position.end.line).join("\n");
-                            const statblock = parseYaml(targetLines);
+                            const statblock = parseYaml(targetLines) ?? {};
                             const isDaggerheart = statblock.layout && typeof statblock.layout == 'string' && /daggerheart\s+(environment|adversary)/i.test(statblock.layout);
                             if (!isDaggerheart) return null;
                             return {
@@ -125,9 +125,9 @@ export default class BeastVault extends Plugin {
                                 impulses: statblock.impulses,
                                 adversaries: statblock.potential_adversaries,
 
-                                features: statblock.feats?.map((f: { name?: string, text?: string }) => ({
-                                    name: f.name,
-                                    desc: f.text
+                                features: statblock.feats?.map((f?: { name?: string, text?: string }) => ({
+                                    name: f?.name,
+                                    desc: f?.text
                                 })),
 
                                 source: statblock.source,

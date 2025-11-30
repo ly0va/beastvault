@@ -82,11 +82,12 @@ export class AdversaryModal extends SuggestModal<RawAdversary> {
     }
 
     onChooseSuggestion(adv: RawAdversary, evt: MouseEvent | KeyboardEvent) {
-        const copy = { ... adv };
+        const copy = { ...adv };
         copy.id = Math.random().toString(36).slice(2);
         delete copy.source;
         delete copy.raw;
-        this.editor.replaceSelection(`\`\`\`daggerheart\n${adv.raw ? adv.raw : stringifyYaml(copy)}\`\`\`\n`);
+        const inserted = adv.raw ? adv.raw : stringifyYaml(copy);
+        this.editor.replaceSelection(`\`\`\`daggerheart\n${inserted.trim()}\n\`\`\`\n`);
     }
 }
 
