@@ -1,6 +1,6 @@
-import { Editor, Plugin, setTooltip, parseYaml, Menu, Notice, type TFolder, debounce, type Debouncer } from 'obsidian';
+import { Editor, Plugin, setTooltip, Menu, Notice, type TFolder, debounce, type Debouncer } from 'obsidian';
 import { SettingTab, type PluginSettings, DEFAULT_SETTINGS } from './settings';
-import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, walkFolder } from './utils';
+import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, walkFolder, tryParseYaml } from './utils';
 import { AdversaryCard, AdversaryModal, type RawAdversary } from './ui';
 
 export type PluginState = {
@@ -81,9 +81,14 @@ export default class BeastVault extends Plugin {
             let content: RawAdversary | RawAdversary[];
 
             if (file.extension == 'json') {
-                content = JSON.parse(await this.app.vault.read(file));
+                try {
+                    content = JSON.parse(await this.app.vault.read(file));
+                } catch (e) {
+                    console.error(`Failed to parse ${file.path}:\n`, e);
+                    return;
+                }
             } else if (file.extension == 'yml' || file.extension == 'yaml') {
-                content = parseYaml(await this.app.vault.read(file));
+                content = tryParseYaml(await this.app.vault.read(file));
             } else if (file.extension == 'md') {
                 const metadata = this.app.metadataCache.getFileCache(file)
                 const codeblocks = metadata?.sections?.filter(sec => sec.type == 'code') ?? [];
@@ -93,7 +98,7 @@ export default class BeastVault extends Plugin {
                     .filter(sec => lines[sec.position.start.line].trim() === '```daggerheart')
                     .map(sec => {
                         const targetLines = lines.slice(sec.position.start.line + 1, sec.position.end.line).join("\n");
-                        return { raw: targetLines, ...parseYaml(targetLines) };
+                        return { raw: targetLines, ...tryParseYaml(targetLines) };
                     });
                 // Also scan FSB-compatible statblocks
                 if (this.state.settings.compatibleWithFSB) {
@@ -101,7 +106,7 @@ export default class BeastVault extends Plugin {
                         .filter(sec => lines[sec.position.start.line].trim() === '```statblock')
                         .map(sec => {
                             const targetLines = lines.slice(sec.position.start.line + 1, sec.position.end.line).join("\n");
-                            const statblock = parseYaml(targetLines) ?? {};
+                            const statblock = tryParseYaml(targetLines);
                             const isDaggerheart = statblock.layout && typeof statblock.layout == 'string' && /daggerheart\s+(environment|adversary)/i.test(statblock.layout);
                             if (!isDaggerheart) return null;
                             return {
@@ -193,7 +198,7 @@ export default class BeastVault extends Plugin {
         this.updateState = debounce(() => this.saveData(this.state), 1000, true);
 
         this.registerMarkdownCodeBlockProcessor("daggerheart", (src, el, ctx) => {
-            const child = new AdversaryCard(el, parseYaml(src) ?? {}, this);
+            const child = new AdversaryCard(el, tryParseYaml(src, false), this);
             ctx.addChild(child);
             child.render();
             // Track it so we can refresh on settings change:

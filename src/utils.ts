@@ -1,5 +1,5 @@
 import type { Adversary, RawAdversary } from './ui';
-import { TFile, TFolder } from "obsidian";
+import { TFile, TFolder, parseYaml, Notice } from "obsidian";
 import ADV_LIBRARY_DATA from '../data/adversaries.json';
 import ENV_LIBRARY_DATA from '../data/environments.json';
 
@@ -120,5 +120,17 @@ export async function walkFolder(folder: TFolder, callback: (file: TFile) => Pro
         } else if (child instanceof TFolder) {
             await walkFolder(child, callback); // recurse
         }
+    }
+}
+
+export function tryParseYaml(source: string, silent: boolean = true) {
+    try {
+        const parsed = parseYaml(source) ?? {};
+        // Arrays and objects are fine
+        return typeof parsed === 'object' ? parsed : {};
+    } catch (e) {
+        console.error(e);
+        if (!silent) new Notice(e.toString(), 10000);
+        return {};
     }
 }
