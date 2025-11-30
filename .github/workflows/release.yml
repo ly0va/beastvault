@@ -20,6 +20,12 @@ jobs:
           node-version: lts/Jod
           cache: pnpm
 
+      - name: Check versions
+        run: |
+          test "$tag" = "$(jq -r .version package.json)"
+          test "$tag" = "$(jq -r .version manifest.json)"
+          jq -e --arg v "$tag" 'has($v)' versions.json
+
       - name: Build plugin
         run: |
           pnpm install -r --frozen-lockfile
@@ -32,6 +38,6 @@ jobs:
           tag="${GITHUB_REF#refs/tags/}"
 
           gh release create "$tag" \
-            --title="v$tag" \
+            --title="$tag" \
             --draft \
             main.js manifest.json styles.css

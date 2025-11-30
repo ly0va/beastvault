@@ -1,6 +1,6 @@
 {
 	"name": "beastvault",
-	"version": "1.2.2",
+	"version": "1.2.3",
 	"description": "Obsidian plugin for encounter management in Daggerheart TTRPG",
 	"main": "main.js",
 	"scripts": {
