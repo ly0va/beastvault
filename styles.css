@@ -104,6 +104,18 @@ input[type=checkbox].bv-slot {
     margin-top: auto;
 }
 
+.bv-mini-copy {
+    position: absolute;
+    bottom: var(--size-2-2);
+    left: var(--size-2-2);
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+
+.bv-library-item:hover .bv-mini-copy {
+    opacity: var(--icon-opacity);
+}
+
 .bv-inactive {
     color: var(--text-faint) !important;
 }

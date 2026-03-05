@@ -191,6 +191,7 @@ export default class BeastVault extends Plugin {
             }
         }
 
+        this.refreshLibraryViews();
         return newLibrary;
     }
 
@@ -331,6 +332,15 @@ export default class BeastVault extends Plugin {
     renderAll() {
         for (const [block] of this.activeBlocks) {
             block.render();
+        }
+        for (const leaf of this.app.workspace.getLeavesOfType(LIBRARY_VIEW_TYPE)) {
+            (leaf.view as LibraryView).renderBlocks();
+        }
+    }
+
+    refreshLibraryViews() {
+        for (const leaf of this.app.workspace.getLeavesOfType(LIBRARY_VIEW_TYPE)) {
+            void (leaf.view as LibraryView).onOpen();
         }
     }
 
