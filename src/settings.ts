@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, Notice } from 'obsidian';
+import { App, PluginSettingTab, Setting } from 'obsidian';
 import BeastVault from './main';
 
 export type PluginSettings = {
@@ -94,7 +94,7 @@ export class SettingTab extends PluginSettingTab {
                 .setTooltip('View library')
                 .onClick(async () => {
                     await this.plugin.scanLibrary(true, 'no');
-                    new Notice('Library viewer under construction!');
+                    await this.plugin.openLibraryView();
                 }));
 
         new Setting(containerEl)

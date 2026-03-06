@@ -1,7 +1,7 @@
 import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon, MarkdownRenderer } from 'obsidian';
 import { roll } from '@airjp73/dice-notation';
 import BeastVault from './main';
-import { hexToRgb, DICE_PATTERN, processAdversary } from './utils';
+import { hexToRgb, DICE_PATTERN, processAdversary, subTitle } from './utils';
 
 type Feature = {
     name?: string;
@@ -58,10 +58,6 @@ export type Adversary = Omit<RawAdversary, 'source' | 'raw'> & {
     id: string;
 }
 
-function subTitle(tier?: number, type?: string) {
-    return (tier ? `Tier ${tier} ` : '') + (type ? type : '');
-}
-
 export class AdversaryModal extends SuggestModal<RawAdversary> {
     constructor(app: App, private editor: Editor, private library: RawAdversary[]) {
         super(app);
@@ -99,7 +95,8 @@ export class AdversaryCard extends MarkdownRenderChild {
     constructor(
         private container: HTMLElement,
         public raw: RawAdversary,
-        private plugin: BeastVault
+        private plugin: BeastVault,
+        private preview: boolean = false
     ) {
         super(container);
         this.filePath = this.plugin.app.workspace.getActiveFile()?.path ?? '/';
@@ -198,11 +195,13 @@ export class AdversaryCard extends MarkdownRenderChild {
                 slots.push(slot);
             }
             statBar.createEl('br');
-            statBar.addEventListener('input', (event) => {
-                if (!slots.contains(event.target as HTMLInputElement)) return;
-                let marked = slots.reduce((sum, slot) => sum + (slot.checked ? 1 : 0), 0);
-                this.plugin.updateCard(keys, marked)
-            });
+            if (!this.preview) {
+                statBar.addEventListener('input', (event) => {
+                    if (!slots.contains(event.target as HTMLInputElement)) return;
+                    let marked = slots.reduce((sum, slot) => sum + (slot.checked ? 1 : 0), 0);
+                    this.plugin.updateCard(keys, marked)
+                });
+            }
         }
 
         return slots;
@@ -274,7 +273,9 @@ export class AdversaryCard extends MarkdownRenderChild {
                 }
                 if (slot.checked) marked++;
             }
-            this.plugin.updateCard([this.adv.id, index, 'hp'], marked)
+            if (!this.preview) {
+                this.plugin.updateCard([this.adv.id, index, 'hp'], marked)
+            }
             updateHordeSize?.();
         };
 
@@ -284,7 +285,25 @@ export class AdversaryCard extends MarkdownRenderChild {
         massive?.addEventListener('click', slotMarker(4));
     }
 
-    createPlusMinosButtons(card: HTMLElement, features: HTMLElement, statBlock: HTMLElement) {
+    createCopyButton(card: HTMLElement) {
+        const copy = card.createEl('button', {
+            cls: 'clickable-icon bv-top-corner',
+            attr: { 'aria-label': 'Copy to clipboard' }
+        })
+        setIcon(copy, 'copy');
+        copy.addEventListener('click', () => {
+            const copy = { ... this.raw };
+            copy.id = Math.random().toString(36).slice(2);
+            delete copy.source;
+            delete copy.raw;
+            const inserted = this.raw.raw ? this.raw.raw : stringifyYaml(copy);
+
+            void navigator.clipboard.writeText(`\`\`\`daggerheart\n${inserted.trim()}\n\`\`\`\n`)
+            new Notice('Adversary copied to clipboard');
+        })
+    }
+
+    createPlusMinusButtons(card: HTMLElement, features: HTMLElement, statBlock: HTMLElement) {
         if (!this.adv.hp && !this.adv.stress) return;
         const add = card.createEl('button', {
             cls: 'bv-top-corner clickable-icon bv-invisible',
@@ -375,7 +394,11 @@ export class AdversaryCard extends MarkdownRenderChild {
 
         this.createHeader(header);
         this.createFeaturesAndStats(features, statBlock);
-        this.createPlusMinosButtons(card, features, statBlock);
+        if (this.preview) {
+            this.createCopyButton(card);
+        } else {
+            this.createPlusMinusButtons(card, features, statBlock);
+        }
 
         const data = this.plugin.state.cards[this.adv.id]?.color;
         const defaultColor = data || this.plugin.state.settings.defaultColor;
@@ -388,7 +411,7 @@ export class AdversaryCard extends MarkdownRenderChild {
 
         applyColor(defaultColor);
 
-        if (this.plugin.state.settings.showColorPicker) {
+        if (this.plugin.state.settings.showColorPicker && !this.preview) {
             const colorpicker = card.createEl('input', { type: 'color', value: defaultColor, cls: 'bv-bottom-corner' });
             colorpicker.addEventListener('input', () => {
                 applyColor(colorpicker.value);

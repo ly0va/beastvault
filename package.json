@@ -13,7 +13,6 @@
 	"devDependencies": {
 		"@airjp73/dice-notation": "^2.2.2",
 		"@types/node": "^24.0.0",
-		"builtin-modules": "3.3.0",
 		"esbuild": "0.17.3",
 		"obsidian": "latest",
 		"tslib": "^2.4.0",

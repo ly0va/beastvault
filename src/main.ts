@@ -1,7 +1,8 @@
-import { Editor, Plugin, setTooltip, Menu, Notice, type TFolder, debounce, type Debouncer } from 'obsidian';
+import { Editor, Plugin, setTooltip, Menu, Notice, type TFolder, debounce, type Debouncer, type WorkspaceLeaf } from 'obsidian';
 import { SettingTab, type PluginSettings, DEFAULT_SETTINGS } from './settings';
 import { ADV_LIBRARY, ENV_LIBRARY, ADV_TEMPLATE, ENV_TEMPLATE, walkFolder, tryParseYaml } from './utils';
 import { AdversaryCard, AdversaryModal, type RawAdversary } from './ui';
+import { LIBRARY_VIEW_TYPE, LibraryView } from './library';
 
 export type PluginState = {
     settings: PluginSettings;
@@ -40,6 +41,18 @@ export default class BeastVault extends Plugin {
             }
         }
         this.battlePoints.setText('');
+    }
+
+    async openLibraryView() {
+        const leaves = this.app.workspace.getLeavesOfType(LIBRARY_VIEW_TYPE);
+        let leaf: WorkspaceLeaf | null;
+        if (leaves.length > 0) {
+            leaf = leaves[0];
+        } else {
+            leaf = this.app.workspace.getLeaf('tab');
+            await leaf?.setViewState({ type: LIBRARY_VIEW_TYPE, active: true });
+        }
+        await this.app.workspace.revealLeaf(leaf);
     }
 
     calculateBattlePoints(filePath: string): number {
@@ -195,6 +208,7 @@ export default class BeastVault extends Plugin {
         this.battlePoints = this.addStatusBarItem();
         this.registerEvent(this.app.workspace.on('active-leaf-change', () => this.updateStatusBar()));
         this.app.workspace.onLayoutReady(() => this.scanLibrary(false, 'no'));
+        this.registerView(LIBRARY_VIEW_TYPE, (leaf) => new LibraryView(leaf, this))
         this.updateState = debounce(() => this.saveData(this.state), 1000, true);
 
         this.registerMarkdownCodeBlockProcessor("daggerheart", (src, el, ctx) => {
@@ -255,6 +269,11 @@ export default class BeastVault extends Plugin {
             name: 'Refresh library',
             callback: () => this.scanLibrary(true, 'yes')
         })
+        this.addCommand({
+            id: 'open-library',
+            name: 'Open library',
+            callback: () => this.openLibraryView()
+        })
 
         this.addRibbonIcon('swords', 'BeastVault menu', (event) => {
             const menu = new Menu();
@@ -295,6 +314,11 @@ export default class BeastVault extends Plugin {
                 .setTitle('Refresh library')
                 .setIcon('refresh-cw')
                 .onClick(() => this.scanLibrary(true, 'yes')));
+
+            menu.addItem((item) => item
+                .setTitle('Open library')
+                .setIcon('library')
+                .onClick(() => this.openLibraryView()));
 
             menu.showAtMouseEvent(event);
         });

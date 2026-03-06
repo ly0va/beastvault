@@ -86,3 +86,52 @@ input[type=checkbox].bv-slot {
 .block-language-daggerheart + .edit-block-button {
     opacity: var(--icon-opacity) !important;
 }
+
+.bv-library {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
+}
+
+.bv-library-item {
+    margin: 0.5em 0.5em !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.bv-source {
+    text-align: right;
+    color: var(--text-muted);
+    margin-top: auto;
+}
+
+.bv-inactive {
+    color: var(--text-faint) !important;
+}
+
+.bv-tier-button {
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.bv-fixed {
+    position: sticky;
+    top: 0;
+    background: var(--background-primary);
+    z-index: 999;
+    padding: var(--size-4-3);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--size-4-2);
+    flex-wrap: wrap;
+}
+
+.bv-fixed > select {
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.view-content:has(.bv-fixed) {
+    padding-top: 0;
+    scrollbar-gutter: stable;
+}

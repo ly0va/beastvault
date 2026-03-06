@@ -123,6 +123,10 @@ export async function walkFolder(folder: TFolder, callback: (file: TFile) => Pro
     }
 }
 
+export function subTitle(tier?: number, type?: string) {
+    return (tier ? `Tier ${tier} ` : '') + (type ? type : '');
+}
+
 export function tryParseYaml(source: string, silent: boolean = true) {
     try {
         const parsed = parseYaml(source) ?? {};
