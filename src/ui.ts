@@ -1,7 +1,7 @@
-import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon, MarkdownRenderer } from 'obsidian';
+import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon, MarkdownRenderer, Menu, type MarkdownPostProcessorContext } from 'obsidian';
 import { roll } from '@airjp73/dice-notation';
 import BeastVault from './main';
-import { hexToRgb, DICE_PATTERN, processAdversary } from './utils';
+import { hexToRgb, DICE_PATTERN, processAdversary, DH_CONDITIONS, autoSuffixName } from './utils';
 
 type Feature = {
     name?: string;
@@ -10,6 +10,7 @@ type Feature = {
     uses?: number;
     countdown?: number;
     flavor?: string;
+    summon?: string | string[];
 }
 
 // Stored in library, as entered by user.
@@ -38,6 +39,9 @@ export type RawAdversary = {
     weapon?: string;
     range?: string;
     damage?: string;
+
+    // custom conditions defined on this statblock
+    conditions?: string | string[];
 
     // these are not rendered
     source?: string;
@@ -86,7 +90,27 @@ export class AdversaryModal extends SuggestModal<RawAdversary> {
         copy.id = Math.random().toString(36).slice(2);
         delete copy.source;
         delete copy.raw;
-        const inserted = adv.raw ? adv.raw : stringifyYaml(copy);
+
+        // Auto-suffix for adversaries (has hp or stress), not environments
+        if (adv.hp || adv.stress) {
+            const content = this.editor.getValue();
+            const baseName = adv.name ?? '';
+            const suffixed = autoSuffixName(baseName, content);
+            if (suffixed !== baseName) {
+                copy.name = suffixed;
+            }
+        }
+
+        let inserted: string;
+        if (adv.raw) {
+            // For raw (homebrew) entries, string-replace the name: line
+            inserted = adv.raw;
+            if (copy.name !== adv.name) {
+                inserted = inserted.replace(/^(name:\s*).*$/m, `$1${copy.name}`);
+            }
+        } else {
+            inserted = stringifyYaml(copy);
+        }
         this.editor.replaceSelection(`\`\`\`daggerheart\n${inserted.trim()}\n\`\`\`\n`);
     }
 }
@@ -99,7 +123,8 @@ export class AdversaryCard extends MarkdownRenderChild {
     constructor(
         private container: HTMLElement,
         public raw: RawAdversary,
-        private plugin: BeastVault
+        private plugin: BeastVault,
+        private ctx?: MarkdownPostProcessorContext
     ) {
         super(container);
         this.filePath = this.plugin.app.workspace.getActiveFile()?.path ?? '/';
@@ -110,8 +135,68 @@ export class AdversaryCard extends MarkdownRenderChild {
 
     createTitle(card: HTMLElement) {
         const title = card.createDiv({ cls: 'callout-title bv-spreadout' });
-        title.createEl('b', { cls: 'bv-larger', text: `${this.adv.name || ''}` });
+        const nameEl = title.createEl('b', { cls: 'bv-larger bv-renameable', text: `${this.adv.name || ''}` });
         title.createEl('b', { cls: 'bv-smaller bv-padded', text: subTitle(this.adv.tier, this.adv.type) });
+
+        nameEl.addEventListener('dblclick', () => {
+            const input = createEl('input', { type: 'text', value: this.adv.name || '', cls: 'bv-rename-input' });
+            nameEl.replaceWith(input);
+            input.focus();
+            input.select();
+
+            const commit = () => {
+                const newName = input.value.trim();
+                if (newName && newName !== this.adv.name) {
+                    this.renameTo(newName);
+                } else {
+                    // Re-render to restore the name element
+                    this.render();
+                }
+            };
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); commit(); }
+                if (e.key === 'Escape') this.render();
+            });
+            input.addEventListener('blur', commit);
+        });
+    }
+
+    private renameTo(newName: string) {
+        const sectionInfo = this.ctx?.getSectionInfo(this.container);
+        const editor = this.plugin.app.workspace.activeEditor?.editor;
+        if (!sectionInfo || !editor) return;
+
+        const { lineStart, lineEnd } = sectionInfo;
+        for (let i = lineStart; i <= lineEnd; i++) {
+            const line = editor.getLine(i);
+            if (/^name:\s/.test(line)) {
+                editor.replaceRange(
+                    `name: ${newName}\n`,
+                    { line: i, ch: 0 },
+                    { line: i + 1, ch: 0 }
+                );
+                break;
+            }
+        }
+    }
+
+    private markStressOnInstance(index: number) {
+        const keys = [this.adv.id, index, 'stress'];
+        const current = this.plugin.getCardState(keys as (string | number)[]) ?? 0;
+        if (current >= this.adv.stress) {
+            new Notice('All stress slots already marked');
+            return;
+        }
+        this.plugin.updateCard(keys as (string | number)[], current + 1);
+        this.render();
+
+        const cardState = this.plugin.state.cards[this.adv.id] as any;
+        const savedName = cardState?.[index]?.instanceName;
+        const label = this.count > 1
+            ? (savedName || `${this.adv.name || 'Instance'} ${index + 1}`)
+            : (this.adv.name || 'Adversary');
+        new Notice(`${label}: marked stress (${current + 1}/${this.adv.stress})`);
     }
 
     createHeaderEntry(header: HTMLElement, name: string, entry: string | string[] | undefined) {
@@ -173,19 +258,166 @@ export class AdversaryCard extends MarkdownRenderChild {
                 feature
                     .desc
                     .replace(/\b([sS])pend a [fF]ear\b/g, "<b>$1pend a Fear</b>")
-                    .replace(/\b([mM])ark a [sS]tress\b/g, "<b>$1ark a Stress</b>")
+                    .replace(/\b([mM])ark a [sS]tress\b/g, '<b class="bv-mark-stress">$1ark a Stress</b>')
                     .replace(DICE_PATTERN, `<span class=bv-rollable>$&</span>`),
                 featureDiv,
                 this.filePath,
                 this
             );
         }
+        // Summon buttons
+        if (feature.summon) {
+            const summons = Array.isArray(feature.summon) ? feature.summon : [feature.summon];
+            const summonDiv = paragraph.createDiv({ cls: 'bv-summon-bar' });
+            for (const summonName of summons) {
+                const btn = summonDiv.createEl('button', {
+                    text: `Summon: ${summonName}`,
+                    cls: 'bv-summon-button',
+                });
+                btn.addEventListener('click', () => this.summonAdversary(summonName));
+            }
+        }
+
         if (feature.flavor) {
             paragraph.createDiv().createEl('i', { cls: 'bv-muted', text: feature.flavor });
         }
     }
 
-    createStatSlots(statBar: HTMLElement, name: string, stat: number, keys: (string | number)[]) {
+    private summonAdversary(name: string) {
+        const allAdv = this.plugin.allAdversaries();
+        const allEnv = this.plugin.allEnvironments();
+        const match = [...allAdv, ...allEnv].find(
+            a => a.name?.toLowerCase() === name.toLowerCase()
+        );
+
+        if (!match) {
+            new Notice(`"${name}" not found in library`);
+            return;
+        }
+
+        const editor = this.plugin.app.workspace.activeEditor?.editor;
+        if (!editor) {
+            new Notice('No active editor');
+            return;
+        }
+
+        const copy = { ...match };
+        copy.id = Math.random().toString(36).slice(2);
+        delete copy.source;
+        delete copy.raw;
+
+        // Apply auto-suffix if this is an adversary
+        if (match.hp || match.stress) {
+            const content = editor.getValue();
+            const baseName = match.name ?? '';
+            const suffixed = autoSuffixName(baseName, content);
+            if (suffixed !== baseName) {
+                copy.name = suffixed;
+            }
+        }
+
+        let yaml: string;
+        if (match.raw) {
+            yaml = match.raw;
+            if (copy.name !== match.name) {
+                yaml = yaml.replace(/^(name:\s*).*$/m, `$1${copy.name}`);
+            }
+        } else {
+            yaml = stringifyYaml(copy);
+        }
+
+        const lastLine = editor.lastLine();
+        const lastLineContent = editor.getLine(lastLine);
+        const insertPos = { line: lastLine, ch: lastLineContent.length };
+        editor.replaceRange(`\n\n\`\`\`daggerheart\n${yaml.trim()}\n\`\`\`\n`, insertPos);
+        new Notice(`Summoned ${copy.name}`);
+    }
+
+    createConditionBar(parent: HTMLElement, index: number) {
+        const condBar = parent.createDiv({ cls: 'bv-conditions' });
+        const cardState = this.plugin.state.cards[this.adv.id];
+        const currentRaw = cardState?.[index as keyof typeof cardState];
+        const current: string[] = Array.isArray((currentRaw as any)?.conditions) ? (currentRaw as any).conditions : [];
+
+        // Build full condition list: standard + YAML-defined custom + any ad-hoc from state
+        const yamlCustom = this.raw.conditions
+            ? (Array.isArray(this.raw.conditions) ? this.raw.conditions : [this.raw.conditions])
+            : [];
+        const standardNames = DH_CONDITIONS as readonly string[];
+        const allDefined = [...DH_CONDITIONS, ...yamlCustom.filter(c => !standardNames.includes(c))];
+        // Also include any ad-hoc conditions that are in state but not in the defined list
+        const adHoc = current.filter(c => !allDefined.includes(c));
+        const allConditions = [...allDefined, ...adHoc];
+
+        const addBadge = (condition: string) => {
+            const active = current.includes(condition);
+            const isCustom = !standardNames.includes(condition);
+            const badge = condBar.createEl('span', {
+                text: condition,
+                cls: `bv-condition-badge ${active ? 'bv-condition-active' : ''} ${isCustom ? 'bv-condition-custom' : ''}`,
+            });
+
+            badge.addEventListener('click', () => {
+                const isActive = badge.hasClass('bv-condition-active');
+                const state = this.plugin.state.cards;
+                if (!state[this.adv.id]) state[this.adv.id] = {};
+                const card = state[this.adv.id] as any;
+                if (!card[index]) card[index] = {};
+                const inst = card[index];
+                const conditions: string[] = Array.isArray(inst.conditions) ? [...inst.conditions] : [];
+
+                if (isActive) {
+                    inst.conditions = conditions.filter((c: string) => c !== condition);
+                } else {
+                    inst.conditions = [...conditions, condition];
+                }
+                this.plugin.updateState();
+                badge.toggleClass('bv-condition-active', !isActive);
+            });
+
+            return badge;
+        };
+
+        for (const condition of allConditions) {
+            addBadge(condition);
+        }
+
+        // "+" button for ad-hoc custom conditions
+        const addBtn = condBar.createEl('span', {
+            text: '+',
+            cls: 'bv-condition-badge bv-condition-add',
+        });
+        addBtn.addEventListener('click', () => {
+            const input = createEl('input', {
+                type: 'text',
+                cls: 'bv-condition-input',
+                attr: { placeholder: 'Condition...' },
+            });
+            addBtn.replaceWith(input);
+            input.focus();
+
+            const commit = () => {
+                const name = input.value.trim();
+                if (name && !allConditions.includes(name)) {
+                    const badge = addBadge(name);
+                    allConditions.push(name);
+                    // Auto-activate the new condition
+                    badge.click();
+                    input.replaceWith(addBtn);
+                } else {
+                    input.replaceWith(addBtn);
+                }
+            };
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); commit(); }
+                if (e.key === 'Escape') input.replaceWith(addBtn);
+            });
+            input.addEventListener('blur', commit);
+        });
+    }
+
+    createStatSlots(statBar: HTMLElement, name: string, stat: number, keys: (string | number)[], showControls = false) {
         const slots: HTMLInputElement[] = []
         const marked = this.plugin.getCardState(keys) ?? 0;
         if (stat > 0) {
@@ -197,11 +429,50 @@ export class AdversaryCard extends MarkdownRenderChild {
                 }
                 slots.push(slot);
             }
+
+            const syncSlots = () => {
+                const count = slots.reduce((sum, slot) => sum + (slot.checked ? 1 : 0), 0);
+                this.plugin.updateCard(keys, count);
+            };
+
+            // Notify parent listeners (e.g. horde size) after programmatic changes
+            const notifyChange = () => {
+                if (slots.length > 0) slots[0].dispatchEvent(new Event('input', { bubbles: true }));
+            };
+
+            if (showControls) {
+                const controls = statBar.createSpan({ cls: 'bv-slot-controls' });
+                const minus = controls.createEl('button', { text: '\u2212', cls: 'bv-slot-btn', attr: { 'aria-label': `Remove 1 ${name}` } });
+                const plus = controls.createEl('button', { text: '+', cls: 'bv-slot-btn', attr: { 'aria-label': `Add 1 ${name}` } });
+                const clear = controls.createEl('button', { text: '\u2715', cls: 'bv-slot-btn bv-slot-btn-clear', attr: { 'aria-label': `Clear ${name}` } });
+
+                plus.addEventListener('click', () => {
+                    for (const slot of slots) {
+                        if (!slot.checked) { slot.checked = true; break; }
+                    }
+                    syncSlots();
+                    notifyChange();
+                });
+
+                minus.addEventListener('click', () => {
+                    for (const slot of slots.toReversed()) {
+                        if (slot.checked) { slot.checked = false; break; }
+                    }
+                    syncSlots();
+                    notifyChange();
+                });
+
+                clear.addEventListener('click', () => {
+                    for (const slot of slots) slot.checked = false;
+                    syncSlots();
+                    notifyChange();
+                });
+            }
+
             statBar.createEl('br');
             statBar.addEventListener('input', (event) => {
                 if (!slots.contains(event.target as HTMLInputElement)) return;
-                let marked = slots.reduce((sum, slot) => sum + (slot.checked ? 1 : 0), 0);
-                this.plugin.updateCard(keys, marked)
+                syncSlots();
             });
         }
 
@@ -229,9 +500,61 @@ export class AdversaryCard extends MarkdownRenderChild {
 
     createStatBar(content: HTMLElement, index: number) {
         const statBar = content.createEl('p');
+
+        // Per-instance name label when count > 1
+        if (this.count > 1) {
+            const cardState = this.plugin.state.cards[this.adv.id] as any;
+            const savedName = cardState?.[index]?.instanceName;
+            const defaultName = `${this.adv.name || 'Instance'} ${index + 1}`;
+            const displayName = savedName || defaultName;
+
+            const nameEl = statBar.createEl('b', {
+                text: displayName,
+                cls: 'bv-instance-name',
+            });
+
+            nameEl.addEventListener('click', () => {
+                const input = createEl('input', {
+                    type: 'text',
+                    value: displayName,
+                    cls: 'bv-instance-name-input',
+                });
+                nameEl.replaceWith(input);
+                input.focus();
+                input.select();
+
+                const commit = () => {
+                    const newName = input.value.trim();
+                    if (newName && newName !== displayName) {
+                        const state = this.plugin.state.cards;
+                        if (!state[this.adv.id]) state[this.adv.id] = {};
+                        const card = state[this.adv.id] as any;
+                        if (!card[index]) card[index] = {};
+                        card[index].instanceName = newName;
+                        this.plugin.updateState();
+                    }
+                    // Re-render to show updated name
+                    this.render();
+                };
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') { e.preventDefault(); commit(); }
+                    if (e.key === 'Escape') this.render();
+                });
+                input.addEventListener('blur', commit);
+            });
+
+            statBar.createEl('br');
+        }
+
         const [minor, major, severe, massive] = this.createThresholdButtons(statBar);
-        const hpSlots = this.createStatSlots(statBar, 'HP', this.adv.hp, [this.adv.id, index, 'hp']);
-        this.createStatSlots(statBar, 'Stress', this.adv.stress, [this.adv.id, index, 'stress']);
+        const hpSlots = this.createStatSlots(statBar, 'HP', this.adv.hp, [this.adv.id, index, 'hp'], true);
+        this.createStatSlots(statBar, 'Stress', this.adv.stress, [this.adv.id, index, 'stress'], true);
+
+        // Condition badges for adversaries only (not environments)
+        if (this.adv.hp || this.adv.stress) {
+            this.createConditionBar(statBar, index);
+        }
 
         if (this.count > 1) {
             for (const [featureIndex, feature] of this.adv.features.entries()) {
@@ -359,6 +682,28 @@ export class AdversaryCard extends MarkdownRenderChild {
 
         card.addEventListener('click', (event) => {
             const elt = event.target as HTMLElement;
+
+            // "Mark a Stress" clickable action
+            if (elt.classList.contains('bv-mark-stress')) {
+                if (this.adv.stress <= 0) return;
+                if (this.count === 1) {
+                    this.markStressOnInstance(0);
+                } else {
+                    const menu = new Menu();
+                    for (let i = 0; i < this.count; i++) {
+                        const cardState = this.plugin.state.cards[this.adv.id] as any;
+                        const savedName = cardState?.[i]?.instanceName;
+                        const label = savedName || `${this.adv.name || 'Instance'} ${i + 1}`;
+                        menu.addItem((item) => item
+                            .setTitle(label)
+                            .onClick(() => this.markStressOnInstance(i)));
+                    }
+                    menu.showAtMouseEvent(event as MouseEvent);
+                }
+                return;
+            }
+
+            // Dice rolling
             if (!elt.classList.contains('bv-rollable')) return;
             const dice = elt.classList.contains('bv-rollable-attack')
                 ? `1d20${this.adv.attack == '0' ? '' : this.adv.attack}`

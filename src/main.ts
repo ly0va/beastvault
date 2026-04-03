@@ -13,7 +13,9 @@ export type PluginState = {
                 hp?: number;
                 stress?: number;
                 uses?: { [key: string]: number };
-                countdown?: { [key: string]: number }
+                countdown?: { [key: string]: number };
+                conditions?: string[];
+                instanceName?: string;
             };
         };
     };
@@ -198,7 +200,7 @@ export default class BeastVault extends Plugin {
         this.updateState = debounce(() => this.saveData(this.state), 1000, true);
 
         this.registerMarkdownCodeBlockProcessor("daggerheart", (src, el, ctx) => {
-            const child = new AdversaryCard(el, tryParseYaml(src, false), this);
+            const child = new AdversaryCard(el, tryParseYaml(src, false), this, ctx);
             ctx.addChild(child);
             child.render();
             // Track it so we can refresh on settings change:
@@ -311,7 +313,7 @@ export default class BeastVault extends Plugin {
     }
 
     updateCard(keys: (string | number)[], value: string | number) {
-        type Data = { [key: string]: Data | number | string };
+        type Data = { [key: string]: Data | number | string | string[] };
         let data: Data = this.state.cards;
         const keysCopy = [...keys];
         const lastKey = keysCopy.pop()!;
@@ -324,7 +326,7 @@ export default class BeastVault extends Plugin {
     }
 
     getCardState(keys: (string | number)[]): number | undefined {
-        type Data = { [key: string]: Data | string | number }
+        type Data = { [key: string]: Data | string | number | string[] }
         let data: Data = this.state.cards;
         for (const [i, key] of keys.entries()) {
             if (!data[key]) return undefined;
