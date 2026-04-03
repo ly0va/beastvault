@@ -52,6 +52,37 @@ features:
 
 export const DICE_PATTERN = /(\b\d+d\d+(?:\+\d+d\d+)*(?:\+\d+)?\b)/g;
 
+export const DH_CONDITIONS = [
+    'Vulnerable',
+    'Restrained',
+    'Frightened',
+    'Disoriented',
+    'Weakened',
+    'Hidden',
+    'Empowered',
+    'Slowed',
+] as const;
+
+export type Condition = typeof DH_CONDITIONS[number];
+
+export function escapeRegex(s: string): string {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export function autoSuffixName(baseName: string, editorContent: string): string {
+    const pattern = new RegExp(`^name:\\s*${escapeRegex(baseName)}(?:\\s+(\\d+))?\\s*$`, 'gmi');
+    let maxSuffix = 0;
+    let match;
+    while ((match = pattern.exec(editorContent)) !== null) {
+        const suffix = match[1] ? parseInt(match[1]) : 1;
+        maxSuffix = Math.max(maxSuffix, suffix);
+    }
+    if (maxSuffix > 0) {
+        return `${baseName} ${maxSuffix + 1}`;
+    }
+    return baseName;
+}
+
 export function hexToRgb(hex: string) {
     hex = hex.replace(/^#/, '');
     if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
