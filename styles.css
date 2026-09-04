@@ -38,7 +38,7 @@ input[type=checkbox].bv-slot {
 }
 
 .bv-rollable:hover {
-    color: rgb(var(--callout-color))
+    color: var(--bv-color)
 }
 
 .bv-statblock hr {

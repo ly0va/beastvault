@@ -1,4 +1,4 @@
-import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon, MarkdownRenderer } from 'obsidian';
+import { App, Editor, SuggestModal, Notice, MarkdownRenderChild, stringifyYaml, setIcon, MarkdownRenderer, requireApiVersion } from 'obsidian';
 import { roll } from '@airjp73/dice-notation';
 import BeastVault from './main';
 import { hexToRgb, DICE_PATTERN, processAdversary } from './utils';
@@ -381,7 +381,10 @@ export class AdversaryCard extends MarkdownRenderChild {
         const defaultColor = data || this.plugin.state.settings.defaultColor;
 
         const applyColor = (color: string) => {
-            card.style.setProperty('--callout-color', hexToRgb(color));
+            // Obsidian 1.13 changed --callout-color from an 'r, g, b' triple to a plain CSS color
+            const calloutColor = requireApiVersion('1.13.0') ? color : hexToRgb(color);
+            card.style.setProperty('--callout-color', calloutColor);
+            card.style.setProperty('--bv-color', color);
             card.style.setProperty('--checkbox-color', color)
             card.style.setProperty('--checkbox-color-hover', color)
         }
